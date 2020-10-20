@@ -1,0 +1,152 @@
+.menu-background {
+  position: fixed; /* Stay in place */
+  z-index: 111; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.menu-container {
+  border-radius: 15px;
+  text-align: center;
+  background-color: #fff;
+  margin: 10% auto auto; /* 15% from the top and centered */
+  padding: 4em 5em;
+  border: 1px solid #888;
+  width: 700px;
+  height: 250px;
+}
+
+.filtercon {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.box-btn-menu {
+  margin: 1.5em;
+  background-color: #3C3C3C;
+  display: inline-block;
+}
+
+.filterbox {
+  float: right;
+  width: 250px;
+  margin: 3em 0;
+}
+
+#gamemode {
+  margin-top: 4em;
+}
+
+#gamemode-text {
+  font-family: "Ubuntu", Tahoma, Arial;
+  font-size: 19px;
+  display: block;
+  margin-bottom: 1.5em;
+  font-weight: bold;
+}
+
+.waiting {
+  float: right;
+  text-align: right;
+}
+
+#join {
+  display: block;
+}
+
+#join-name {
+  text-align: left;
+}
+
+#join-name h3,
+#join-token h3,
+.waiting h3 {
+  font-family: "Ubuntu", Tahoma, Arial;
+  font-size: 16px;
+  margin-top: 0;
+}
+
+.waiting h3 {
+  margin-bottom: 5px;
+}
+
+#join-token h3 {
+  display: inline-block;
+}
+
+#join-name input {
+  font-family: "Ubuntu", Tahoma, Arial;
+  font-size: 14px;
+  width: 300px;
+  height: 28px;
+  border: 1px solid #d8d8d8;
+}
+
+.btn-join,
+.btn-start {
+  text-align: center;
+  cursor: pointer;
+  margin-left: 1em;
+  padding: 5px;
+  outline: none;
+  font-family: "Ubuntu", Tahoma, Arial;
+  font-size: 14px;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  width: 50px;
+  height: 30px;
+  background: linear-gradient(
+    #ffffff 20%,
+    #f6f6f6 50%,
+    #eeeeee 52%,
+    #f4f4f4 100%
+  );
+  background-clip: padding-box;
+  box-shadow: 0 0 3px white inset, 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-start {
+  margin-top: 3em;
+}
+
+.btn-plmo {
+  font-size: 15px;
+  width: 150px;
+  height: 40px;
+}
+
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+.grow:hover {
+  transform: scale(0.9);
+}
+
+#join-token {
+  text-align: left;
+  height: 100%;
+  margin: auto 0;
+}
+
+#join-token td {
+  width: 60px;
+  height: 60px;
+}
+
+#join-token table {
+  display: block;
+}
+
+#join-token td:hover {
+  background: #9ac;
+}
+
+#joininglist {
+  font-family: "Ubuntu", Tahoma, Arial;
+  font-size: 15px;
+}
