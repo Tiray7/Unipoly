@@ -1,0 +1,97 @@
+.car {
+  background-image: url("car.png");
+  background-size: 100%;
+}
+
+.dog {
+  background-image: url("dog.png");
+  background-size: 100%;
+}
+
+.hat {
+  background-image: url("hat.png");
+  background-size: 100%;
+}
+
+.iron {
+  background-image: url("iron.png");
+  background-size: 100%;
+}
+
+.ship {
+  background-image: url("ship.png");
+  background-size: 100%;
+}
+
+.shoe {
+  background-image: url("shoe.png");
+  background-size: 100%;
+}
+
+.thimble {
+  background-image: url("thimble.png");
+  background-size: 100%;
+}
+
+.wheelbarrow {
+  background-image: url("wheelbarrow.png");
+  background-size: 100%;
+}
+
+.token-menu {
+  width: 60px;
+  height: 60px;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #c0e6f4;
+  box-shadow: 2px 2px 5px #444;
+  border-radius: 25px;
+  border: 1.5px solid #222;
+  cursor: pointer;
+}
+
+.tablecon {
+  position: absolute;
+  z-index: 99;
+}
+
+.used {
+    box-sizing: border-box;
+    width: 25px;
+    height: 25px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #cde6d0;
+    box-shadow: 1px 1px 2px rgb(112, 112, 112);
+    border-radius: 25px;
+    border: 1px solid #222;
+    margin: 1px;
+}
+
+.top-row .tablecon {
+    margin: 1.7em 1.1em;
+}
+.left-row .tablecon {
+    margin: 1.1em 1.7em;
+}
+.bottom-row .tablecon {
+    margin: 5em 1.1em;
+}
+.right-row .tablecon {
+    margin: 1.1em 5em;
+}
+.go .tablecon {
+    margin: 4.5em 0 0 4.5em;
+}
+.jail .tablecon {
+    margin: 4.5em 0 0 1.1em;
+}
+.free-parking .tablecon {
+    margin: 2em 0 0 2em;
+}
+.go-to-jail .tablecon {
+    margin: 2em 0 0 4.5em;
+}
+

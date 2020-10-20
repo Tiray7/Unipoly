@@ -1,0 +1,91 @@
+.site-header {
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    background: #282828;
+    padding: 0.5em 2em;
+}
+
+.logo {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 95px;
+    height: auto;
+}
+
+.title {
+    margin: 0;
+    padding: 0;
+    color: #fcfcfc;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 7px 0 0;
+    font: normal small-caps bold 50px/normal "raleway", Helvetica, sans-serif;
+    text-shadow: 3px 3px 3px rgba(0,0,0,1) , 2px 2px 0 rgba(0,0,0,1) , 4px 4px 6px rgba(0,0,0,1);
+}
+
+.description {
+    color: #fcfcfc;
+    margin-top: -0.2em;
+    font-family: 'Ubuntu', Tahoma, Arial;
+    font-size: 0.875rem;
+}
+
+.box-btn {
+    margin: 1.5em;
+    float: right;
+    background-color: #3C3C3C;
+}
+
+.btn {
+    font-size: 17px;
+    line-height: 50px;
+    height: 50px;
+    text-align: center;
+    width: 250px;
+    cursor: pointer;
+}
+
+.btn-two {
+    color: #FFF;
+    transition: all 0.5s;
+    position: relative; 
+}
+.btn-two span {
+    z-index: 2; 
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;   
+}
+.btn-two::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: all 0.5s;
+    border: 1px solid rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.1);
+}
+.btn-two::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: all 0.5s;
+    border: 1px solid rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.1);
+}
+.btn-two:hover::before {
+  transform: rotate(-45deg);
+  background-color: rgba(255,255,255,0);
+}
+.btn-two:hover::after {
+  transform: rotate(45deg);
+  background-color: rgba(255,255,255,0);
+}
