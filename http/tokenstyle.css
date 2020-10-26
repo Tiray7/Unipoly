@@ -1,59 +1,59 @@
-.car {
-  background-image: url("car.png");
-  background-size: 100%;
+.atom {
+    background-image: url("atom.png");
+    background-size: 100%;
 }
 
-.dog {
-  background-image: url("dog.png");
-  background-size: 100%;
+.oneplus {
+    background-image: url("oneplus.png");
+    background-size: 100%;
 }
 
-.hat {
-  background-image: url("hat.png");
-  background-size: 100%;
+.einstein {
+    background-image: url("einstein.png");
+    background-size: 100%;
 }
 
-.iron {
-  background-image: url("iron.png");
-  background-size: 100%;
+.cradle {
+    background-image: url("cradle.png");
+    background-size: 100%;
 }
 
-.ship {
-  background-image: url("ship.png");
-  background-size: 100%;
+.equation {
+    background-image: url("equation.png");
+    background-size: 100%;
 }
 
-.shoe {
-  background-image: url("shoe.png");
-  background-size: 100%;
+.helium {
+    background-image: url("helium.png");
+    background-size: 100%;
 }
 
-.thimble {
-  background-image: url("thimble.png");
-  background-size: 100%;
+.lab {
+    background-image: url("lab.png");
+    background-size: 100%;
 }
 
-.wheelbarrow {
-  background-image: url("wheelbarrow.png");
-  background-size: 100%;
+.lightbulb {
+    background-image: url("lightbulb.png");
+    background-size: 100%;
 }
 
 .token-menu {
-  width: 60px;
-  height: 60px;
-  background-size: 80%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #c0e6f4;
-  box-shadow: 2px 2px 5px #444;
-  border-radius: 25px;
-  border: 1.5px solid #222;
-  cursor: pointer;
+    width: 60px;
+    height: 60px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #c0e6f4;
+    box-shadow: 2px 2px 5px #444;
+    border-radius: 25px;
+    border: 1.5px solid #222;
+    cursor: pointer;
 }
 
 .tablecon {
-  position: absolute;
-  z-index: 99;
+    position: absolute;
+    z-index: 99;
 }
 
 .used {
