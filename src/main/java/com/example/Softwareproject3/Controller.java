@@ -53,7 +53,7 @@ public class Controller {
 	@RequestMapping(value = "/resetgame", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp resetGame() {
-		unipoly = new Unipoly();
+		unipoly = new UnipolyApp();
 		return unipoly;
 	}
 
