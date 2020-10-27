@@ -309,8 +309,8 @@ app.controller('Controller', function ($scope) {
 						// Check if starting turn worked
 						if (success) {
 							console.log('success: rollDice');
-							$scope.diceVal1 = $scope.state.rolledValue1;
-							$scope.diceVal2 = $scope.state.rolledValue2;
+							$scope.diceVal1 = $scope.state.firstDice;
+							$scope.diceVal2 = $scope.state.secondDice;
 							const total = $scope.diceVal1 + $scope.diceVal2;
 							var text = '<b>' + $scope.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
 								' + ' + $scope.diceVal2 + '<br>Total: ' + total;

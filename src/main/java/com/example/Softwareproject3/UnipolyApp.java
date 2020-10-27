@@ -128,8 +128,9 @@ public class UnipolyApp {
 
 	public void rollDice(int firstDice) {
 		phase = UnipolyPhase.ROLLING;
+		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(players.get(currentPlayerIndex), firstDice + secondDice);
+		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
 	}
 
 	private void checkFieldOptions(Player currentPlayer, int rolledValue) {
