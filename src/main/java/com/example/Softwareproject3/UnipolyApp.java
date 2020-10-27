@@ -127,7 +127,6 @@ public class UnipolyApp {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
-			sleep(2000);
 		}
 		phase = UnipolyPhase.WAITING;
 
