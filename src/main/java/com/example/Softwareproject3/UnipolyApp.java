@@ -7,7 +7,7 @@ public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
 	private ArrayList<Player> players;
-	private int currentPlayerIndex;
+	private int currentPlayerIndex = 0;
 	private int firstDice;
 	private int secondDice;
 	private boolean rolledPash = false;
@@ -70,7 +70,6 @@ public class UnipolyApp {
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
-
 		Player player = new Player(name, token);
 		player.getToken().moveTo(0);
 		player.index = players.size();
@@ -99,13 +98,6 @@ public class UnipolyApp {
 			} else if (players.size() > 4) {
 				throw new IllegalStateException("Too many players for multiplayer mode");
 			}
-		}
-
-		currentPlayerIndex = (new Random()).nextInt(players.size());
-
-		// Reset player positions on board
-		for (Player player : players) {
-			player.getToken().moveTo(0);
 		}
 		// Automatically start first Turn
 		startTurn();
@@ -136,6 +128,11 @@ public class UnipolyApp {
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
 		}
+		System.out.println(currentPlayerIndex);
+		switchPlayer();
+		phase = UnipolyPhase.WAITING;
+		System.out.println(currentPlayerIndex);
+
 		//tileOperation(currentField, currentPlayer);
 		 /*if (fachFeld && no owner && enoughMoney) {
 		 	phase = UnipolyPhase.BUY_PROPERTY;
@@ -175,6 +172,11 @@ public class UnipolyApp {
 				do you want to build something?
 					else
 			paySomeMoney, homie*/
+	}
+
+	public void switchPlayer() {
+		if(currentPlayerIndex == players.size() - 1) currentPlayerIndex = 0;
+		else currentPlayerIndex++;
 	}
 
 	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {

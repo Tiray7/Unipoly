@@ -10,7 +10,6 @@ package com.example.Softwareproject3;
 
         public Player(String name, TokenType tokenType) {
             super(name, 1500);
-
             token = new Token(tokenType);
         }
 
@@ -22,11 +21,15 @@ package com.example.Softwareproject3;
             return token;
         }
 
+        public void setToken(Token token){
+            this.token = token;
+        }
+
         public void setJailCard(boolean outJail){
             JailCard = outJail;
         }
 
-        public boolean isBankrupt() {
+        public boolean getBankrupt() {
             return bankrupt;
         }
 
@@ -42,10 +45,6 @@ package com.example.Softwareproject3;
             token.moveTo(10);
             doublesRolled = 0;
             this.stayJailedOneRund = 3;
-        }
-
-        public void setToken(Token token){
-            this.token = token;
         }
     }
 
