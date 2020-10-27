@@ -61,7 +61,7 @@ public class Controller {
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int firstDice) {
+	public UnipolyApp rollDice(@RequestParam int firstDice) throws InterruptedException {
 		unipoly.rollDice(firstDice);
 		return unipoly;
 	}
@@ -70,6 +70,13 @@ public class Controller {
 	@ResponseBody
 	public String getGreeting() {
 		return "Hey David";
+	}
+
+	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp endTurn() {
+		unipoly.switchPlayer();
+		return unipoly;
 	}
 
 }

@@ -116,22 +116,20 @@ public class UnipolyApp {
 		if(firstDice == secondDice) rolledPash = true;
 	}
 
-	public void rollDice(int firstDice) {
+	public void rollDice(int firstDice) throws InterruptedException {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
 		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
 	}
 
-	private void checkFieldOptions(Player currentPlayer, int rolledValue) {
+	private void checkFieldOptions(Player currentPlayer, int rolledValue) throws InterruptedException {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
+			sleep(2000);
 		}
-		System.out.println(currentPlayerIndex);
-		switchPlayer();
 		phase = UnipolyPhase.WAITING;
-		System.out.println(currentPlayerIndex);
 
 		//tileOperation(currentField, currentPlayer);
 		 /*if (fachFeld && no owner && enoughMoney) {
