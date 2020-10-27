@@ -2,16 +2,18 @@ package com.example.Softwareproject3;
 
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 @RestController
+@Configuration
 public class Controller {
 
 	private static UnipolyApp unipoly;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
 		unipoly = new UnipolyApp();
 	}
@@ -59,9 +61,15 @@ public class Controller {
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int diceval1) {
-		unipoly.rollDice(diceval1);
+	public UnipolyApp rollDice(@RequestParam int firstDice) {
+		unipoly.rollDice(firstDice);
 		return unipoly;
+	}
+
+	@RequestMapping(value = "/greeting.html", method = RequestMethod.GET)
+	@ResponseBody
+	public String getGreeting() {
+		return "Hey David";
 	}
 
 }

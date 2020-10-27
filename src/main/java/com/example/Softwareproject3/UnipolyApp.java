@@ -7,18 +7,25 @@ public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
 	private Gamemode gamemode;
-
 	private ArrayList<Player> players;
-
 	private int currentPlayerIndex;
-
-	private int rolledValue1 = 0;
-	private int rolledValue2 = 0;
-	private int rolledValue = 0;
+	private int firstDice;
+	private int secondDice;
 	private boolean rolledPash = false;
 
+	enum UnipolyPhase {
+		WAITING,
+		ROLLING,
+		BUY_PROPERTY,
+		TURN,
+		JAILED,
+		ENDGAME,
+		SHOWCARD,
+		QUIZTIME
+	}
+
 	public UnipolyApp() {
-		players = new ArrayList<Player>();
+		players = new ArrayList<>();
 	}
 
 	public UnipolyPhase getPhase() {
@@ -33,12 +40,12 @@ public class UnipolyApp {
 		return currentPlayerIndex;
 	}
 
-	public int getRolledValue1() {
-		return rolledValue1;
+	public int getFirstDice() {
+		return firstDice;
 	}
 
-	public int getRolledValue2() {
-		return rolledValue2;
+	public int getSecondDice() {
+		return secondDice;
 	}
 
 	public boolean isRolledPash() {
@@ -108,41 +115,70 @@ public class UnipolyApp {
 
 	// The Current Player starts his Turn
 	private void startTurn() {
-		Player currentPlayer = players.get(currentPlayerIndex);
-
-		if (currentPlayer.isJailed()) {
+		if(players.get(currentPlayerIndex).isJailed()) {
 			phase = UnipolyPhase.JAILED;
 		}
 	}
 
-	public void rollDice(int diceval1) {
+	public void rollDice() {
+		firstDice = new Random().nextInt(6) + 1;
+		secondDice = new Random().nextInt(6) + 1;
+		if(firstDice == secondDice) rolledPash = true;
+	}
+
+	public void rollDice(int firstDice) {
 		phase = UnipolyPhase.ROLLING;
-		Player currentPlayer = players.get(currentPlayerIndex);
-
-		// 4 for Testing
-		rolledValue2 = 4;
-		rolledValue1 = diceval1;
-
-		rolledValue = rolledValue1 + rolledValue2;
-		doField(currentPlayer, rolledValue);
+		secondDice = new Random().nextInt(6) + 1;
+		checkFieldOptions(players.get(currentPlayerIndex), firstDice + secondDice);
 	}
 
-	// Move to Field
-	private void doField(Player currentPlayer, int rolledValue) {
-
-		int previousFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
-		currentPlayer.getToken().moveBy(rolledValue);
+	private void checkFieldOptions(Player currentPlayer, int rolledValue) {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
-		
-		//Field currentField = get current Field
-
-		// Pass go
-		if(previousFieldIndex > currentFieldIndex) {
-			// Bank gives Player 200CHF
-		}
-
+		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
+		}// Bank gives Player 200CHF;
 		//tileOperation(currentField, currentPlayer);
+		 /*if (fachFeld && no owner && enoughMoney) {
+		 	phase = UnipolyPhase.BUY_PROPERTY;
+			if(user wants to buy) {
+				buyProperty();
+				return;
+			} else {
+				userTurnEnds();
+				--> WAITING Phase
+				return;
+			}
+		if (startfeld)
+			get double some money
+		if (chance)
+			draw a chance card
+			get money/pay money/whatever
+		if (springer)
+			do you want to buy?
+				if (yes && enough money)
+					set ownsCard
+				else
+					alert: you poor bum
+		After everythings checked and done:
+			--> update phase and currentPlayerIndex
 
+					*/
 	}
 
+	private void buyProperty(int buy) {
+		/*if(buy == 1)
+				set owner
+				- money
+		else
+			alert: you can't buy
+		else {
+			if(currentPlayer == owner)
+				do you want to build something?
+					else
+			paySomeMoney, homie*/
+	}
+
+	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {
+		currentPlayer.getToken().moveBy(rolledValue);
+		return previousField > currentPlayer.getToken().getcurrFieldIndex();
+	}
 }
