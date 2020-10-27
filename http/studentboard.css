@@ -63,8 +63,7 @@
 .board-title {
   grid-column: 1 / 6;
   grid-row: 1 / 6;
-  font: normal small-caps 400 90px / normal "raleway", Helvetica, sans-serif;
-  letter-spacing: 5px;
+  width: 440px;
 }
 
 #playerlist {
