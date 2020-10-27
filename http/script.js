@@ -344,25 +344,39 @@ app.controller('Controller', function ($scope) {
 		currind.toggleClass('used ' + type);
 	}
 
-	$scope.goDetention = function () {
-
-	}
-
 	$scope.jump = function () {
 		var next = confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!");
 		if (next) {
 			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
-
 			// Check if Player submited a acceptable value
 			if (moveby == null || moveby == "") {
 				console.error('failed: assign value of jump Distance.');
 				alert('Error: Please try again!');
-			} else if(moveby < 1 || moveby > 35) {
+			} else if (moveby < 1 || moveby > 35) {
 				console.error('failed: Value needs to be between 1-35');
 				alert('Error: Please try again!');
 			}
+			$scope.getOp('dofield?moveby=' + moveby,
+				function (success) {
+					// Check if  success
+					if (success) {
+						console.log('success: MovePlayer');
+						$scope.moveToken();
+					} else {
+						console.error('failed: MovePlayer');
+					}
+				});
 		} else {
-			// Do nothing, Endturn
+			//End Turn
+			$scope.getOp('endturn',
+				function (success) {
+					// Check if  success
+					if (success) {
+						console.log('success: endTurn');
+					} else {
+						console.error('failed: endTurn');
+					}
+				});
 		}
 	}
 });
