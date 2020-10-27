@@ -304,7 +304,7 @@ app.controller('Controller', function ($scope) {
 				console.log('success: assign value of first Dice');
 
 				// Send Value of first Dice to java
-				$scope.getOp('rolldice?diceval1=' + diceVal1,
+				$scope.getOp('rolldice?firstDice=' + diceVal1,
 					function (success) {
 						// Check if starting turn worked
 						if (success) {
