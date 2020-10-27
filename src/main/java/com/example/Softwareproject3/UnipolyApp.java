@@ -6,7 +6,6 @@ import java.util.Random;
 public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
-	private Gamemode gamemode;
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
 	private int firstDice;
@@ -83,23 +82,22 @@ public class UnipolyApp {
 		if (phase != UnipolyPhase.WAITING) {
 			throw new IllegalStateException("Cannot start the unipoly unless in the waiting phase.");
 		}
-		gamemode = mode;
 
 		// Check if we play Singleplayer or Multiplayer
-		if (Gamemode.SINGLE == gamemode) {
+		if (Gamemode.SINGLE == mode) {
 			if (players.size() != 1) {
-				throw new IllegalStateException("To many Players for Single Gameplay");
+				throw new IllegalStateException("Too many players for singleplayer mode");
 			} else {
 				Player player = new Player("NPC", TokenType.NPC);
 				player.getToken().moveTo(0);
 				player.index = players.size();
 				players.add(player);
 			}
-		} else if (Gamemode.MULTI == gamemode) {
+		} else if (Gamemode.MULTI == mode) {
 			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough Players for Multiplayer Gameplay");
+				throw new IllegalStateException("Not enough players for multiplayer mode");
 			} else if (players.size() > 4) {
-				throw new IllegalStateException("To many Players for Multiplayer Gameplay");
+				throw new IllegalStateException("Too many players for multiplayer mode");
 			}
 		}
 
@@ -136,7 +134,8 @@ public class UnipolyApp {
 	private void checkFieldOptions(Player currentPlayer, int rolledValue) {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
-		}// Bank gives Player 200CHF;
+			// Bank gives Player 200CHF;
+		}
 		//tileOperation(currentField, currentPlayer);
 		 /*if (fachFeld && no owner && enoughMoney) {
 		 	phase = UnipolyPhase.BUY_PROPERTY;
@@ -183,3 +182,11 @@ public class UnipolyApp {
 		return previousField > currentPlayer.getToken().getcurrFieldIndex();
 	}
 }
+
+// Start: 			0
+// Fächer: 			1,3,5,6,8,10,12,13,14,15,17,19,21,22,23,24,26,28,30,31,33,35
+// Chance: 			2,4,11,20,29,32
+// Springer: 		7,16,25,34
+// Nachsitzen:		9
+// Parkplatz: 		18
+// Geh in Knast:	27
