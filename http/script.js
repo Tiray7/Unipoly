@@ -216,8 +216,8 @@ app.controller('Controller', function ($scope) {
 				// List all added Players
 				list = $scope.state.players;
 				for (let i = 0; i < list.length; i++) {
-					playerlist += list[i].name + ': ' + list[i].token.type + '<br>';
-
+					type = list[i].token.type.toLowerCase();
+					playerlist += list[i].name + ': ' + type.charAt(0).toUpperCase() + type.slice(1) + '<br>';
 				}
 				if ((mode == 'SINGLE' && list.length == 1) || (mode == 'MULTI' && list.length >= 2)) {
 					$joinstart.show();
