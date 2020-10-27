@@ -106,13 +106,16 @@ function update($scope, json) {
 	}
 	*/
 
+	list += '<table>';
 	for (let i = 0; i < playerlist.length; i++) {
+		list += '<tr><td class="listtoken '+playerlist[i].token.type.toLowerCase() +'"></td>';
 		if (i == currindex) {
-			list += '<b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b><br>';
+			list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
 		} else {
-			list += playerlist[i].name + ': ' + playerlist[i].money + '<br>';
+			list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
 		}
 	}
+	list += '</table>';
 
 	$playerlist.html(list);
 
