@@ -4,9 +4,11 @@ import java.util.Map;
 
 public class Board {
     private Map<Integer, Field> fields;
+    private Map<Integer, FieldProperty> properties;
 
     public Board() {
         fields = Config.getInitialBoard();
+        fillPropertyMap();
     }
 
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
@@ -14,9 +16,26 @@ public class Board {
         return fields.get(index).getLabel();
     }
 
-    public String getFieldNameAtIndex(int index) throws FieldIndexException {
+    public String getPropertyNameAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
-        return fields.get(index).getName();
+        return properties.get(index).getName();
+    }
+
+    public int getRentFromProperty(int index) {
+        return properties.get(index).getCurrentRent();
+    }
+
+    public int getCostFromProperty(int index) {
+        return properties.get(index).getPropertyCost();
+    }
+
+    public void raiseRentFromProperty(int index) {
+        properties.get(index).raiseRent();
+    }
+
+
+    public int getPropertyOwner(int index) {
+        return properties.get(index).getOwnerIndex();
     }
 
     private void checkFieldIndex(int index) throws FieldIndexException {
@@ -27,4 +46,10 @@ public class Board {
         }
     }
 
+    private void fillPropertyMap() {
+        for (Map.Entry<Integer, Field> entry : fields.entrySet())
+            if (entry.getValue().getLabel().equals(Config.FieldLabel.PROPERTY)) {
+                properties.put(entry.getKey(), (FieldProperty) entry.getValue());
+            }
+    }
 }
