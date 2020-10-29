@@ -37,22 +37,22 @@ public class Config {
     public static final Map<Integer, Field> getInitialBoard() {
         Map<Integer, Field> assignment = new HashMap<>();
 
-        assignment.put(0, new Field("go", FieldLabel.GO));
-        assignment.put(9, new Field("visitprison", FieldLabel.VISIT));
-        assignment.put(18, new Field("recess", FieldLabel.RECESS));
-        assignment.put(27, new Field("prison", FieldLabel.DETENTION));
+        assignment.put(0, new Field(FieldLabel.GO));
+        assignment.put(9, new Field(FieldLabel.VISIT));
+        assignment.put(18, new Field(FieldLabel.RECESS));
+        assignment.put(27, new Field(FieldLabel.DETENTION));
 
-        assignment.put(2, new Field("chance", FieldLabel.CHANCE));
-        assignment.put(4, new Field("chance", FieldLabel.CHANCE));
-        assignment.put(11, new Field("chance", FieldLabel.CHANCE));
-        assignment.put(20, new Field("chance", FieldLabel.CHANCE));
-        assignment.put(29, new Field("chance", FieldLabel.CHANCE));
-        assignment.put(32, new Field("chance", FieldLabel.CHANCE));
+        assignment.put(2, new Field(FieldLabel.CHANCE));
+        assignment.put(4, new Field(FieldLabel.CHANCE));
+        assignment.put(11, new Field(FieldLabel.CHANCE));
+        assignment.put(20, new Field(FieldLabel.CHANCE));
+        assignment.put(29, new Field(FieldLabel.CHANCE));
+        assignment.put(32, new Field(FieldLabel.CHANCE));
 
-        assignment.put(7, new Field("jump", FieldLabel.JUMP));
-        assignment.put(16, new Field("jump", FieldLabel.JUMP));
-        assignment.put(25, new Field("jump", FieldLabel.JUMP));
-        assignment.put(34, new Field("jump", FieldLabel.JUMP));
+        assignment.put(7, new Field(FieldLabel.JUMP));
+        assignment.put(16, new Field(FieldLabel.JUMP));
+        assignment.put(25, new Field(FieldLabel.JUMP));
+        assignment.put(34, new Field(FieldLabel.JUMP));
 
         assignment.put(1, new FieldProperty("Geschichte", FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250));
         assignment.put(3, new FieldProperty("Geogreaphie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450));
