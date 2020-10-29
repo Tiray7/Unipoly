@@ -10,20 +10,21 @@ public class Board {
     }
 
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
-        if (index < Config.FIELD_MIN) {
-            throw new FieldIndexException("Field index ist too small");
-        } else if (index > Config.FIELD_MAX) {
-            throw new FieldIndexException("Field index ist too large");
-        }
+        checkFieldIndex(index);
         return fields.get(index).getLabel();
     }
 
     public String getFieldNameAtIndex(int index) throws FieldIndexException {
+        checkFieldIndex(index);
+        return fields.get(index).getName();
+    }
+
+    private void checkFieldIndex(int index) throws FieldIndexException {
         if (index < Config.FIELD_MIN) {
             throw new FieldIndexException("Field index ist too small");
         } else if (index > Config.FIELD_MAX) {
             throw new FieldIndexException("Field index ist too large");
         }
-        return fields.get(index).getName();
     }
+
 }
