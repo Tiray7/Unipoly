@@ -64,4 +64,11 @@ public class Controller {
 		return unipoly;
 	}
 
+	@RequestMapping(value = "/dofield", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp doField(@RequestParam int moveby) {
+		unipoly.doField(moveby);
+		return unipoly;
+	}
+
 }

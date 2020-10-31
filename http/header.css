@@ -1,14 +1,14 @@
 .site-header {
     border-bottom: 1px solid rgba(0,0,0,0.12);
-    background: #282828;
+    background: #005ea0;
     padding: 0.5em 2em;
 }
 
 .logo {
-    float: left;
-    margin: 0;
+    display: inline;
+    margin:1em;
     padding: 0;
-    width: 95px;
+    width: 300px;
     height: auto;
 }
 

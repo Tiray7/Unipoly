@@ -117,18 +117,18 @@ public class UnipolyApp {
 
 	public void rollDice(int diceval1) {
 		phase = UnipolyPhase.ROLLING;
-		Player currentPlayer = players.get(currentPlayerIndex);
 
 		// 4 for Testing
 		rolledValue2 = 4;
 		rolledValue1 = diceval1;
 
 		rolledValue = rolledValue1 + rolledValue2;
-		doField(currentPlayer, rolledValue);
+		doField(rolledValue);
 	}
 
 	// Move to Field
-	private void doField(Player currentPlayer, int rolledValue) {
+	public void doField(int rolledValue) {
+		Player currentPlayer = players.get(currentPlayerIndex);
 
 		int previousFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		currentPlayer.getToken().moveBy(rolledValue);
@@ -144,5 +144,4 @@ public class UnipolyApp {
 		//tileOperation(currentField, currentPlayer);
 
 	}
-
 }
