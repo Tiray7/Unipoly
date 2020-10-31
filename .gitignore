@@ -34,11 +34,12 @@ build/
 ### VS Code ###
 .vscode/
 
-### Gradle ###
+### Gradle and Maven###
 /.gradle
-
-# Ignore Gradle project-specific cache directory
+/.mvn
+# Ignore Gradle and Maven project-specific cache directory
 .gradle
+.mvn
 
 # Ignore Gradle build output directory
 build
