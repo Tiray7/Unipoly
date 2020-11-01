@@ -5,19 +5,14 @@ import java.util.*;
 public abstract class Owner {
 
     int index;
-
     private String name;
-
     private double money;
-
     private int RoadOwned;
-
     private int PropertyOwned;
 
     public Owner(String id, double initialMoney) {
         this.name = id;
         money = initialMoney;
-
     }
 
     public String getName() {

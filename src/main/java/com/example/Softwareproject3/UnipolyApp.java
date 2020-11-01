@@ -1,23 +1,36 @@
 package com.example.Softwareproject3;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+@Component
 public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
-	private Gamemode gamemode;
-
 	private ArrayList<Player> players;
-
-	private int currentPlayerIndex;
-
-	private int rolledValue1 = 0;
-	private int rolledValue2 = 0;
-	private int rolledValue = 0;
+	private int currentPlayerIndex = 0;
+	private int firstDice;
+	private int secondDice;
 	private boolean rolledPash = false;
+	private Bank bank;
+	private Board board;
+
+	enum UnipolyPhase {
+		WAITING,
+		ROLLING,
+		BUY_PROPERTY,
+		TURN,
+		JAILED,
+		ENDGAME,
+		SHOWCARD,
+		QUIZTIME
+	}
 
 	public UnipolyApp() {
+		board = new Board();
+		bank = new Bank();
 		players = new ArrayList<Player>();
 	}
 
@@ -33,12 +46,12 @@ public class UnipolyApp {
 		return currentPlayerIndex;
 	}
 
-	public int getRolledValue1() {
-		return rolledValue1;
+	public int getFirstDice() {
+		return firstDice;
 	}
 
-	public int getRolledValue2() {
-		return rolledValue2;
+	public int getSecondDice() {
+		return secondDice;
 	}
 
 	public boolean isRolledPash() {
@@ -47,6 +60,16 @@ public class UnipolyApp {
 
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
+	}
+
+	// resets Game
+	public void resetGame(){
+
+		board = new Board();
+		bank = new Bank();
+		players = new ArrayList<Player>();
+
+		this.phase = UnipolyPhase.WAITING;
 	}
 
 	// Add a new Player to the Game
@@ -64,7 +87,6 @@ public class UnipolyApp {
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
-
 		Player player = new Player(name, token);
 		player.getToken().moveTo(0);
 		player.index = players.size();
@@ -76,31 +98,23 @@ public class UnipolyApp {
 		if (phase != UnipolyPhase.WAITING) {
 			throw new IllegalStateException("Cannot start the unipoly unless in the waiting phase.");
 		}
-		gamemode = mode;
 
 		// Check if we play Singleplayer or Multiplayer
-		if (Gamemode.SINGLE == gamemode) {
+		if (Gamemode.SINGLE == mode) {
 			if (players.size() != 1) {
-				throw new IllegalStateException("To many Players for Single Gameplay");
+				throw new IllegalStateException("Too many players for singleplayer mode");
 			} else {
 				Player player = new Player("NPC", TokenType.NPC);
 				player.getToken().moveTo(0);
 				player.index = players.size();
 				players.add(player);
 			}
-		} else if (Gamemode.MULTI == gamemode) {
+		} else if (Gamemode.MULTI == mode) {
 			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough Players for Multiplayer Gameplay");
+				throw new IllegalStateException("Not enough players for multiplayer mode");
 			} else if (players.size() > 4) {
-				throw new IllegalStateException("To many Players for Multiplayer Gameplay");
+				throw new IllegalStateException("Too many players for multiplayer mode");
 			}
-		}
-
-		currentPlayerIndex = (new Random()).nextInt(players.size());
-
-		// Reset player positions on board
-		for (Player player : players) {
-			player.getToken().moveTo(0);
 		}
 		// Automatically start first Turn
 		startTurn();
@@ -108,40 +122,87 @@ public class UnipolyApp {
 
 	// The Current Player starts his Turn
 	private void startTurn() {
-		Player currentPlayer = players.get(currentPlayerIndex);
-
-		if (currentPlayer.isJailed()) {
+		if(players.get(currentPlayerIndex).isJailed()) {
 			phase = UnipolyPhase.JAILED;
 		}
 	}
 
-	public void rollDice(int diceval1) {
-		phase = UnipolyPhase.ROLLING;
-
-		// 4 for Testing
-		rolledValue2 = 4;
-		rolledValue1 = diceval1;
-
-		rolledValue = rolledValue1 + rolledValue2;
-		doField(rolledValue);
+	public void rollDice() {
+		firstDice = new Random().nextInt(6) + 1;
+		secondDice = new Random().nextInt(6) + 1;
+		if(firstDice == secondDice) rolledPash = true;
 	}
 
-	// Move to Field
-	public void doField(int rolledValue) {
-		Player currentPlayer = players.get(currentPlayerIndex);
+	public void rollDice(int firstDice) throws InterruptedException {
+		phase = UnipolyPhase.ROLLING;
+		this.firstDice = firstDice;
+		secondDice = new Random().nextInt(6) + 1;
+		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
+  }
 
-		int previousFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
-		currentPlayer.getToken().moveBy(rolledValue);
+	private void checkFieldOptions(Player currentPlayer, int rolledValue) throws InterruptedException {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
-		
-		//Field currentField = get current Field
-
-		// Pass go
-		if(previousFieldIndex > currentFieldIndex) {
-			// Bank gives Player 200CHF
+		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
+			// Bank gives Player 200CHF;
 		}
+		phase = UnipolyPhase.WAITING;
 
 		//tileOperation(currentField, currentPlayer);
+		 /*if (fachFeld && no owner && enoughMoney) {
+		 	phase = UnipolyPhase.BUY_PROPERTY;
+			if(user wants to buy) {
+				buyProperty();
+				return;
+			} else {
+				userTurnEnds();
+				--> WAITING Phase
+				return;
+			}
+		if (startfeld)
+			get double some money
+		if (chance)
+			draw a chance card
+			get money/pay money/whatever
+		if (springer)
+			do you want to buy?
+				if (yes && enough money)
+					set ownsCard
+				else
+					alert: you poor bum
+		After everythings checked and done:
+			--> update phase and currentPlayerIndex
 
+					*/
+	}
+
+	private void buyProperty(int buy) {
+		/*if(buy == 1)
+				set owner
+				- money
+		else
+			alert: you can't buy
+		else {
+			if(currentPlayer == owner)
+				do you want to build something?
+					else
+			paySomeMoney, homie*/
+	}
+
+	public void switchPlayer() {
+		if(currentPlayerIndex == players.size() - 1) currentPlayerIndex = 0;
+		else currentPlayerIndex++;
+	}
+
+	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {
+		currentPlayer.getToken().moveBy(rolledValue);
+		return previousField > currentPlayer.getToken().getcurrFieldIndex();
 	}
 }
+
+// Start: 			0
+// Fächer: 			1,3,5,6,8,10,12,13,14,15,17,19,21,22,23,24,26,28,30,31,33,35
+// Chance: 			2,4,11,20,29,32
+// Springer: 		7,16,25,34
+// Nachsitzen:		9
+// Parkplatz: 		18
+// Geh in Knast:	27

@@ -2,18 +2,23 @@ package com.example.Softwareproject3;
 
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 @RestController
+@Configuration
 public class Controller {
 
-	private static UnipolyApp unipoly;
+	private UnipolyApp unipoly;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
-		unipoly = new UnipolyApp();
+	}
+
+	public Controller(UnipolyApp unipoly) {
+		this.unipoly = unipoly;
 	}
 
 	// @GetMapping("/softwareproject3")
@@ -53,14 +58,22 @@ public class Controller {
 	@RequestMapping(value = "/resetgame", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp resetGame() {
+		unipoly.resetGame();
 		unipoly = new UnipolyApp();
 		return unipoly;
 	}
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int diceval1) {
-		unipoly.rollDice(diceval1);
+	public UnipolyApp rollDice(@RequestParam int firstDice) throws InterruptedException {
+		unipoly.rollDice(firstDice);
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp endTurn() {
+		unipoly.switchPlayer();
 		return unipoly;
 	}
 
@@ -70,5 +83,4 @@ public class Controller {
 		unipoly.doField(moveby);
 		return unipoly;
 	}
-
 }
