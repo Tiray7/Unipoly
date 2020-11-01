@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @Configuration
 public class Controller {
 
-	private static UnipolyApp unipoly;
+	private UnipolyApp unipoly;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
-		unipoly = new UnipolyApp();
+	}
+
+	public Controller(UnipolyApp unipoly) {
+		this.unipoly = unipoly;
 	}
 
 	// @GetMapping("/softwareproject3")
@@ -79,5 +82,4 @@ public class Controller {
 		unipoly.switchPlayer();
 		return unipoly;
 	}
-
 }

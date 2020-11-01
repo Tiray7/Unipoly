@@ -1,8 +1,11 @@
 package com.example.Softwareproject3;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+@Component
 public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
