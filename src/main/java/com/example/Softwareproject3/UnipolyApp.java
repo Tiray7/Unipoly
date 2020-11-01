@@ -11,6 +11,8 @@ public class UnipolyApp {
 	private int firstDice;
 	private int secondDice;
 	private boolean rolledPash = false;
+	private Bank bank;
+	private Board board;
 
 	enum UnipolyPhase {
 		WAITING,
@@ -24,7 +26,9 @@ public class UnipolyApp {
 	}
 
 	public UnipolyApp() {
-		players = new ArrayList<>();
+		board = new Board();
+		bank = new Bank();
+		players = new ArrayList<Player>();
 	}
 
 	public UnipolyPhase getPhase() {
@@ -53,6 +57,16 @@ public class UnipolyApp {
 
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
+	}
+
+	// resets Game
+	public void resetGame(){
+
+		board = new Board();
+		bank = new Bank();
+		players = new ArrayList<Player>();
+
+		this.phase = UnipolyPhase.WAITING;
 	}
 
 	// Add a new Player to the Game
