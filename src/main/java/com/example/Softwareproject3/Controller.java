@@ -70,16 +70,17 @@ public class Controller {
 		return unipoly;
 	}
 
-	@RequestMapping(value = "/greeting.html", method = RequestMethod.GET)
-	@ResponseBody
-	public String getGreeting() {
-		return "Hey David";
-	}
-
 	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp endTurn() {
 		unipoly.switchPlayer();
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/dofield", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp doField(@RequestParam int moveby) {
+		unipoly.doField(moveby);
 		return unipoly;
 	}
 }

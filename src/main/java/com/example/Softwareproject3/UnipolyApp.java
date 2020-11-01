@@ -138,7 +138,7 @@ public class UnipolyApp {
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
 		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
-	}
+  }
 
 	private void checkFieldOptions(Player currentPlayer, int rolledValue) throws InterruptedException {
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();

@@ -106,13 +106,16 @@ function update($scope, json) {
 	}
 	*/
 
+	list += '<table>';
 	for (let i = 0; i < playerlist.length; i++) {
+		list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
 		if (i == currindex) {
-			list += '<b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b><br>';
+			list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
 		} else {
-			list += playerlist[i].name + ': ' + playerlist[i].money + '<br>';
+			list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
 		}
 	}
+	list += '</table>';
 
 	$playerlist.html(list);
 
@@ -216,8 +219,8 @@ app.controller('Controller', function ($scope) {
 				// List all added Players
 				list = $scope.state.players;
 				for (let i = 0; i < list.length; i++) {
-					playerlist += list[i].name + ': ' + list[i].token.type + '<br>';
-
+					type = list[i].token.type.toLowerCase();
+					playerlist += list[i].name + ': ' + type.charAt(0).toUpperCase() + type.slice(1) + '<br>';
 				}
 				if ((mode == 'SINGLE' && list.length == 1) || (mode == 'MULTI' && list.length >= 2)) {
 					$joinstart.show();
@@ -290,7 +293,7 @@ app.controller('Controller', function ($scope) {
 		var diceVal1;
 		// if Player is jailed both dices get rolled
 		if ($scope.state.phase == 'WAITING') {
-			diceVal1 = prompt('Enter value of your first Dice (1-6):', '');
+			diceVal1 = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
 		} else if ($scope.state.phase == 'JAILED') {
 			diceVal1 = -1;
 		}
@@ -339,5 +342,41 @@ app.controller('Controller', function ($scope) {
 		prevind.toggleClass('used ' + type);
 		currind.toggleClass('leer');
 		currind.toggleClass('used ' + type);
+	}
+
+	$scope.jump = function () {
+		var next = confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!");
+		if (next) {
+			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
+			// Check if Player submited a acceptable value
+			if (moveby == null || moveby == "") {
+				console.error('failed: assign value of jump Distance.');
+				alert('Error: Please try again!');
+			} else if (moveby < 1 || moveby > 35) {
+				console.error('failed: Value needs to be between 1-35');
+				alert('Error: Please try again!');
+			}
+			$scope.getOp('dofield?moveby=' + moveby,
+				function (success) {
+					// Check if  success
+					if (success) {
+						console.log('success: MovePlayer');
+						$scope.moveToken();
+					} else {
+						console.error('failed: MovePlayer');
+					}
+				});
+		} else {
+			//End Turn
+			$scope.getOp('endturn',
+				function (success) {
+					// Check if  success
+					if (success) {
+						console.log('success: endTurn');
+					} else {
+						console.error('failed: endTurn');
+					}
+				});
+		}
 	}
 });

@@ -9,8 +9,8 @@
   <script src='angular.min.js' type='text/javascript'></script>
   <meta name="description" content="Software Projekt - Ein Monopoly Spiel" />
   <meta name="author" content="Team blabla" />
-  <link rel="shortcut icon" href="examplelogo.png" />
-  <link rel="icon" href="examplelogo.png" />
+  <link rel="shortcut icon" href="unipolylogo.png" />
+  <link rel="icon" href="unipolylogo.png" />
   <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="gamemenu.css">
@@ -21,14 +21,16 @@
 
 <body ng-app='monopolyApp' ng-controller='Controller' class='noselect'>
 <header class="site-header">
-  <img class="logo" src="examplelogo.png" />
+  <img class="logo" src="unipolybannerwhite.png" />
   <div id="new-btn" href="#" class="box-btn" ng-click='resetGame()'>
     <div class="btn btn-two">
       <span>Start New Game</span>
     </div>
   </div>
+  <!--
   <h1 class="title">Unipoly</h1>
   <h2 class="description">Software Projekt - Ein Monopoly Spiel</h2>
+  -->
 </header>
 <div id="board">
 
@@ -118,7 +120,7 @@
           <img src="tenor.gif" />
         </div>
         <div id="rolledvalue" class="dice-sol"></div>
-        <h1 class="board-title">UNIPOLY</h1>
+        <img class="board-title" src="unipolybanner.png" />
         <div id="playerlist"></div>
         <div id="drawchance" class="chance-deck zoom">
           <h2 class="label">Chance</h2>
@@ -138,29 +140,29 @@
         <div id='pos8' class="space property">
           <div class="container">
             <div class="color-bar light-blue"></div>
-            <div class="name">Thun Hauptgasse</div>
-            <div class="price">Preis 120$</div>
+            <div class="name">Psychologie</div>
+            <div class="price">Einschreibe- gebühr CHF 120</div>
           </div>
         </div>
         <div id='pos7' class="space jumper">
           <div class="container">
             <div class="name">Springer</div>
             <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis 100$</div>
+            <div class="price">Preis CHF 100</div>
           </div>
         </div>
         <div id='pos6' class="space property">
           <div class="container">
             <div class="color-bar light-blue"></div>
-            <div class="name">Neuenburg Place Pury</div>
-            <div class="price">Preis 100$</div>
+            <div class="name long-name">Geistes- wissenschaften</div>
+            <div class="price">Einschreibe- gebühr CHF 100</div>
           </div>
         </div>
         <div id='pos5' class="space property">
           <div class="container">
             <div class="color-bar light-blue"></div>
-            <div class="name long-name">Aarau Rathausplatz</div>
-            <div class="price">Preis 100$</div>
+            <div class="name">Theologie</div>
+            <div class="price">Einschreibe- gebühr CHF 100</div>
           </div>
         </div>
         <div id='pos4' class="space chance">
@@ -172,8 +174,8 @@
         <div id='pos3' class="space property">
           <div class="container">
             <div class="color-bar dark-purple"></div>
-            <div class="name long-name">Schaffhausen Vordergasse</div>
-            <div class="price">Preis 60$</div>
+            <div class="name">Geographie</div>
+            <div class="price">Einschreibe- gebühr CHF 60</div>
           </div>
         </div>
         <div id='pos2' class="space chance">
@@ -185,8 +187,8 @@
         <div id='pos1' class="space property">
           <div class="container">
             <div class="color-bar dark-purple"></div>
-            <div class="name">Chur Kornplatz</div>
-            <div class="price">Preis 60$</div>
+            <div class="name">Geschichte</div>
+            <div class="price">Einschreibe- gebühr CHF 60</div>
           </div>
         </div>
       </div>
@@ -195,14 +197,17 @@
         <div class="just">Nur zu</div>
         <div class="drawing">
           <div class="container">
-            <div class="name">Im</div>
+            <div class="name">Beim</div>
             <div class="window">
+              <img class="" src="nachsitzen.png" />
+              <!--
               <div class="bar"></div>
               <div class="bar"></div>
               <div class="bar"></div>
+            -->
               <i class="person fa fa-frown-o"></i>
             </div>
-            <div class="name">Knast</div>
+            <div class="name">Nachsitzen</div>
           </div>
         </div>
         <div class="visiting">Besuch</div>
@@ -212,43 +217,43 @@
         <div id='pos17' class="space property">
           <div class="container">
             <div class="color-bar orange"></div>
-            <div class="name">La Chaux de Fonds</div>
-            <div class="price">Preis 200$</div>
+            <div class="name">Architektur</div>
+            <div class="price">Einschreibe- gebühr CHF 200</div>
           </div>
         </div>
         <div id='pos16' class="space jumper">
           <div class="container">
             <div class="name">Springer</div>
             <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis 100$</div>
+            <div class="price">Preis CHF 100</div>
           </div>
         </div>
         <div id='pos15' class="space property">
           <div class="container">
             <div class="color-bar orange"></div>
-            <div class="name long-name">Freiburg Bahnhofstrasse</div>
-            <div class="price">Preis 180$</div>
+            <div class="name long-name">Bau- ingenieurwesen</div>
+            <div class="price">Einschreibe- gebühr CHF 180</div>
           </div>
         </div>
         <div id='pos14' class="space property">
           <div class="container">
             <div class="color-bar orange"></div>
-            <div class="name">Biel Nidaugasse</div>
-            <div class="price">Preis 180$</div>
+            <div class="name long-name">Umwelt- ingenieurwesen</div>
+            <div class="price">Einschreibe- gebühr CHF 180</div>
           </div>
         </div>
         <div id='pos13' class="space property">
           <div class="container">
             <div class="color-bar purple"></div>
-            <div class="name">Lugano Via Nissa</div>
-            <div class="price">Preis 160$</div>
+            <div class="name">Chemie</div>
+            <div class="price">Einschreibe- gebühr CHF 160</div>
           </div>
         </div>
         <div id='pos12' class="space property">
           <div class="container">
             <div class="color-bar purple"></div>
-            <div class="name">Solothurn Hauptgasse</div>
-            <div class="price">Preis 140$</div>
+            <div class="name">Physik</div>
+            <div class="price">Einschreibe- gebühr CHF 140</div>
           </div>
         </div>
         <div id='pos11' class="space chance">
@@ -260,17 +265,17 @@
         <div id='pos10' class="space property">
           <div class="container">
             <div class="color-bar purple"></div>
-            <div class="name long-name">Basel Steinenvorstadt</div>
-            <div class="price">Preis 140$</div>
+            <div class="name">Biologie</div>
+            <div class="price">Einschreibe- gebühr CHF 140</div>
           </div>
         </div>
       </div>
 
       <div id='pos18' class="space corner free-parking">
         <div class="container">
-          <div class="name">Freier</div>
+          <div class="name">Znüni</div>
           <i class="drawing fa fa-car"></i>
-          <div class="name">Parkplatz</div>
+          <div class="name">Pause</div>
         </div>
       </div>
 
@@ -278,8 +283,8 @@
         <div id='pos19' class="space property">
           <div class="container">
             <div class="color-bar red"></div>
-            <div class="name long-name">Winthertur Bahnhofplatz</div>
-            <div class="price">Preis 220$</div>
+            <div class="name long-name">Betriebs- wirtschaftslehre</div>
+            <div class="price">Einschreibe- gebühr CHF 220</div>
           </div>
         </div>
         <div id='pos20' class="space chance">
@@ -291,52 +296,52 @@
         <div id='pos21' class="space property">
           <div class="container">
             <div class="color-bar red"></div>
-            <div class="name">St.Gallen Marktplatz</div>
-            <div class="price">Preis 220$</div>
+            <div class="name long-name">Volks- wirtschaftslehre</div>
+            <div class="price">Einschreibe- gebühr CHF 220</div>
           </div>
         </div>
         <div id='pos22' class="space property">
           <div class="container">
             <div class="color-bar red"></div>
-            <div class="name">Bern Bundesplatz</div>
-            <div class="price">Preis 240$</div>
+            <div class="name long-name">Wirtschafts- informatik</div>
+            <div class="price">Einschreibe- gebühr CHF 240</div>
           </div>
         </div>
         <div id='pos23' class="space property">
           <div class="container">
             <div class="color-bar yellow"></div>
-            <div class="name">Luzern Weggisgasse</div>
-            <div class="price">Preis 260$</div>
+            <div class="name long-name">Elektrotechnik</div>
+            <div class="price">Einschreibe- gebühr CHF 260</div>
           </div>
         </div>
         <div id='pos24' class="space property">
           <div class="container">
             <div class="color-bar yellow"></div>
-            <div class="name">Zürich Rennweg</div>
-            <div class="price">Preis 260$</div>
+            <div class="name long-name">Maschienenbau</div>
+            <div class="price">Einschreibe- gebühr CHF 260</div>
           </div>
         </div>
         <div id='pos25' class="space jumper">
           <div class="container">
             <div class="name">Springer</div>
             <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis 100$</div>
+            <div class="price">Preis CHF 100</div>
           </div>
         </div>
         <div id='pos26' class="space property">
           <div class="container">
             <div class="color-bar yellow"></div>
-            <div class="name three-line-name">Lausanne Rue de Bourg</div>
-            <div class="price">Preis 280$</div>
+            <div class="name">Informatik</div>
+            <div class="price">Einschreibe- gebühr CHF 280</div>
           </div>
         </div>
       </div>
 
       <div id='pos27' class="space corner go-to-jail">
         <div class="container">
-          <div class="name">Geh in den</div>
+          <div class="name">Ab zum</div>
           <i class="drawing fa fa-gavel"></i>
-          <div class="name">Knast</div>
+          <div class="name">Nachsitzen</div>
         </div>
       </div>
 
@@ -344,8 +349,8 @@
         <div id='pos28' class="space property">
           <div class="container">
             <div class="color-bar green"></div>
-            <div class="name">Basel Freie Strasse</div>
-            <div class="price">Preis 300$</div>
+            <div class="name long-name">Veterinär- medizin</div>
+            <div class="price">Einschreibe- gebühr CHF 300</div>
           </div>
         </div>
         <div id='pos29' class="space chance">
@@ -357,15 +362,15 @@
         <div id='pos30' class="space property">
           <div class="container">
             <div class="color-bar green"></div>
-            <div class="name long-name">Genf La Croix d'or</div>
-            <div class="price">Preis 300$</div>
+            <div class="name long-name">Biomedizin</div>
+            <div class="price">Einschreibe- gebühr CHF 300</div>
           </div>
         </div>
         <div id='pos31' class="space property">
           <div class="container">
             <div class="color-bar green"></div>
-            <div class="name">Bern Spitalgasse</div>
-            <div class="price">Preis 320$</div>
+            <div class="name long-name">Humanmedizin</div>
+            <div class="price">Einschreibe- gebühr CHF 320</div>
           </div>
         </div>
         <div id='pos32' class="space chance">
@@ -377,8 +382,8 @@
         <div id='pos33' class="space property">
           <div class="container">
             <div class="color-bar dark-blue"></div>
-            <div class="name">Lausanne St.Francois</div>
-            <div class="price">Preis 350$</div>
+            <div class="name">Aviatik</div>
+            <div class="price">Einschreibe- gebühr CHF 350</div>
           </div>
         </div>
         <div id='pos34' class="space jumper">
@@ -391,8 +396,8 @@
         <div id='pos35' class="space property">
           <div class="container">
             <div class="color-bar dark-blue"></div>
-            <div class="name">Zürich Paradeplatz</div>
-            <div class="price">Preis 400$</div>
+            <div class="name long-name">Rechtswissen- schaften</div>
+            <div class="price">Einschreibe- gebühr CHF 400</div>
           </div>
         </div>
       </div>
