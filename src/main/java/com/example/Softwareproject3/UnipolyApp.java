@@ -1,6 +1,7 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,7 +31,7 @@ public class UnipolyApp {
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
-		players = new ArrayList<Player>();
+		players = new ArrayList<>();
 	}
 
 	public Board getBoard() {
