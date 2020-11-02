@@ -21,6 +21,11 @@ public class Board {
         return fields.get(index).getLabel();
     }
 
+    public FieldProperty getFieldPropertyAtIndex(int index) throws FieldIndexException {
+        checkFieldIndex(index);
+        return properties.get(index);
+    }
+
     public String getPropertyNameAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return properties.get(index).getName();

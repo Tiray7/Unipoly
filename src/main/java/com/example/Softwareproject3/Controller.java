@@ -65,7 +65,7 @@ public class Controller {
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int firstDice) throws InterruptedException {
+	public UnipolyApp rollDice(@RequestParam int firstDice) throws  FieldIndexException {
 		unipoly.rollDice(firstDice);
 		return unipoly;
 	}
@@ -79,7 +79,7 @@ public class Controller {
 
 	@RequestMapping(value = "/checkfieldoptions", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp checkFieldOptions(@RequestParam int moveby) throws InterruptedException {
+	public UnipolyApp checkFieldOptions(@RequestParam int moveby) throws FieldIndexException {
 		unipoly.checkFieldOptions(moveby);
 		return unipoly;
 	}
