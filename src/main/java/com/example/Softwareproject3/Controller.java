@@ -77,10 +77,10 @@ public class Controller {
 		return unipoly;
 	}
 
-	@RequestMapping(value = "/dofield", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/checkfieldoptions", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp doField(@RequestParam int moveby) {
-		unipoly.doField(moveby);
+	public UnipolyApp checkFieldOptions(@RequestParam int moveby) throws InterruptedException {
+		unipoly.checkFieldOptions(moveby);
 		return unipoly;
 	}
 }

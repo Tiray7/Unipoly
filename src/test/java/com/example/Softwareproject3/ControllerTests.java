@@ -22,11 +22,6 @@ public class ControllerTests {
 	}
 
 	@Test
-	public void greetingShouldReturnDefaultMessage() {
-		assertThat(controller.getGreeting()).contains("Hey David");
-	}
-
-	@Test
 	public void getIndexHtml() {
 		assertEquals("index.html", controller.get().getFilename());
 	}

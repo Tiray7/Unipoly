@@ -1,7 +1,5 @@
 package com.example.Softwareproject3;
 
-import java.util.*;
-
 public abstract class Owner {
 
     int index;

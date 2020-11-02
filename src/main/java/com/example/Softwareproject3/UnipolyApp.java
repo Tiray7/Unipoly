@@ -1,7 +1,6 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -34,6 +33,14 @@ public class UnipolyApp {
 		players = new ArrayList<Player>();
 	}
 
+	public Board getBoard() {
+		return board;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
 	public UnipolyPhase getPhase() {
 		return phase;
 	}
@@ -64,11 +71,9 @@ public class UnipolyApp {
 
 	// resets Game
 	public void resetGame(){
-
 		board = new Board();
 		bank = new Bank();
 		players = new ArrayList<Player>();
-
 		this.phase = UnipolyPhase.WAITING;
 	}
 
@@ -137,10 +142,11 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
+		checkFieldOptions(this.firstDice + secondDice);
   }
 
-	private void checkFieldOptions(Player currentPlayer, int rolledValue) throws InterruptedException {
+	public void checkFieldOptions(int rolledValue) throws InterruptedException {
+		Player currentPlayer = players.get(currentPlayerIndex);
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
