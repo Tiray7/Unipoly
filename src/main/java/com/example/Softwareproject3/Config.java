@@ -34,7 +34,7 @@ public class Config {
         }
     }
 
-    public static final Map<Integer, Field> getInitialBoard() {
+    public static Map<Integer, Field> getInitialBoard() {
         Map<Integer, Field> assignment = new HashMap<>();
 
         assignment.put(0, new Field(FieldLabel.GO));

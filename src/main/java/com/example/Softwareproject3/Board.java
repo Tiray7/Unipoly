@@ -1,19 +1,29 @@
 package com.example.Softwareproject3;
 
+import org.springframework.stereotype.Repository;
+
+import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class Board {
-    private Map<Integer, Field> fields;
-    private Map<Integer, FieldProperty> properties;
+    private final Map<Integer, Field> fields;
+    private final Map<Integer, FieldProperty> properties;
 
     public Board() {
         fields = Config.getInitialBoard();
+        properties = new HashMap<>();
         fillPropertyMap();
     }
 
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return fields.get(index).getLabel();
+    }
+
+    public FieldProperty getFieldPropertyAtIndex(int index) throws FieldIndexException {
+        checkFieldIndex(index);
+        return properties.get(index);
     }
 
     public String getPropertyNameAtIndex(int index) throws FieldIndexException {
@@ -46,7 +56,7 @@ public class Board {
         }
     }
 
-    private void fillPropertyMap() {
+    void fillPropertyMap() {
         for (Map.Entry<Integer, Field> entry : fields.entrySet())
             if (entry.getValue().getLabel().equals(Config.FieldLabel.PROPERTY)) {
                 properties.put(entry.getKey(), (FieldProperty) entry.getValue());

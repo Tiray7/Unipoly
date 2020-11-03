@@ -1,6 +1,7 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
+import sun.jvm.hotspot.oops.FieldType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,7 +32,15 @@ public class UnipolyApp {
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
-		players = new ArrayList<Player>();
+		players = new ArrayList<>();
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public Bank getBank() {
+		return bank;
 	}
 
 	public UnipolyPhase getPhase() {
@@ -64,11 +73,9 @@ public class UnipolyApp {
 
 	// resets Game
 	public void resetGame(){
-
 		board = new Board();
 		bank = new Bank();
 		players = new ArrayList<Player>();
-
 		this.phase = UnipolyPhase.WAITING;
 	}
 
@@ -133,20 +140,30 @@ public class UnipolyApp {
 		if(firstDice == secondDice) rolledPash = true;
 	}
 
-	public void rollDice(int firstDice) throws InterruptedException {
+	public void rollDice(int firstDice) throws FieldIndexException {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(players.get(currentPlayerIndex), this.firstDice + secondDice);
+		checkFieldOptions(this.firstDice + secondDice);
   }
 
-	private void checkFieldOptions(Player currentPlayer, int rolledValue) throws InterruptedException {
+	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
+		Player currentPlayer = players.get(currentPlayerIndex);
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
 		}
 		phase = UnipolyPhase.WAITING;
-
+		int NO_OWNER = -1;
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.PROPERTY &&
+				board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
+					currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
+			phase = UnipolyPhase.BUY_PROPERTY;
+			boolean USER_WANTS_TO_BUY = true; // TODO: Needs user input to evaluate if user wants to buy
+			if(USER_WANTS_TO_BUY) {
+				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
+			}
+		}
 		//tileOperation(currentField, currentPlayer);
 		 /*if (fachFeld && no owner && enoughMoney) {
 		 	phase = UnipolyPhase.BUY_PROPERTY;
@@ -198,11 +215,3 @@ public class UnipolyApp {
 		return previousField > currentPlayer.getToken().getcurrFieldIndex();
 	}
 }
-
-// Start: 			0
-// Fächer: 			1,3,5,6,8,10,12,13,14,15,17,19,21,22,23,24,26,28,30,31,33,35
-// Chance: 			2,4,11,20,29,32
-// Springer: 		7,16,25,34
-// Nachsitzen:		9
-// Parkplatz: 		18
-// Geh in Knast:	27

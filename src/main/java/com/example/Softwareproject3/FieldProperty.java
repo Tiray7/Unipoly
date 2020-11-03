@@ -2,25 +2,19 @@ package com.example.Softwareproject3;
 
 public class FieldProperty extends Field{
 
-    private int propertyCost;
-    private String name;
-    private int rentLV1;
-    private int rentLV2;
-    private int rentLV3;
-    private int rentLV4;
-    private int rentLV5;
+    private final int propertyCost;
+    private final String name;
+    private final int rentLV1;
+    private final int rentLV2;
+    private final int rentLV3;
+    private final int rentLV4;
+    private final int rentLV5;
     private int currentRent;
     private int ownerIndex;
     private static final int UNOWNED = -1;
 
-    public FieldProperty(String name,
-                         Config.FieldLabel label,
-                         int propertyCost,
-                         int rentLV1,
-                         int rentLV2,
-                         int rentLV3,
-                         int rentLV4,
-                         int rentLV5) {
+    public FieldProperty(String name, Config.FieldLabel label, int propertyCost,
+                         int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5) {
         super(label);
         this.name = name;
         this.propertyCost = propertyCost;

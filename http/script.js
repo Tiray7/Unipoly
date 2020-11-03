@@ -356,7 +356,7 @@ app.controller('Controller', function ($scope) {
 				console.error('failed: Value needs to be between 1-35');
 				alert('Error: Please try again!');
 			}
-			$scope.getOp('dofield?moveby=' + moveby,
+			$scope.getOp('checkfieldoptions?moveby=' + moveby,
 				function (success) {
 					// Check if  success
 					if (success) {
