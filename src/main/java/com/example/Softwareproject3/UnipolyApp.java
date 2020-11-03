@@ -147,11 +147,15 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(this.firstDice + secondDice);
+		movePlayer(this.firstDice + secondDice);
 	}
 
-	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
-		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentPlayer.getToken().getcurrFieldIndex())) {
+	public void movePlayer(int rolledValue) {
+		currentPlayer.getToken().moveBy(rolledValue);
+	}
+
+	public void checkFieldOptions() throws FieldIndexException {
+		if (CheckIfOverStart()) {
 			// Bank gives Player 200CHF;
 		}
 		phase = UnipolyPhase.WAITING;
@@ -211,8 +215,7 @@ public class UnipolyApp {
 		else currentPlayer = players.get(currentPlayer.index + 1);
 	}
 
-	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {
-		currentPlayer.getToken().moveBy(rolledValue);
-		return previousField > currentPlayer.getToken().getcurrFieldIndex();
+	private boolean CheckIfOverStart() {
+		return currentPlayer.getToken().getprevFieldIndex() > currentPlayer.getToken().getcurrFieldIndex();
 	}
 }
