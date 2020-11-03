@@ -106,23 +106,10 @@ public class UnipolyApp {
 
 	// Start a new Game
 	public void start(Gamemode mode) throws FieldIndexException {
-		// Check if we play Singleplayer or Multiplayer
 		if (Gamemode.SINGLE == mode) {
-			if (players.size() != 1) {
-				throw new IllegalStateException("Too many players for singleplayer mode");
-			} else {
-				initializePlayer("NPC", TokenType.NPC);
-			}
-		} else if (Gamemode.MULTI == mode) {
-			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough players for multiplayer mode");
-			} else if (players.size() > 4) {
-				throw new IllegalStateException("Too many players for multiplayer mode");
-			}
+			initializePlayer("NPC", TokenType.NPC);
 		}
-		// Automatically start first Turn
 		currentPlayer = players.get(0);
-		startTurn();
 	}
 
 	// The Current Player starts his Turn
