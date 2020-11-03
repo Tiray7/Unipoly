@@ -55,6 +55,10 @@ function poll($scope) {
 
 // Initialize UI when phase changes
 function phaseChange($scope) {
+
+	if($scope.state.phase == 'BUY_PROPERTY') {
+		console.log('New Phase BUY_PROPERTY');
+	}
 	
 }
 
@@ -78,13 +82,13 @@ function update($scope, json) {
 
 	$playerlist.html(list);
 
-	/*
 	// If phase changed, update accordingly
 	if ($lastPhase !== $scope.state.phase) {
 		phaseChange($scope);
 		$lastPhase = $scope.state.phase;
+		console.log('New Phase: ' + $lastPhase);
 	}
-	*/
+
 	$scope.$apply();
 }
 
