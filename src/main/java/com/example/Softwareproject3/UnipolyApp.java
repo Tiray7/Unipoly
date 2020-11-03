@@ -130,9 +130,6 @@ public class UnipolyApp {
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
-		if (CheckIfOverStart()) {
-			// Bank gives Player 200CHF;
-		}
 		phase = UnipolyPhase.WAITING;
 		switch(currentPlayer.getToken().getCurrentFieldLabel()) {
 			case PROPERTY:
@@ -143,12 +140,14 @@ public class UnipolyApp {
 				playerIsOnJumpField();
 			case GO:
 				playerIsOnGoField();
+			default:
+				checkIfOverStart();
 		}
 	}
 
 	public void playerIsOnPropertyField() throws FieldIndexException {
 		int NO_OWNER = -1;
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
 				currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
 			phase = UnipolyPhase.BUY_PROPERTY;
@@ -156,7 +155,7 @@ public class UnipolyApp {
 	}
 
 	public void playerIsOnChanceField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
 			// draw chance card
 			// get money / pay money / whatever
@@ -164,7 +163,7 @@ public class UnipolyApp {
 	}
 
 	public void playerIsOnJumpField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		final int COST_FOR_JUMP = 100;
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP &&
 				currentPlayer.getMoney() > COST_FOR_JUMP) {
@@ -190,7 +189,9 @@ public class UnipolyApp {
 		else currentPlayer = players.get(currentPlayer.index + 1);
 	}
 
-	private boolean CheckIfOverStart() {
-		return currentPlayer.getToken().getprevFieldIndex() > currentPlayer.getToken().getcurrFieldIndex();
+	private void checkIfOverStart() {
+		if(currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
+			//Bank pay player 200 CHF
+		}
 	}
 }
