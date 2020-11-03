@@ -14,6 +14,7 @@ var $joinstart;
 var $gameboard;
 var $playerlist;
 var $dicesgif;
+var $lastphase;
 
 $(document).ready(function () {
 
@@ -37,79 +38,37 @@ $(document).ready(function () {
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
+	$lastphase = 'WAITING';
 });
 
 function poll($scope) {
 	$.getJSON('state', function (json) {
 		update($scope, json);
 
+		/*
 		setTimeout(function () {
 			poll($scope)
 		}, 1000);
+		*/
 	});
 }
 
 // Initialize UI when phase changes
 function phaseChange($scope) {
-	// Cover tiles during management phase
-	if ($scope.state.phase == 'TURN') {
-		$scope.state.board.tiles.forEach(function (tile, i, arr) {
-			var $cell = $('#' + i);
-			if (tile.ownerIndex != $scope.state.currentPlayerIndex) {
-				$cell.addClass('covered');
-			}
-		});
-	}
-	else {
-		// Clear tile selection
-		$('.covered').removeClass('covered');
-	}
-	// Clear the selection
-	$scope.currentTile = null;
-	$('.selected').removeClass('selected');
-	// Disable UI for inactive player
-	if (($scope.state.phase == 'TURN' ||
-		$scope.state.phase == 'BUY_PROPERTY' ||
-		$scope.state.phase == 'JAILED' ||
-		$scope.state.phase == 'SHOWCARD' ||
-		$scope.state.phase == 'CHEAT_ROLL' ||
-		$scope.state.phase == 'SHOWRENT')
-		&&
-		$scope.currentPlayer.name !== $scope.username) {
-
-		$('#phase-ui').css('pointer-events', 'none');
-		$('#phase-ui').css('opacity', '0.5');
-	}
-	else {
-		$('#phase-ui').css('pointer-events', 'all');
-		$('#phase-ui').css('opacity', '1.0');
-	}
-	if ($scope.state.phase == "AUCTION") {
-		$scope.bid = $scope.state.highestBid;
-	}
+	
 }
 
-var lastPhase = null;
 function update($scope, json) {
 	$scope.state = json;
 
 	var list = '';
 	var playerlist = $scope.state.players;
-	var currindex = $scope.state.currentPlayerIndex;
-
-	// Get bindable objects for angular based on current indices
-	$scope.currentPlayer = playerlist[currindex];
-
-	/*
-	if ($scope.currentPlayer != null && $scope.state.phase != "TURN") {
-		$scope.currentTile = $scope.state.board.tiles[$scope.currentPlayer.token.tileIndex];
-	}
-	*/
+	$scope.currentPlayer = $scope.state.currentPlayer;
 
 	list += '<table>';
 	for (let i = 0; i < playerlist.length; i++) {
 		list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
-		if (i == currindex) {
+		if (playerlist[i].name == $scope.currentPlayer.name) {
 			list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
 		} else {
 			list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
@@ -121,19 +80,9 @@ function update($scope, json) {
 
 	/*
 	// If phase changed, update accordingly
-	if (lastPhase !== $scope.state.phase) {
+	if ($lastPhase !== $scope.state.phase) {
 		phaseChange($scope);
-		lastPhase = $scope.state.phase;
-	}
-	else if ($scope.state.phase == "TURN") {
-		// Check for sold tiles
-		$scope.state.board.tiles.forEach(function(tile, i, arr) {
-			var $cell = $('#' + i);
-			if (!$cell.is('.covered') && tile.ownerIndex != $scope.state.currentPlayerIndex) {
-				$cell.removeClass('selected');
-				$cell.addClass('covered');
-			}
-		});
+		$lastPhase = $scope.state.phase;
 	}
 	*/
 	$scope.$apply();

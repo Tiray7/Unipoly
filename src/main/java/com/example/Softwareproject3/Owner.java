@@ -3,7 +3,7 @@ package com.example.Softwareproject3;
 public abstract class Owner {
 
     int index;
-    private String name;
+    private final String name;
     private double money;
     private int RoadOwned;
     private int PropertyOwned;
