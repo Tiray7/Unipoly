@@ -75,17 +75,17 @@ public class UnipolyApp {
 	public void resetGame(){
 		board = new Board();
 		bank = new Bank();
-		players = new ArrayList<Player>();
+		players = new ArrayList<>();
 		this.phase = UnipolyPhase.WAITING;
 	}
 
 	// Add a new Player to the Game
 	public void join(String name, TokenType token) throws FieldIndexException {
+		checkIfPlayernameAlreadyExists(name, token);
+		initializePlayer(name, token);
+	}
 
-		if (phase != UnipolyPhase.WAITING) {
-			throw new IllegalStateException("Cannot join unless in the waiting phase.");
-		}
-
+	private void checkIfPlayernameAlreadyExists(String name, TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
 				throw new IllegalArgumentException("Player name already exists.");
@@ -94,6 +94,9 @@ public class UnipolyApp {
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
+	}
+
+	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
 		Player player = new Player(name, token);
 		player.getToken().moveTo(0);
 		player.index = players.size();
@@ -103,31 +106,10 @@ public class UnipolyApp {
 
 	// Start a new Game
 	public void start(Gamemode mode) throws FieldIndexException {
-		if (phase != UnipolyPhase.WAITING) {
-			throw new IllegalStateException("Cannot start the unipoly unless in the waiting phase.");
-		}
-
-		// Check if we play Singleplayer or Multiplayer
 		if (Gamemode.SINGLE == mode) {
-			if (players.size() != 1) {
-				throw new IllegalStateException("Too many players for singleplayer mode");
-			} else {
-				Player player = new Player("NPC", TokenType.NPC);
-				player.getToken().moveTo(0);
-				player.index = players.size();
-				players.add(player);
-				player.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(0));
-			}
-		} else if (Gamemode.MULTI == mode) {
-			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough players for multiplayer mode");
-			} else if (players.size() > 4) {
-				throw new IllegalStateException("Too many players for multiplayer mode");
-			}
+			initializePlayer("NPC", TokenType.NPC);
 		}
-		// Automatically start first Turn
 		currentPlayer = players.get(0);
-		startTurn();
 	}
 
 	// The Current Player starts his Turn
