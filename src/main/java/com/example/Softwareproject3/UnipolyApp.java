@@ -145,13 +145,15 @@ public class UnipolyApp {
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
 		checkFieldOptions(this.firstDice + secondDice);
-  }
+	}
 
 	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
 		Player currentPlayer = players.get(currentPlayerIndex);
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
+		} else if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO) {
+			// Bank gives Player 400CHF;
 		}
 		phase = UnipolyPhase.WAITING;
 		int NO_OWNER = -1;
@@ -162,34 +164,17 @@ public class UnipolyApp {
 			boolean USER_WANTS_TO_BUY = true; // TODO: Needs user input to evaluate if user wants to buy
 			if(USER_WANTS_TO_BUY) {
 				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
+			} else {
+				switchPlayer();
 			}
 		}
-		//tileOperation(currentField, currentPlayer);
-		 /*if (fachFeld && no owner && enoughMoney) {
-		 	phase = UnipolyPhase.BUY_PROPERTY;
-			if(user wants to buy) {
-				buyProperty();
-				return;
-			} else {
-				userTurnEnds();
-				--> WAITING Phase
-				return;
-			}
-		if (startfeld)
-			get double some money
-		if (chance)
-			draw a chance card
-			get money/pay money/whatever
-		if (springer)
-			do you want to buy?
-				if (yes && enough money)
-					set ownsCard
-				else
-					alert: you poor bum
-		After everythings checked and done:
-			--> update phase and currentPlayerIndex
-
-					*/
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
+			// draw chance card
+			// get money / pay money / whatever
+		}
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP) {
+			// ask user if he wants to jump
+		}
 	}
 
 	private void buyProperty(int buy) {
