@@ -291,6 +291,16 @@ app.controller('Controller', function ($scope) {
 		prevind.toggleClass('used ' + type);
 		currind.toggleClass('leer');
 		currind.toggleClass('used ' + type);
+		
+		$scope.getOp('checkfieldoptions',
+		function (success) {
+			// Check if  success
+			if (success) {
+				console.log('success: checkfieldoptions');
+			} else {
+				console.error('failed: checkfieldoptions');
+			}
+		});
 	}
 
 	$scope.jump = function () {
