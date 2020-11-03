@@ -83,4 +83,11 @@ public class Controller {
 		unipoly.checkFieldOptions(moveby);
 		return unipoly;
 	}
+
+	@RequestMapping(value = "/userwantstobuy", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp userWantsToBuy(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
+		unipoly.buyProperty(buy, currentFieldIndex);
+		return unipoly;
+	}
 }

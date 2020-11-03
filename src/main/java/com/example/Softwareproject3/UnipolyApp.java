@@ -1,7 +1,6 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
-import sun.jvm.hotspot.oops.FieldType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,7 +25,8 @@ public class UnipolyApp {
 		JAILED,
 		ENDGAME,
 		SHOWCARD,
-		QUIZTIME
+		QUIZTIME,
+		JUMP
 	}
 
 	public UnipolyApp() {
@@ -145,13 +145,15 @@ public class UnipolyApp {
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
 		checkFieldOptions(this.firstDice + secondDice);
-  }
+	}
 
 	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
 		Player currentPlayer = players.get(currentPlayerIndex);
 		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
 		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
 			// Bank gives Player 200CHF;
+		} else if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO) {
+			// Bank gives Player 400CHF;
 		}
 		phase = UnipolyPhase.WAITING;
 		int NO_OWNER = -1;
@@ -159,50 +161,26 @@ public class UnipolyApp {
 				board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
 					currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
 			phase = UnipolyPhase.BUY_PROPERTY;
-			boolean USER_WANTS_TO_BUY = true; // TODO: Needs user input to evaluate if user wants to buy
-			if(USER_WANTS_TO_BUY) {
-				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
-			}
 		}
-		//tileOperation(currentField, currentPlayer);
-		 /*if (fachFeld && no owner && enoughMoney) {
-		 	phase = UnipolyPhase.BUY_PROPERTY;
-			if(user wants to buy) {
-				buyProperty();
-				return;
-			} else {
-				userTurnEnds();
-				--> WAITING Phase
-				return;
-			}
-		if (startfeld)
-			get double some money
-		if (chance)
-			draw a chance card
-			get money/pay money/whatever
-		if (springer)
-			do you want to buy?
-				if (yes && enough money)
-					set ownsCard
-				else
-					alert: you poor bum
-		After everythings checked and done:
-			--> update phase and currentPlayerIndex
-
-					*/
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
+			// draw chance card
+			// get money / pay money / whatever
+		}
+		final int COST_FOR_JUMP = 100;
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP &&
+				currentPlayer.getMoney() > COST_FOR_JUMP) {
+			phase = UnipolyPhase.JUMP;
+		}
+		switchPlayer();
 	}
 
-	private void buyProperty(int buy) {
-		/*if(buy == 1)
-				set owner
-				- money
-		else
-			alert: you can't buy
-		else {
-			if(currentPlayer == owner)
-				do you want to build something?
-					else
-			paySomeMoney, homie*/
+	public void buyProperty(boolean buy, int currentFieldIndex) throws FieldIndexException {
+		if(buy) {
+			board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
+			// geld abziehen und so
+		} else {
+			switchPlayer();
+		}
 	}
 
 	public void switchPlayer() {
