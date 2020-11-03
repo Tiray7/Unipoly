@@ -106,30 +106,10 @@ public class UnipolyApp {
 
 	// Start a new Game
 	public void start(Gamemode mode) throws FieldIndexException {
-		// Check if we play Singleplayer or Multiplayer
 		if (Gamemode.SINGLE == mode) {
-			if (players.size() != 1) {
-				throw new IllegalStateException("Too many players for singleplayer mode");
-			} else {
-				initializePlayer("NPC", TokenType.NPC);
-			}
-		} else if (Gamemode.MULTI == mode) {
-			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough players for multiplayer mode");
-			} else if (players.size() > 4) {
-				throw new IllegalStateException("Too many players for multiplayer mode");
-			}
+			initializePlayer("NPC", TokenType.NPC);
 		}
-		// Automatically start first Turn
 		currentPlayer = players.get(0);
-		startTurn();
-	}
-
-	// The Current Player starts his Turn
-	private void startTurn() {
-		if(currentPlayer.isJailed()) {
-			phase = UnipolyPhase.JAILED;
-		}
 	}
 
 	public void rollDice() {
@@ -142,13 +122,14 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(this.firstDice + secondDice);
+		movePlayer(this.firstDice + secondDice);
 	}
 
-	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
-		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentPlayer.getToken().getcurrFieldIndex())) {
-			// Bank gives Player 200CHF;
-		}
+	public void movePlayer(int rolledValue) {
+		currentPlayer.getToken().moveBy(rolledValue);
+	}
+
+	public void checkFieldOptions() throws FieldIndexException {
 		phase = UnipolyPhase.WAITING;
 		switch(currentPlayer.getToken().getCurrentFieldLabel()) {
 			case PROPERTY:
@@ -159,12 +140,14 @@ public class UnipolyApp {
 				playerIsOnJumpField();
 			case GO:
 				playerIsOnGoField();
+			default:
+				checkIfOverStart();
 		}
 	}
 
 	public void playerIsOnPropertyField() throws FieldIndexException {
 		int NO_OWNER = -1;
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
 				currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
 			phase = UnipolyPhase.BUY_PROPERTY;
@@ -172,7 +155,7 @@ public class UnipolyApp {
 	}
 
 	public void playerIsOnChanceField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
 			// draw chance card
 			// get money / pay money / whatever
@@ -180,7 +163,7 @@ public class UnipolyApp {
 	}
 
 	public void playerIsOnJumpField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		final int COST_FOR_JUMP = 100;
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP &&
 				currentPlayer.getMoney() > COST_FOR_JUMP) {
@@ -206,8 +189,9 @@ public class UnipolyApp {
 		else currentPlayer = players.get(currentPlayer.index + 1);
 	}
 
-	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {
-		currentPlayer.getToken().moveBy(rolledValue);
-		return previousField > currentPlayer.getToken().getcurrFieldIndex();
+	private void checkIfOverStart() {
+		if(currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
+			//Bank pay player 200 CHF
+		}
 	}
 }

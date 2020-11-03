@@ -15,11 +15,11 @@ public class Token {
         return type;
     }
 
-    public int getprevFieldIndex() {
+    public int getPrevFieldIndex() {
         return prevFieldIndex;
     }
 
-    public int getcurrFieldIndex() {
+    public int getCurrFieldIndex() {
         return currFieldIndex;
     }
 

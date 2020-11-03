@@ -79,8 +79,15 @@ public class Controller {
 
 	@RequestMapping(value = "/checkfieldoptions", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp checkFieldOptions(@RequestParam int moveby) throws FieldIndexException {
-		unipoly.checkFieldOptions(moveby);
+	public UnipolyApp checkFieldOptions() throws FieldIndexException {
+		unipoly.checkFieldOptions();
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/moveplayer", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp movePlayer(@RequestParam int moveby) throws FieldIndexException {
+		unipoly.movePlayer(moveby);
 		return unipoly;
 	}
 
