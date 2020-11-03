@@ -67,12 +67,11 @@ function update($scope, json) {
 
 	var list = '';
 	var playerlist = $scope.state.players;
-	$scope.currentPlayer = $scope.state.currentPlayer;
 
 	list += '<table>';
 	for (let i = 0; i < playerlist.length; i++) {
 		list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
-		if (playerlist[i].name == $scope.currentPlayer.name) {
+		if (playerlist[i].name == $scope.state.currentPlayer.name) {
 			list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
 		} else {
 			list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
@@ -83,10 +82,10 @@ function update($scope, json) {
 	$playerlist.html(list);
 
 	// If phase changed, update accordingly
-	if ($lastPhase !== $scope.state.phase) {
+	if ($lastphase !== $scope.state.phase) {
 		phaseChange($scope);
-		$lastPhase = $scope.state.phase;
-		console.log('New Phase: ' + $lastPhase);
+		$lastphase = $scope.state.phase;
+		console.log('New Phase: ' + $lastphase);
 	}
 
 	$scope.$apply();
@@ -98,6 +97,7 @@ app.controller('Controller', function ($scope) {
 	$scope.gamemode;
 	$scope.diceVal1;
 	$scope.diceVal2;
+	$scope.currentPlayer;
 
 	poll($scope);
 
