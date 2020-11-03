@@ -125,8 +125,9 @@ public class UnipolyApp {
 		movePlayer(this.firstDice + secondDice);
 	}
 
-	public void movePlayer(int rolledValue) {
+	public void movePlayer(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
+		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
@@ -145,7 +146,7 @@ public class UnipolyApp {
 		}
 	}
 
-	public void playerIsOnPropertyField() throws FieldIndexException {
+	public void playerIsOnPropertyField() {
 		int NO_OWNER = -1;
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
