@@ -1,7 +1,6 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
-import sun.jvm.hotspot.oops.FieldType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,7 +25,8 @@ public class UnipolyApp {
 		JAILED,
 		ENDGAME,
 		SHOWCARD,
-		QUIZTIME
+		QUIZTIME,
+		JUMP
 	}
 
 	public UnipolyApp() {
@@ -161,33 +161,26 @@ public class UnipolyApp {
 				board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
 					currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
 			phase = UnipolyPhase.BUY_PROPERTY;
-			boolean USER_WANTS_TO_BUY = true; // TODO: Needs user input to evaluate if user wants to buy
-			if(USER_WANTS_TO_BUY) {
-				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
-			} else {
-				switchPlayer();
-			}
 		}
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
 			// draw chance card
 			// get money / pay money / whatever
 		}
-		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP) {
-			// ask user if he wants to jump
+		final int COST_FOR_JUMP = 100;
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP &&
+				currentPlayer.getMoney() > COST_FOR_JUMP) {
+			phase = UnipolyPhase.JUMP;
 		}
+		switchPlayer();
 	}
 
-	private void buyProperty(int buy) {
-		/*if(buy == 1)
-				set owner
-				- money
-		else
-			alert: you can't buy
-		else {
-			if(currentPlayer == owner)
-				do you want to build something?
-					else
-			paySomeMoney, homie*/
+	public void buyProperty(boolean buy, int currentFieldIndex) throws FieldIndexException {
+		if(buy) {
+			board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
+			// geld abziehen und so
+		} else {
+			switchPlayer();
+		}
 	}
 
 	public void switchPlayer() {
