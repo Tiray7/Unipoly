@@ -112,7 +112,7 @@
   <div id="gameboard" href="#" class="table" hidden>
     <div id="boardgrid" class="board">
       <div class="center">
-        <div id="rolldice" class="dice-con zoom" ng-click='rollDice()'>
+        <div class="dice-con zoom" ng-click='rollDice()'>
           <h2 class="label">Roll The Dices</h2>
           <img class="dice" src="twodices.png" />
         </div>
@@ -123,8 +123,8 @@
         <img class="board-title" src="unipolybanner.png" />
         <div id="playerlist"></div>
         <div id="drawchance" class="chance-deck zoom">
-          <h2 class="label">Chance</h2>
-          <div class="deck"></div>
+          <!-- <h2 class="label"></h2> -->
+          <div class="deck" ng-click='showCard()'></div>
         </div>
       </div>
 

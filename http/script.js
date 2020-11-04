@@ -73,16 +73,25 @@ async function phaseChange($scope) {
 		$rolledvaluetext.html(text)
 		await Sleep(1350);
 		$scope.moveToken();
+
 	} else if (newphase == 'BUY_PROPERTY') {
 		console.log('New Phase BUY_PROPERTY');
-		$scope.buyproperty();
+		$scope.buyProperty();
+
 	} else if (newphase == 'JUMP') {
 		console.log('New Phase Jump');
 		$scope.jump();
+
 	} else if (newphase == 'GO') {
 		console.log('New Phase GO');
+
 	} else if (newphase == 'SHOWCARD') {
 		console.log('New Phase Showcard');
+		alert('Du musst jetzt eine Chance Karte ziehen.');
+	} else if (newphase == 'GOJAIL') {
+		console.log('New Phase Go to Jail');
+		alert('Du wurdest beim plagieren erwischt und musst deshalb nachsitzen.');
+		$scope.moveToken();
 	}
 }
 
@@ -355,17 +364,22 @@ app.controller('Controller', function ($scope) {
 	}
 
 	// Ask Player if he wants to buy Property
-	$scope.buyproperty = function () {
+	$scope.buyProperty = function () {
 		const currplayer = $scope.state.currentPlayer;
 		var next = confirm("Willst du dieses Modul besuchen?\nKostet nur ${PropertyValue}CHF!");
 		$scope.getOp('userwantstobuy?buy=' + next + '&currentFieldIndex=' + currplayer.token.currFieldIndex,
 			function (success) {
 				// Check if  success
 				if (success) {
-					console.log('success: MovePlayer');
+					console.log('success: userwantstobuy');
 				} else {
-					console.error('error: MovePlayer');
+					console.error('error: userwantstobuy');
 				}
 			});
+	}
+
+	// Player pressed on Card Deck
+	$scope.showCard = function () {
+		alert('Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.');
 	}
 });
