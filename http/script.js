@@ -56,10 +56,10 @@ function poll($scope) {
 // Initialize UI when phase changes
 function phaseChange($scope) {
 
-	if($scope.state.phase == 'BUY_PROPERTY') {
+	if ($scope.state.phase == 'BUY_PROPERTY') {
 		console.log('New Phase BUY_PROPERTY');
 	}
-	
+
 }
 
 function update($scope, json) {
@@ -68,18 +68,22 @@ function update($scope, json) {
 	var list = '';
 	var playerlist = $scope.state.players;
 
-	list += '<table>';
-	for (let i = 0; i < playerlist.length; i++) {
-		list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
-		if (playerlist[i].name == $scope.state.currentPlayer.name) {
-			list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
-		} else {
-			list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
-		}
-	}
-	list += '</table>';
+	if ($scope.state.currentPlayer !== null) {
+		var currplayer = $scope.state.currentPlayer.name;
 
-	$playerlist.html(list);
+		list += '<table>';
+		for (let i = 0; i < playerlist.length; i++) {
+			list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
+			if (playerlist[i].name == currplayer) {
+				list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
+			} else {
+				list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
+			}
+		}
+		list += '</table>';
+
+		$playerlist.html(list);
+	}
 
 	// If phase changed, update accordingly
 	if ($lastphase !== $scope.state.phase) {
@@ -240,6 +244,27 @@ app.controller('Controller', function ($scope) {
 		console.log($scope);
 	}
 
+	// Move the PlayerToken
+	$scope.moveToken = function () {
+		const type = $scope.state.currentPlayer.token.type.toLowerCase();
+		const prevind = $('#pos' + $scope.state.currentPlayer.token.prevFieldIndex).find("td." + type).first();
+		const currind = $('#pos' + $scope.state.currentPlayer.token.currFieldIndex).find("td.leer").first();
+		prevind.toggleClass('leer');
+		prevind.toggleClass('used ' + type);
+		currind.toggleClass('leer');
+		currind.toggleClass('used ' + type);
+
+		$scope.getOp('checkfieldoptions',
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: checkfieldoptions');
+				} else {
+					console.error('failed: checkfieldoptions');
+				}
+			});
+	}
+
 	// Startturn
 	$scope.rollDice = function () {
 
@@ -268,7 +293,7 @@ app.controller('Controller', function ($scope) {
 							$scope.diceVal1 = $scope.state.firstDice;
 							$scope.diceVal2 = $scope.state.secondDice;
 							const total = $scope.diceVal1 + $scope.diceVal2;
-							var text = '<b>' + $scope.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
+							var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
 								' + ' + $scope.diceVal2 + '<br>Total: ' + total;
 							$dicesgif.show();
 							$dicesgif.delay(1100).fadeOut(200);
@@ -285,26 +310,6 @@ app.controller('Controller', function ($scope) {
 			}
 		}
 		console.log($scope);
-	}
-
-	$scope.moveToken = function () {
-		const type = $scope.currentPlayer.token.type.toLowerCase();
-		const prevind = $('#pos' + $scope.currentPlayer.token.prevFieldIndex).find("td." + type).first();
-		const currind = $('#pos' + $scope.currentPlayer.token.currFieldIndex).find("td.leer").first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass('used ' + type);
-		currind.toggleClass('leer');
-		currind.toggleClass('used ' + type);
-		
-		$scope.getOp('checkfieldoptions',
-		function (success) {
-			// Check if  success
-			if (success) {
-				console.log('success: checkfieldoptions');
-			} else {
-				console.error('failed: checkfieldoptions');
-			}
-		});
 	}
 
 	$scope.jump = function () {
