@@ -42,6 +42,10 @@ $(document).ready(function () {
 	$lastphase = 'WAITING';
 });
 
+function Sleep(milliseconds) {
+	return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
 function poll($scope) {
 	$.getJSON('state', function (json) {
 		update($scope, json);
@@ -54,8 +58,8 @@ function poll($scope) {
 	});
 }
 
-// Initialize UI when phase changes
-function phaseChange($scope) {
+// Update UI when phase changes
+async function phaseChange($scope) {
 	const newphase = $scope.state.phase;
 
 	if (newphase == 'ROLLING') {
@@ -67,9 +71,11 @@ function phaseChange($scope) {
 		$dicesgif.show();
 		$dicesgif.delay(1100).fadeOut(200);
 		$rolledvaluetext.html(text)
+		await Sleep(1350);
 		$scope.moveToken();
 	} else if (newphase == 'BUY_PROPERTY') {
 		console.log('New Phase BUY_PROPERTY');
+		$scope.buyproperty();
 	} else if (newphase == 'JUMP') {
 		console.log('New Phase Jump');
 		$scope.jump();
@@ -102,7 +108,7 @@ function update($scope, json) {
 		$playerlist.html(list);
 	}
 
-	// If phase changed, update accordingly
+	// Check if phase changed, update accordingly
 	if ($lastphase !== $scope.state.phase) {
 		phaseChange($scope);
 		$lastphase = $scope.state.phase;
@@ -150,11 +156,13 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
+	// Player signed a Name now let him choose a Token
 	$scope.chooseToken = function () {
 		$joinName.hide();
 		$joinToken.show();
 	}
 
+	// Read User Input on Gamemode
 	$scope.gamemode = function (gamemode) {
 		var text;
 		const mode = gamemode;
@@ -178,11 +186,11 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if adding new Payer was successfull
 				if (success) {
-					console.log('successfully added Player: ' + $scope.username);
+					console.log('success: added Player: ' + $scope.username);
 				}
 				else {
-					console.error('failed adding Player: ' + $scope.username);
-					alert('failed adding Player: ' + $scope.username);
+					console.error('error: adding Player: ' + $scope.username);
+					alert('Error: adding Player: ' + $scope.username);
 				}
 
 				// List all added Players
@@ -223,7 +231,7 @@ app.controller('Controller', function ($scope) {
 						td.toggleClass('used ' + type);
 					}
 				} else {
-					console.error('failed: Start Game');
+					console.error('error: Start Game');
 					alert('Error: Please try again!');
 				}
 			});
@@ -246,14 +254,14 @@ app.controller('Controller', function ($scope) {
 						$gamemodetext.text('Choose a Gamemode!');
 						$gamemodeop.show();
 					} else {
-						console.error('failed: resetGame');
+						console.error('error: resetGame');
 						alert('Error: Please try again!');
 					}
 				});
 		}
 	}
 
-	// Move the PlayerToken
+	// Move the PlayerToken and checkfieldoptions 
 	$scope.moveToken = function () {
 		const type = $scope.state.currentPlayer.token.type.toLowerCase();
 		const prevind = $('#pos' + $scope.state.currentPlayer.token.prevFieldIndex).find("td." + type).first();
@@ -269,28 +277,24 @@ app.controller('Controller', function ($scope) {
 				if (success) {
 					console.log('success: checkfieldoptions');
 				} else {
-					console.error('failed: checkfieldoptions');
+					console.error('error: checkfieldoptions');
 				}
 			});
 	}
 
-	// Startturn
+	// Roll the dice(s)
 	$scope.rollDice = function () {
 
-		var diceVal1;
-		// if Player is jailed both dices get rolled
-		if ($scope.state.phase == 'WAITING') {
-			diceVal1 = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
-		} else if ($scope.state.phase == 'JAILED') {
-			diceVal1 = -1;
-		}
+		var diceVal1 = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
 
-		// Check if Player submited a acceptable value
-		if (diceVal1 == null || diceVal1 == "") {
-			console.error('failed: assign value of first Dice');
-			alert('Error: Please try again!');
-		} else {
-			if ((diceVal1 >= 1 && diceVal1 <= 6) || $scope.state.phase == 'JAILED') {
+		// Check if Player pressed abort
+		if (diceVal1 != null) {
+
+			// Check if Player submited a acceptable value
+			if (diceVal1 == '' || diceVal1 < 1 || diceVal1 > 6) {
+				console.warn('error: The entered value is out of Range (1-6)!');
+				alert('Error: Value needs to be between 1-6!');
+			} else {
 				console.log('success: assign value of first Dice');
 
 				// Send Value of first Dice to java
@@ -300,29 +304,32 @@ app.controller('Controller', function ($scope) {
 						if (success) {
 							console.log('success: rollDice');
 						} else {
-							console.error('failed: rollDice');
+							console.error('error: rollDice');
 							alert('Error: Please try again!');
 						}
 					});
-			} else {
-				console.error('Error: The entered value is out of Range (1-6)!');
-				alert('Error: The entered value is out of Range (1-6)!\nPlease try again!');
 			}
 		}
 	}
 
+	// Ask Player if he wants to Teleport
 	$scope.jump = function () {
 		var next = confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!");
 		if (next) {
 			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
 			// Check if Player submited a acceptable value
-			if (moveby == null || moveby == "") {
-				console.error('failed: assign value of jump Distance.');
-				alert('Error: Please try again!');
-			} else if (moveby < 1 || moveby > 35) {
-				console.error('failed: Value needs to be between 1-35');
-				alert('Error: Please try again!');
+			while (moveby == null || moveby == '' || moveby < 1 || moveby > 35) {
+				if (moveby == null || moveby == '') {
+					console.warn('error: assign value of jump Distance.');
+					alert('Error: Please try again!');
+				} else if (moveby < 1 || moveby > 35) {
+					console.warn('error: Value needs to be between 1-35');
+					alert('Error: Please try again!');
+				}
+				var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
 			}
+
+			// TODO: Player has to pay 100$ 
 			$scope.getOp('moveplayer?moveby=' + moveby,
 				function (success) {
 					// Check if  success
@@ -330,7 +337,7 @@ app.controller('Controller', function ($scope) {
 						console.log('success: MovePlayer');
 						$scope.moveToken();
 					} else {
-						console.error('failed: MovePlayer');
+						console.error('error: MovePlayer');
 					}
 				});
 		} else {
@@ -341,25 +348,23 @@ app.controller('Controller', function ($scope) {
 					if (success) {
 						console.log('success: endTurn');
 					} else {
-						console.error('failed: endTurn');
+						console.error('error: endTurn');
 					}
 				});
 		}
 	}
 
-	//userwantstobuy
+	// Ask Player if he wants to buy Property
 	$scope.buyproperty = function () {
 		const currplayer = $scope.state.currentPlayer;
 		var next = confirm("Willst du dieses Modul besuchen?\nKostet nur ${PropertyValue}CHF!");
-
 		$scope.getOp('userwantstobuy?buy=' + next + '&currentFieldIndex=' + currplayer.token.currFieldIndex,
 			function (success) {
 				// Check if  success
 				if (success) {
 					console.log('success: MovePlayer');
-					$scope.moveToken();
 				} else {
-					console.error('failed: MovePlayer');
+					console.error('error: MovePlayer');
 				}
 			});
 	}
