@@ -65,52 +65,53 @@ function poll($scope) {
 // Update UI when phase changes
 async function phaseChange($scope) {
 	const newphase = $scope.state.phase;
+	var txt;
 
 	switch (newphase) {
-		case ROLLING:
+		case 'ROLLING':
 			$scope.diceVal1 = $scope.state.firstDice;
 			$scope.diceVal2 = $scope.state.secondDice;
 			const total = $scope.diceVal1 + $scope.diceVal2;
-			var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
+			txt = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
 				' + ' + $scope.diceVal2 + '<br>Total: ' + total;
 			$dicesgif.show();
 			$dicesgif.delay(1100).fadeOut(200);
-			$rolledvaluetext.html(text)
+			$rolledvaluetext.html(txt)
 			await Sleep(1350);
 			$scope.moveToken();
 			break;
 
-		case BUY_PROPERTY:
+		case 'BUY_PROPERTY':
 			console.log('New Phase BUY_PROPERTY');
 			$scope.buyProperty();
 			break;
 
-		case JUMP:
+		case 'JUMP':
 			console.log('New Phase Jump');
 			$scope.jump();
 			break;
 
-		case GO:
+		case 'GO':
 			console.log('New Phase GO');
-			const txt = 'Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!';
+			txt = 'Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!';
 			$alertpopup.find('.popup-con').text(txt);
 			$alertpopup.show();
 			await Sleep(1500)
 			$alertpopup.hide();
 			break;
 
-		case SHOWCARD:
+		case 'SHOWCARD':
 			console.log('New Phase Showcard');
-			const txt = 'Du musst jetzt eine Chance Karte ziehen!';
+			txt = 'Du musst jetzt eine Chance Karte ziehen!';
 			$alertpopup.find('.popup-con').text(txt);
 			$alertpopup.show();
 			await Sleep(1500)
 			$alertpopup.hide();
 			break;
 
-		case GOJAIL:
+		case 'GOJAIL':
 			console.log('New Phase Go to Jail');
-			const txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
+			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
 			$alertpopup.find('.popup-con').text(txt);
 			$alertpopup.show();
 			await Sleep(1500)
@@ -118,7 +119,7 @@ async function phaseChange($scope) {
 			$scope.moveToken();
 			break;
 
-		case JAILED:
+		case 'JAILED':
 			console.log('New Phase Jailed');
 			confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen?');
 			break;
@@ -154,6 +155,27 @@ function update($scope, json) {
 	}
 
 	$scope.$apply();
+}
+
+function resetHTML(list) {
+	// List all added Players
+	var prevind, type;
+	for (let i = 0; i < list.length; i++) {
+		type = list[i].token.type.toLowerCase();
+		prevind = $('#pos' + list[i].token.currFieldIndex).find("td." + type).first();
+		prevind.toggleClass('leer');
+		prevind.toggleClass('used ' + type);
+	}
+	$gameboard.hide();
+	$rolledvaluetext.html('');
+	$menu.show();
+	$joinToken.hide();
+	$joinName.hide();
+	$joinstart.hide();
+	$joininglist.html('');
+	$joinwaiting.hide();
+	$gamemodetext.text('Choose a Gamemode!');
+	$gamemodeop.show();
 }
 
 var app = angular.module('monopolyApp', []);
@@ -277,21 +299,14 @@ app.controller('Controller', function ($scope) {
 	}
 
 	$scope.resetGame = function () {
+		const list = $scope.state.players;
 		if (confirm("Are you sure you want to Reset the Game?")) {
 			$scope.getOp('resetgame',
 				function (success) {
 					// Check if Game Reset was a succsess
 					if (success) {
 						console.log('success: resetGame');
-						$gameboard.hide();
-						$menu.show();
-						$joinToken.hide();
-						$joinName.hide();
-						$joininglist.hide();
-						$joinstart.hide();
-						$joinwaiting.hide();
-						$gamemodetext.text('Choose a Gamemode!');
-						$gamemodeop.show();
+						resetHTML(list);
 					} else {
 						console.error('error: resetGame');
 						alert('Error: Please try again!');

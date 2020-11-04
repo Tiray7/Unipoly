@@ -72,14 +72,6 @@ public class UnipolyApp {
 		this.rolledPash = rolledPash;
 	}
 
-	// resets Game
-	public void resetGame(){
-		board = new Board();
-		bank = new Bank();
-		players = new ArrayList<>();
-		this.phase = UnipolyPhase.WAITING;
-	}
-
 	// Add a new Player to the Game
 	public void join(String name, TokenType token) throws FieldIndexException {
 		checkIfPlayernameAlreadyExists(name, token);
