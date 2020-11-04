@@ -16,6 +16,7 @@ var $gameboard;
 var $playerlist;
 var $dicesgif;
 var $lastphase;
+var $alertpopup;
 
 $(document).ready(function () {
 
@@ -36,6 +37,9 @@ $(document).ready(function () {
 	$playerlist = $('#playerlist');
 	$dicesgif = $('#rollingdices');
 	$rolledvaluetext = $('#rolledvalue');
+
+	// Popups
+	$alertpopup = $('#alert_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
@@ -62,36 +66,62 @@ function poll($scope) {
 async function phaseChange($scope) {
 	const newphase = $scope.state.phase;
 
-	if (newphase == 'ROLLING') {
-		$scope.diceVal1 = $scope.state.firstDice;
-		$scope.diceVal2 = $scope.state.secondDice;
-		const total = $scope.diceVal1 + $scope.diceVal2;
-		var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
-			' + ' + $scope.diceVal2 + '<br>Total: ' + total;
-		$dicesgif.show();
-		$dicesgif.delay(1100).fadeOut(200);
-		$rolledvaluetext.html(text)
-		await Sleep(1350);
-		$scope.moveToken();
+	switch (newphase) {
+		case ROLLING:
+			$scope.diceVal1 = $scope.state.firstDice;
+			$scope.diceVal2 = $scope.state.secondDice;
+			const total = $scope.diceVal1 + $scope.diceVal2;
+			var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
+				' + ' + $scope.diceVal2 + '<br>Total: ' + total;
+			$dicesgif.show();
+			$dicesgif.delay(1100).fadeOut(200);
+			$rolledvaluetext.html(text)
+			await Sleep(1350);
+			$scope.moveToken();
+			break;
 
-	} else if (newphase == 'BUY_PROPERTY') {
-		console.log('New Phase BUY_PROPERTY');
-		$scope.buyProperty();
+		case BUY_PROPERTY:
+			console.log('New Phase BUY_PROPERTY');
+			$scope.buyProperty();
+			break;
 
-	} else if (newphase == 'JUMP') {
-		console.log('New Phase Jump');
-		$scope.jump();
+		case JUMP:
+			console.log('New Phase Jump');
+			$scope.jump();
+			break;
 
-	} else if (newphase == 'GO') {
-		console.log('New Phase GO');
+		case GO:
+			console.log('New Phase GO');
+			const txt = 'Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!';
+			$alertpopup.find('.popup-con').text(txt);
+			$alertpopup.show();
+			await Sleep(1500)
+			$alertpopup.hide();
+			break;
 
-	} else if (newphase == 'SHOWCARD') {
-		console.log('New Phase Showcard');
-		alert('Du musst jetzt eine Chance Karte ziehen.');
-	} else if (newphase == 'GOJAIL') {
-		console.log('New Phase Go to Jail');
-		alert('Du wurdest beim plagieren erwischt und musst deshalb nachsitzen.');
-		$scope.moveToken();
+		case SHOWCARD:
+			console.log('New Phase Showcard');
+			const txt = 'Du musst jetzt eine Chance Karte ziehen!';
+			$alertpopup.find('.popup-con').text(txt);
+			$alertpopup.show();
+			await Sleep(1500)
+			$alertpopup.hide();
+			break;
+
+		case GOJAIL:
+			console.log('New Phase Go to Jail');
+			const txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
+			$alertpopup.find('.popup-con').text(txt);
+			$alertpopup.show();
+			await Sleep(1500)
+			$alertpopup.hide();
+			$scope.moveToken();
+			break;
+
+		case JAILED:
+			console.log('New Phase Jailed');
+			confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen?');
+			break;
 	}
 }
 
@@ -379,7 +409,16 @@ app.controller('Controller', function ($scope) {
 	}
 
 	// Player pressed on Card Deck
-	$scope.showCard = function () {
-		alert('Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.');
+	$scope.showCard = async function () {
+		const txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
+		$alertpopup.find('.popup-con').text(txt);
+		$alertpopup.show();
+		await Sleep(2000)
+		$alertpopup.hide();
+	}
+
+	// Player pressed closepopup
+	$scope.closealert = function () {
+		$alertpopup.hide();
 	}
 });
