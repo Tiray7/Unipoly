@@ -2,6 +2,7 @@
 var $menu;
 var $menuToggle;
 
+var $gamemode;
 var $gamemodeop;
 var $gamemodetext;
 var $join;
@@ -55,26 +56,42 @@ function poll($scope) {
 
 // Initialize UI when phase changes
 function phaseChange($scope) {
+	const newphase = $scope.state.phase;
 
-	if ($scope.state.phase == 'BUY_PROPERTY') {
+	if (newphase == 'ROLLING') {
+		$scope.diceVal1 = $scope.state.firstDice;
+		$scope.diceVal2 = $scope.state.secondDice;
+		const total = $scope.diceVal1 + $scope.diceVal2;
+		var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
+			' + ' + $scope.diceVal2 + '<br>Total: ' + total;
+		$dicesgif.show();
+		$dicesgif.delay(1100).fadeOut(200);
+		$rolledvaluetext.html(text)
+		$scope.moveToken();
+	} else if (newphase == 'BUY_PROPERTY') {
 		console.log('New Phase BUY_PROPERTY');
+	} else if (newphase == 'JUMP') {
+		console.log('New Phase Jump');
+		$scope.jump();
+	} else if (newphase == 'GO') {
+		console.log('New Phase GO');
+	} else if (newphase == 'SHOWCARD') {
+		console.log('New Phase Showcard');
 	}
-
 }
 
 function update($scope, json) {
 	$scope.state = json;
-
 	var list = '';
 	var playerlist = $scope.state.players;
 
 	if ($scope.state.currentPlayer !== null) {
-		var currplayer = $scope.state.currentPlayer.name;
+		var currplayer = $scope.state.currentPlayer;
 
 		list += '<table>';
 		for (let i = 0; i < playerlist.length; i++) {
 			list += '<tr><td class="listtoken ' + playerlist[i].token.type.toLowerCase() + '"></td>';
-			if (playerlist[i].name == currplayer) {
+			if (playerlist[i].name == currplayer.name) {
 				list += '<td><b>' + playerlist[i].name + ': ' + playerlist[i].money + '</b></td></tr>';
 			} else {
 				list += '<td>' + playerlist[i].name + ': ' + playerlist[i].money + '</td></tr>';
@@ -89,7 +106,6 @@ function update($scope, json) {
 	if ($lastphase !== $scope.state.phase) {
 		phaseChange($scope);
 		$lastphase = $scope.state.phase;
-		console.log('New Phase: ' + $lastphase);
 	}
 
 	$scope.$apply();
@@ -98,20 +114,17 @@ function update($scope, json) {
 var app = angular.module('monopolyApp', []);
 app.controller('Controller', function ($scope) {
 
-	$scope.gamemode;
 	$scope.diceVal1;
 	$scope.diceVal2;
-	$scope.currentPlayer;
 
 	poll($scope);
 
 	$scope.getOp = function (path, callback) {
-
-		console.log(path);
-
+		console.log('getJSON: ' + path);
 		//Load JSON-encoded data from the server using a GET HTTP request.
 		$.getJSON(path, function (json) {
 			update($scope, json);
+			console.log($scope);
 			if (callback != undefined) {
 				callback(true);
 			}
@@ -145,7 +158,7 @@ app.controller('Controller', function ($scope) {
 	$scope.gamemode = function (gamemode) {
 		var text;
 		const mode = gamemode;
-		$scope.gamemode = mode;
+		$gamemode = mode;
 		$gamemodeop.hide();
 		if (mode == 'SINGLE') {
 			text = 'Playing against AI';
@@ -155,13 +168,12 @@ app.controller('Controller', function ($scope) {
 		$gamemodetext.text(text);
 		$joinwaiting.show();
 		$joinName.show();
-		console.log($scope);
 	}
 
 	$scope.join = function (token) {
 		var playerlist = '';
 		var list;
-		const mode = $scope.gamemode;
+		const mode = $gamemode;
 		$scope.getOp('join?name=' + $scope.username + "&token=" + token,
 			function (success) {
 				// Check if adding new Payer was successfull
@@ -188,12 +200,11 @@ app.controller('Controller', function ($scope) {
 				$joinToken.hide();
 				$joininglist.html(playerlist);
 			});
-		console.log($scope);
 	}
 
 	// Begin Game
 	$scope.start = function () {
-		$scope.getOp('start?gamemode=' + $scope.gamemode,
+		$scope.getOp('start?gamemode=' + $gamemode,
 			function (success) {
 				// Check if Gamemode choice got accepted
 				if (success) {
@@ -216,7 +227,6 @@ app.controller('Controller', function ($scope) {
 					alert('Error: Please try again!');
 				}
 			});
-		console.log($scope);
 	}
 
 	$scope.resetGame = function () {
@@ -241,7 +251,6 @@ app.controller('Controller', function ($scope) {
 					}
 				});
 		}
-		console.log($scope);
 	}
 
 	// Move the PlayerToken
@@ -290,15 +299,6 @@ app.controller('Controller', function ($scope) {
 						// Check if starting turn worked
 						if (success) {
 							console.log('success: rollDice');
-							$scope.diceVal1 = $scope.state.firstDice;
-							$scope.diceVal2 = $scope.state.secondDice;
-							const total = $scope.diceVal1 + $scope.diceVal2;
-							var text = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
-								' + ' + $scope.diceVal2 + '<br>Total: ' + total;
-							$dicesgif.show();
-							$dicesgif.delay(1100).fadeOut(200);
-							$rolledvaluetext.html(text)
-							$scope.moveToken().delay(1000);
 						} else {
 							console.error('failed: rollDice');
 							alert('Error: Please try again!');
@@ -309,7 +309,6 @@ app.controller('Controller', function ($scope) {
 				alert('Error: The entered value is out of Range (1-6)!\nPlease try again!');
 			}
 		}
-		console.log($scope);
 	}
 
 	$scope.jump = function () {
@@ -346,5 +345,22 @@ app.controller('Controller', function ($scope) {
 					}
 				});
 		}
+	}
+
+	//userwantstobuy
+	$scope.buyproperty = function () {
+		const currplayer = $scope.state.currentPlayer;
+		var next = confirm("Willst du dieses Modul besuchen?\nKostet nur ${PropertyValue}CHF!");
+
+		$scope.getOp('userwantstobuy?buy=' + next + '&currentFieldIndex=' + currplayer.token.currFieldIndex,
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: MovePlayer');
+					$scope.moveToken();
+				} else {
+					console.error('failed: MovePlayer');
+				}
+			});
 	}
 });
