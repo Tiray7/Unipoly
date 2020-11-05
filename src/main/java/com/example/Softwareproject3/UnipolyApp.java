@@ -1,7 +1,6 @@
 package com.example.Softwareproject3;
 
 import org.springframework.stereotype.Component;
-import sun.jvm.hotspot.oops.FieldType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,7 +10,7 @@ public class UnipolyApp {
 
 	private UnipolyPhase phase = UnipolyPhase.WAITING;
 	private ArrayList<Player> players;
-	private int currentPlayerIndex = 0;
+	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
 	private boolean rolledPash = false;
@@ -26,7 +25,9 @@ public class UnipolyApp {
 		JAILED,
 		ENDGAME,
 		SHOWCARD,
-		QUIZTIME
+		QUIZTIME,
+		JUMP,
+		GO
 	}
 
 	public UnipolyApp() {
@@ -51,8 +52,8 @@ public class UnipolyApp {
 		return players;
 	}
 
-	public int getCurrentPlayerIndex() {
-		return currentPlayerIndex;
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public int getFirstDice() {
@@ -71,21 +72,13 @@ public class UnipolyApp {
 		this.rolledPash = rolledPash;
 	}
 
-	// resets Game
-	public void resetGame(){
-		board = new Board();
-		bank = new Bank();
-		players = new ArrayList<Player>();
-		this.phase = UnipolyPhase.WAITING;
+	// Add a new Player to the Game
+	public void join(String name, TokenType token) throws FieldIndexException {
+		checkIfPlayernameAlreadyExists(name, token);
+		initializePlayer(name, token);
 	}
 
-	// Add a new Player to the Game
-	public void join(String name, TokenType token) {
-
-		if (phase != UnipolyPhase.WAITING) {
-			throw new IllegalStateException("Cannot join unless in the waiting phase.");
-		}
-
+	private void checkIfPlayernameAlreadyExists(String name, TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
 				throw new IllegalArgumentException("Player name already exists.");
@@ -94,44 +87,22 @@ public class UnipolyApp {
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
+	}
+
+	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
 		Player player = new Player(name, token);
 		player.getToken().moveTo(0);
 		player.index = players.size();
 		players.add(player);
+		player.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(0));
 	}
 
 	// Start a new Game
-	public void start(Gamemode mode) {
-		if (phase != UnipolyPhase.WAITING) {
-			throw new IllegalStateException("Cannot start the unipoly unless in the waiting phase.");
-		}
-
-		// Check if we play Singleplayer or Multiplayer
+	public void start(Gamemode mode) throws FieldIndexException {
 		if (Gamemode.SINGLE == mode) {
-			if (players.size() != 1) {
-				throw new IllegalStateException("Too many players for singleplayer mode");
-			} else {
-				Player player = new Player("NPC", TokenType.NPC);
-				player.getToken().moveTo(0);
-				player.index = players.size();
-				players.add(player);
-			}
-		} else if (Gamemode.MULTI == mode) {
-			if (players.size() < 2) {
-				throw new IllegalStateException("Not enough players for multiplayer mode");
-			} else if (players.size() > 4) {
-				throw new IllegalStateException("Too many players for multiplayer mode");
-			}
+			initializePlayer("NPC", TokenType.NPC);
 		}
-		// Automatically start first Turn
-		startTurn();
-	}
-
-	// The Current Player starts his Turn
-	private void startTurn() {
-		if(players.get(currentPlayerIndex).isJailed()) {
-			phase = UnipolyPhase.JAILED;
-		}
+		currentPlayer = players.get(0);
 	}
 
 	public void rollDice() {
@@ -144,74 +115,78 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		checkFieldOptions(this.firstDice + secondDice);
-  }
-
-	public void checkFieldOptions(int rolledValue) throws FieldIndexException {
-		Player currentPlayer = players.get(currentPlayerIndex);
-		int currentFieldIndex = currentPlayer.getToken().getcurrFieldIndex();
-		if (moveAndCheckIfOverStart(currentPlayer, rolledValue, currentFieldIndex)) {
-			// Bank gives Player 200CHF;
-		}
-		phase = UnipolyPhase.WAITING;
-		int NO_OWNER = -1;
-		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.PROPERTY &&
-				board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
-					currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
-			phase = UnipolyPhase.BUY_PROPERTY;
-			boolean USER_WANTS_TO_BUY = true; // TODO: Needs user input to evaluate if user wants to buy
-			if(USER_WANTS_TO_BUY) {
-				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayerIndex);
-			}
-		}
-		//tileOperation(currentField, currentPlayer);
-		 /*if (fachFeld && no owner && enoughMoney) {
-		 	phase = UnipolyPhase.BUY_PROPERTY;
-			if(user wants to buy) {
-				buyProperty();
-				return;
-			} else {
-				userTurnEnds();
-				--> WAITING Phase
-				return;
-			}
-		if (startfeld)
-			get double some money
-		if (chance)
-			draw a chance card
-			get money/pay money/whatever
-		if (springer)
-			do you want to buy?
-				if (yes && enough money)
-					set ownsCard
-				else
-					alert: you poor bum
-		After everythings checked and done:
-			--> update phase and currentPlayerIndex
-
-					*/
+		movePlayer(this.firstDice + secondDice);
 	}
 
-	private void buyProperty(int buy) {
-		/*if(buy == 1)
-				set owner
-				- money
-		else
-			alert: you can't buy
-		else {
-			if(currentPlayer == owner)
-				do you want to build something?
-					else
-			paySomeMoney, homie*/
+	public void movePlayer(int rolledValue) throws FieldIndexException {
+		currentPlayer.getToken().moveBy(rolledValue);
+		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+	}
+
+	public void checkFieldOptions() throws FieldIndexException {
+		switch(currentPlayer.getToken().getCurrentFieldLabel()) {
+			case PROPERTY:
+				playerIsOnPropertyField();
+			case CHANCE:
+				playerIsOnChanceField();
+			case JUMP:
+				playerIsOnJumpField();
+			case GO:
+				playerIsOnGoField();
+			default:
+				checkIfOverStart();
+		}
+	}
+
+	public void playerIsOnPropertyField() {
+		int NO_OWNER = -1;
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
+		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
+				currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
+			phase = UnipolyPhase.BUY_PROPERTY;
+		}
+	}
+
+	public void playerIsOnChanceField() throws FieldIndexException {
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
+			phase = UnipolyPhase.SHOWCARD;
+			// draw chance card
+			// get money / pay money / whatever
+		}
+	}
+
+	public void playerIsOnJumpField() throws FieldIndexException {
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
+		final int COST_FOR_JUMP = 100;
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP &&
+				currentPlayer.getMoney() > COST_FOR_JUMP) {
+			phase = UnipolyPhase.JUMP;
+		}
+	}
+
+	public void playerIsOnGoField() {
+		// Bank gives Player 400CHF;
+	}
+
+	public void buyProperty(boolean buy, int currentFieldIndex) throws FieldIndexException {
+		if(buy) {
+			board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
+			// geld abziehen und so
+		} else {
+			switchPlayer();
+		}
 	}
 
 	public void switchPlayer() {
-		if(currentPlayerIndex == players.size() - 1) currentPlayerIndex = 0;
-		else currentPlayerIndex++;
+		if(currentPlayer.index == players.size() - 1) currentPlayer = players.get(0);
+		else currentPlayer = players.get(currentPlayer.index + 1);
+		phase = UnipolyPhase.WAITING;
 	}
 
-	private boolean moveAndCheckIfOverStart(Player currentPlayer, int rolledValue, int previousField) {
-		currentPlayer.getToken().moveBy(rolledValue);
-		return previousField > currentPlayer.getToken().getcurrFieldIndex();
+	private void checkIfOverStart() {
+		if(currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
+			//Bank pay player 200 CHF
+		}
 	}
 }

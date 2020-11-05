@@ -43,14 +43,14 @@ public class Controller {
 
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp join(@RequestParam String name, @RequestParam TokenType token) {
+	public UnipolyApp join(@RequestParam String name, @RequestParam TokenType token) throws FieldIndexException {
 		unipoly.join(name, token);
 		return unipoly;
 	}
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp start(@RequestParam Gamemode gamemode) {
+	public UnipolyApp start(@RequestParam Gamemode gamemode) throws FieldIndexException {
 		unipoly.start(gamemode);
 		return unipoly;
 	}
@@ -58,14 +58,13 @@ public class Controller {
 	@RequestMapping(value = "/resetgame", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp resetGame() {
-		unipoly.resetGame();
 		unipoly = new UnipolyApp();
 		return unipoly;
 	}
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int firstDice) throws  FieldIndexException {
+	public UnipolyApp rollDice(@RequestParam int firstDice) throws FieldIndexException {
 		unipoly.rollDice(firstDice);
 		return unipoly;
 	}
@@ -79,8 +78,22 @@ public class Controller {
 
 	@RequestMapping(value = "/checkfieldoptions", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp checkFieldOptions(@RequestParam int moveby) throws FieldIndexException {
-		unipoly.checkFieldOptions(moveby);
+	public UnipolyApp checkFieldOptions() throws FieldIndexException {
+		unipoly.checkFieldOptions();
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/moveplayer", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp movePlayer(@RequestParam int moveby) throws FieldIndexException {
+		unipoly.movePlayer(moveby);
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/userwantstobuy", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp userWantsToBuy(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
+		unipoly.buyProperty(buy, currentFieldIndex);
 		return unipoly;
 	}
 }

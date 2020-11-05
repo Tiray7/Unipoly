@@ -1,0 +1,12 @@
+.popup-con {
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff;
+    margin: 17% auto auto; /* 15% from the top and centered */
+    padding: 2em 3em;
+    border: 1px solid #888;
+    max-width: 650px;
+    width: -moz-fit-content;
+    height: -moz-fit-content;
+    font-size: 1.4em;
+  }

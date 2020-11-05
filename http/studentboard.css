@@ -132,10 +132,10 @@
 
 .chance-deck {
   grid-column: 3 / 7;
-  grid-row: 3 / 7;
+  grid-row: 4 / 7;
   transform: rotate(-30deg);
-  margin-top: 60px;
-  margin-left: 60px;
+  /*margin-top: 60px;*/
+  margin-left: 6em;
 }
 .chance-deck .label {
   font-size: 20px;
@@ -156,9 +156,12 @@
 }
 
 .deck {
-  border: 2px dashed #080808;
   width: 160px;
-  height: 120px;
+  height: 115px;
+  background-image: url('chancecardback.png');
+  background-size: 100%;
+  background-position: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .row {
