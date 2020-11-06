@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Field {
 
+    public Integer getLabel;
     private Config.FieldLabel label;
     private ArrayList<Player> players;
 
@@ -21,5 +22,8 @@ public class Field {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public void setOwnerIndex(int index) {
     }
 }
