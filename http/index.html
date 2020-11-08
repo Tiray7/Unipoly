@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="gamemenu.css">
   <link rel="stylesheet" href="studentboard.css">
   <link rel="stylesheet" href="tokenstyle.css">
+  <link rel="stylesheet" href="popupstyle.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -34,7 +35,7 @@
 </header>
 <div id="board">
 
-  <div id="menu" href="#" class="menu-background">
+  <div id="menu" href="#" class="popup_background">
     <div class="menu-container">
       <div class="filtercon">
         <div id='join'>
@@ -96,23 +97,19 @@
             </table>
           </div>
         </div>
-        <!--
-        <div class="filterbox">
-          <div id="start-btn" href="#" class="box-btn" ng-click='start()' hidden>
-            <div class="btn btn-two">
-              <span>Start Game</span>
-            </div>
-          </div>
-        </div>
-      -->
       </div>
+    </div>
+  </div>
+
+  <div id="alert_popup" href="#" class="popup_background" ng-click='closealert()' hidden>
+    <div class="popup-con">
     </div>
   </div>
 
   <div id="gameboard" href="#" class="table" hidden>
     <div id="boardgrid" class="board">
       <div class="center">
-        <div id="rolldice" class="dice-con zoom" ng-click='rollDice()'>
+        <div class="dice-con zoom" ng-click='rollDice()'>
           <h2 class="label">Roll The Dices</h2>
           <img class="dice" src="twodices.png" />
         </div>
@@ -123,8 +120,8 @@
         <img class="board-title" src="unipolybanner.png" />
         <div id="playerlist"></div>
         <div id="drawchance" class="chance-deck zoom">
-          <h2 class="label">Chance</h2>
-          <div class="deck"></div>
+          <!-- <h2 class="label"></h2> -->
+          <div class="deck" ng-click='showCard()'></div>
         </div>
       </div>
 

@@ -58,14 +58,13 @@ public class Controller {
 	@RequestMapping(value = "/resetgame", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp resetGame() {
-		unipoly.resetGame();
 		unipoly = new UnipolyApp();
 		return unipoly;
 	}
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int firstDice) throws  FieldIndexException {
+	public UnipolyApp rollDice(@RequestParam int firstDice) throws FieldIndexException {
 		unipoly.rollDice(firstDice);
 		return unipoly;
 	}

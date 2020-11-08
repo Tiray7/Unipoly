@@ -26,7 +26,8 @@ public class UnipolyApp {
 		ENDGAME,
 		SHOWCARD,
 		QUIZTIME,
-		JUMP
+		JUMP,
+		GO
 	}
 
 	public UnipolyApp() {
@@ -69,14 +70,6 @@ public class UnipolyApp {
 
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
-	}
-
-	// resets Game
-	public void resetGame(){
-		board = new Board();
-		bank = new Bank();
-		players = new ArrayList<>();
-		this.phase = UnipolyPhase.WAITING;
 	}
 
 	// Add a new Player to the Game
@@ -131,7 +124,6 @@ public class UnipolyApp {
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
-		phase = UnipolyPhase.WAITING;
 		switch(currentPlayer.getToken().getCurrentFieldLabel()) {
 			case PROPERTY:
 				playerIsOnPropertyField();
@@ -158,6 +150,7 @@ public class UnipolyApp {
 	public void playerIsOnChanceField() throws FieldIndexException {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
+			phase = UnipolyPhase.SHOWCARD;
 			// draw chance card
 			// get money / pay money / whatever
 		}
@@ -188,6 +181,7 @@ public class UnipolyApp {
 	public void switchPlayer() {
 		if(currentPlayer.index == players.size() - 1) currentPlayer = players.get(0);
 		else currentPlayer = players.get(currentPlayer.index + 1);
+		phase = UnipolyPhase.WAITING;
 	}
 
 	private void checkIfOverStart() {
