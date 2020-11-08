@@ -38,6 +38,11 @@
     background-size: 100%;
 }
 
+.npc {
+    background-image: url("npc.png");
+    background-size: 100%;
+}
+
 .token-menu {
     width: 60px;
     height: 60px;
