@@ -23,6 +23,7 @@ public class UnipolyApp {
 		BUY_PROPERTY,
 		TURN,
 		JAILED,
+		GODETENTION,
 		ENDGAME,
 		SHOWCARD,
 		QUIZTIME,
@@ -133,8 +134,17 @@ public class UnipolyApp {
 				playerIsOnJumpField();
 			case GO:
 				playerIsOnGoField();
+			case DETENTION:
+				playerIsOnGoToDetention();
 			default:
 				checkIfOverStart();
+		}
+	}
+
+	public void playerIsOnGoToDetention() throws FieldIndexException {
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.DETENTION ) {
+			phase = UnipolyPhase.GODETENTION;
 		}
 	}
 
