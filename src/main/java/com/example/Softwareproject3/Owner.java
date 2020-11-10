@@ -1,5 +1,7 @@
 package com.example.Softwareproject3;
 
+import java.util.ArrayList;
+
 public abstract class Owner {
 
     int index;
@@ -7,6 +9,7 @@ public abstract class Owner {
     private double money;
     private int RoadOwned;
     private int PropertyOwned;
+    private ArrayList<Integer> deedIndices;
 
     public Owner(String id, double initialMoney) {
         this.name = id;
@@ -22,10 +25,31 @@ public abstract class Owner {
     }
 
 
-// todo make trnasfer mony to buy property
-    //public double transfer(Owner recipient, Tile tile, double price) {
 
-//}
+    public double transfer(Owner peoperty, Field tile, double price) {
+        if (!(this instanceof Bank)) {
+            int i = this.getDeeds().indexOf(tile.getLabel());
+            this.getDeeds().remove(i);
+        }
+        peoperty.getDeeds().add(tile.getLabel);
+        tile.setOwnerIndex(peoperty.index);
+
+
+        if(tile.getLabel == tile.getLabel) {
+            int numOwned = peoperty.PropertyOwned;
+            peoperty.setPropertyOwned(numOwned + 1);
+
+            if(this.name != "Bank")
+            {
+                numOwned = this.getPropertyOwned();
+                this.setPropertyOwned(numOwned - 1);
+            }
+
+        }
+
+        return peoperty.transfer(this, price);
+    }
+
 
     public double transfer(Owner property, Double amount) {
         double newBalance = money - amount;
@@ -50,5 +74,8 @@ public abstract class Owner {
 
     public void setRoadOwned(int roadOwned) {
         this.RoadOwned = roadOwned;
+    }
+    public ArrayList<Integer> getDeeds() {
+        return deedIndices;
     }
 }
