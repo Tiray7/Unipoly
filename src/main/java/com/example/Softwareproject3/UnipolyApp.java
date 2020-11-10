@@ -175,8 +175,11 @@ public class UnipolyApp {
 		}
 	}
 
-	public void playerIsOnGoField() {
-		// Bank gives Player 400CHF;
+	public void playerIsOnGoField() throws FieldIndexException {
+		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
+		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO ) {
+			phase = UnipolyPhase.GO;
+		}
 	}
 
 	public void buyProperty(boolean buy, int currentFieldIndex) throws FieldIndexException {
