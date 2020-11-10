@@ -1,4 +1,4 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 import java.util.Collections;
 import java.util.HashMap;
