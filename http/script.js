@@ -129,6 +129,7 @@ async function phaseChange($scope) {
 			await Sleep(1500)
 			$alertpopup.hide();
 			moveToken($scope);
+			$scope.endTurn();
 			break;
 
 		case 'DETENTION':
@@ -400,17 +401,22 @@ app.controller('Controller', function ($scope) {
 					}
 				});
 		} else {
-			//End Turn
-			$scope.getOp('endturn',
-				function (success) {
-					// Check if  success
-					if (success) {
-						console.log('success: endTurn');
-					} else {
-						console.error('error: endTurn');
-					}
-				});
+			$scope.endTurn();
 		}
+	}
+
+	// End Turn / switchPlayer
+	$scope.endTurn = function () {
+		//End Turn
+		$scope.getOp('endturn',
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: endTurn');
+				} else {
+					console.error('error: endTurn');
+				}
+			});
 	}
 
 	// Ask Player if he wants to buy Property
