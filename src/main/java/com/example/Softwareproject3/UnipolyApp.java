@@ -200,7 +200,9 @@ public class UnipolyApp {
 	public void switchPlayer() {
 		if(currentPlayer.index == players.size() - 1) currentPlayer = players.get(0);
 		else currentPlayer = players.get(currentPlayer.index + 1);
-		phase = UnipolyPhase.WAITING;
+
+		if(currentPlayer.isJailed()) phase = UnipolyPhase.DETENTION;
+		else phase = UnipolyPhase.WAITING;
 	}
 
 	private void checkIfOverStart() {
