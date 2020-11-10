@@ -23,11 +23,12 @@ public class UnipolyApp {
 		BUY_PROPERTY,
 		TURN,
 		DETENTION,
-		GODETENTION,
+		GO_DETENTION,
 		ENDGAME,
 		SHOWCARD,
 		QUIZTIME,
 		JUMP,
+		NOT_ENOUGH_MONEY,
 		GO
 	}
 
@@ -130,7 +131,19 @@ public class UnipolyApp {
 
 	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
 		// TODO: player has to pay 100
+
 		movePlayer(fieldIndex);
+	}
+
+	public void payDetentionRansom(){
+		int DetentionRansom = 100;
+		if(currentPlayer.getMoney()<DetentionRansom) {
+			phase = UnipolyPhase.NOT_ENOUGH_MONEY;
+		}else {
+			//TODO: player has to pay 100
+		phase = UnipolyPhase.WAITING;
+		}
+
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
@@ -153,17 +166,16 @@ public class UnipolyApp {
 	public void playerIsOnGoToDetention() throws FieldIndexException {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.DETENTION ) {
-			phase = UnipolyPhase.GODETENTION;
+			phase = UnipolyPhase.GO_DETENTION;
 			int detentionIndex = 9;
-			movePlayerTo(detentionIndex);
+			currentPlayer.jail();
 		}
 	}
 
 	public void playerIsOnPropertyField() {
 		int NO_OWNER = -1;
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER &&
-				currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
+		if(board.getPropertyOwner(currentFieldIndex) == NO_OWNER) {
 			phase = UnipolyPhase.BUY_PROPERTY;
 		}
 	}
@@ -195,9 +207,12 @@ public class UnipolyApp {
 
 	public void buyProperty(boolean buy, int currentFieldIndex) throws FieldIndexException {
 		if(buy) {
-			board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
-			// geld abziehen und so
-		} else {
+			if (currentPlayer.getMoney() > board.getCostFromProperty(currentFieldIndex)) {
+				board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
+				// geld abziehen und so
+			} else
+				phase = UnipolyPhase.NOT_ENOUGH_MONEY;
+		}else{
 			switchPlayer();
 		}
 	}

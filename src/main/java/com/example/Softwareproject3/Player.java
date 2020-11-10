@@ -42,7 +42,7 @@ package com.example.Softwareproject3;
         }
 
         public void jail(){
-            token.moveTo(10);
+            token.moveTo(9);
             doublesRolled = 0;
             this.stayJailedOneRund = 3;
         }
