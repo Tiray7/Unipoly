@@ -121,8 +121,8 @@ async function phaseChange($scope) {
 			$alertpopup.hide();
 			break;
 
-		case 'GOJAIL':
-			console.log('New Phase Go to Jail');
+		case 'GODETENTION':
+			console.log('New Phase GODETENTION');
 			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
 			$alertpopup.find('.popup-con').text(txt);
 			$alertpopup.show();
@@ -131,8 +131,8 @@ async function phaseChange($scope) {
 			moveToken($scope);
 			break;
 
-		case 'JAILED':
-			console.log('New Phase Jailed');
+		case 'DETENTION':
+			console.log('New Phase DETENTION');
 			confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen?');
 			break;
 	}
