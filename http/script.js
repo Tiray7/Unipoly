@@ -363,7 +363,7 @@ app.controller('Controller', function ($scope) {
 		var send = false;
 
 		if ($scope.state.phase == 'DETETION') {
-			path = 'rolldice';
+			path = 'rolltwodice';
 			send = true;
 		} else {
 			path += 'rolldice?firstDice=';

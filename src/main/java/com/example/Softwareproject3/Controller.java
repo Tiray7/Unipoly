@@ -69,10 +69,10 @@ public class Controller {
 		return unipoly;
 	}
 
-	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/rolltwodice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice() throws FieldIndexException {
-		unipoly.rollDice();
+	public UnipolyApp rollTwoDice() throws FieldIndexException {
+		unipoly.rollTwoDice();
 		return unipoly;
 	}
 
