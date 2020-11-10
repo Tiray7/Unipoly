@@ -129,7 +129,7 @@ public class UnipolyApp {
 	}
 
 	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
-		//todo player has to pay 100
+		// TODO: player has to pay 100
 		movePlayer(fieldIndex);
 	}
 
