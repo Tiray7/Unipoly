@@ -69,10 +69,10 @@ public class Controller {
 		return unipoly;
 	}
 
-	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/rolltwodice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice() throws FieldIndexException {
-		unipoly.rollDice();
+	public UnipolyApp rollTwoDice() throws FieldIndexException {
+		unipoly.rollTwoDice();
 		return unipoly;
 	}
 
@@ -101,6 +101,13 @@ public class Controller {
 	@ResponseBody
 	public UnipolyApp userWantsToBuy(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
 		unipoly.buyProperty(buy, currentFieldIndex);
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp payDetentionRansom(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
+		unipoly.payDetentionRansom(buy, currentFieldIndex);
 		return unipoly;
 	}
 }
