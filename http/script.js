@@ -62,6 +62,17 @@ function poll($scope) {
 	});
 }
 
+// Move the PlayerToken
+function moveToken($scope) {
+	const type = $scope.state.currentPlayer.token.type.toLowerCase();
+	const prevind = $('#pos' + $scope.state.currentPlayer.token.prevFieldIndex).find("td." + type).first();
+	const currind = $('#pos' + $scope.state.currentPlayer.token.currFieldIndex).find("td.leer").first();
+	prevind.toggleClass('leer');
+	prevind.toggleClass('used ' + type);
+	currind.toggleClass('leer');
+	currind.toggleClass('used ' + type);
+}
+
 // Update UI when phase changes
 async function phaseChange($scope) {
 	const newphase = $scope.state.phase;
@@ -78,7 +89,8 @@ async function phaseChange($scope) {
 			$dicesgif.delay(1100).fadeOut(200);
 			$rolledvaluetext.html(txt)
 			await Sleep(1350);
-			$scope.moveToken();
+			moveToken($scope);
+			$scope.checkField();
 			break;
 
 		case 'BUY_PROPERTY':
@@ -109,18 +121,19 @@ async function phaseChange($scope) {
 			$alertpopup.hide();
 			break;
 
-		case 'GOJAIL':
-			console.log('New Phase Go to Jail');
+		case 'GODETENTION':
+			console.log('New Phase GODETENTION');
 			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
 			$alertpopup.find('.popup-con').text(txt);
 			$alertpopup.show();
 			await Sleep(1500)
 			$alertpopup.hide();
-			$scope.moveToken();
+			moveToken($scope);
+			$scope.endTurn();
 			break;
 
-		case 'JAILED':
-			console.log('New Phase Jailed');
+		case 'DETENTION':
+			console.log('New Phase DETENTION');
 			confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen?');
 			break;
 	}
@@ -315,16 +328,8 @@ app.controller('Controller', function ($scope) {
 		}
 	}
 
-	// Move the PlayerToken and checkfieldoptions 
-	$scope.moveToken = function () {
-		const type = $scope.state.currentPlayer.token.type.toLowerCase();
-		const prevind = $('#pos' + $scope.state.currentPlayer.token.prevFieldIndex).find("td." + type).first();
-		const currind = $('#pos' + $scope.state.currentPlayer.token.currFieldIndex).find("td.leer").first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass('used ' + type);
-		currind.toggleClass('leer');
-		currind.toggleClass('used ' + type);
-
+	// Check what to do on this Field
+	$scope.checkField = function () {
 		$scope.getOp('checkfieldoptions',
 			function (success) {
 				// Check if  success
@@ -389,23 +394,29 @@ app.controller('Controller', function ($scope) {
 					// Check if  success
 					if (success) {
 						console.log('success: MovePlayer');
-						$scope.moveToken();
+						moveToken($scope);
+						$scope.checkField();
 					} else {
 						console.error('error: MovePlayer');
 					}
 				});
 		} else {
-			//End Turn
-			$scope.getOp('endturn',
-				function (success) {
-					// Check if  success
-					if (success) {
-						console.log('success: endTurn');
-					} else {
-						console.error('error: endTurn');
-					}
-				});
+			$scope.endTurn();
 		}
+	}
+
+	// End Turn / switchPlayer
+	$scope.endTurn = function () {
+		//End Turn
+		$scope.getOp('endturn',
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: endTurn');
+				} else {
+					console.error('error: endTurn');
+				}
+			});
 	}
 
 	// Ask Player if he wants to buy Property
