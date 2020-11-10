@@ -99,15 +99,22 @@ public class Controller {
 
 	@RequestMapping(value = "/userwantstobuy", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp userWantsToBuy(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
-		unipoly.buyProperty(buy, currentFieldIndex);
+	public UnipolyApp userWantsToBuy(int currentFieldIndex) throws FieldIndexException {
+		unipoly.buyProperty(currentFieldIndex);
 		return unipoly;
 	}
 
 	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp payDetentionRansom(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
-		unipoly.payDetentionRansom(buy, currentFieldIndex);
+	public UnipolyApp payDetentionRansom() throws FieldIndexException {
+		unipoly.payDetentionRansom();
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/leavedetention", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp leaveDetention() throws FieldIndexException {
+		unipoly.leaveDetention();
 		return unipoly;
 	}
 }

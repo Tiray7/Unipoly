@@ -24,8 +24,6 @@ public abstract class Owner {
         return money;
     }
 
-
-
     public double transfer(Owner peoperty, Field tile, double price) {
         if (!(this instanceof Bank)) {
             int i = this.getDeeds().indexOf(tile.getLabel());

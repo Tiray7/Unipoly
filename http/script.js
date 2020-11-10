@@ -73,98 +73,152 @@ function moveToken($scope) {
 	currind.toggleClass('used ' + type);
 }
 
+async function showalert(text, time = 2000) {
+	$alertpopup.find('.popup-con').text(text);
+	$alertpopup.show();
+	await Sleep(time)
+	$alertpopup.hide();
+}
+
 // Update UI when phase changes
 async function phaseChange($scope) {
 	const newphase = $scope.state.phase;
 	var txt;
 
 	switch (newphase) {
-		case 'ROLLING':
-			$scope.diceVal1 = $scope.state.firstDice;
-			$scope.diceVal2 = $scope.state.secondDice;
-			const total = $scope.diceVal1 + $scope.diceVal2;
-			txt = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.diceVal1 +
-				' + ' + $scope.diceVal2 + '<br>Total: ' + total;
+		case 'ROLLINGONE':
+			var diceVal1 = $scope.state.firstDice;
+			var diceVal2 = $scope.state.secondDice;
+			const total = diceVal1 + diceVal2;
+			txt = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + diceVal1 +
+				' + ' + diceVal2 + '<br>Total: ' + total;
 			$dicesgif.show();
 			$dicesgif.delay(1100).fadeOut(200);
-			$rolledvaluetext.html(txt)
+			$rolledvaluetext.html(txt);
 			await Sleep(1350);
 			moveToken($scope);
 			$scope.checkField();
 			break;
 
+		case 'ROLLINGTWO':
+			txt = '<b>' + $scope.state.currentPlayer.name + ' rolled:</b><br>' + $scope.state.firstDice +
+				' and ' + $scope.state.secondDice;
+			$rolledvaluetext.html(txt);
+			$dicesgif.show();
+			$dicesgif.delay(1100).fadeOut(200);
+			await Sleep(1350);
+
+			if ($scope.state.rolledPash) {
+				txt = 'Du hast es geschafft die Schuldirektorin zu überzeugen.'
+				showalert(txt);
+				$scope.leaveDetention();
+			} else {
+				txt = 'Du hast es nicht geschafft die Schuldirektorin zu überzeugen.'
+				showalert(txt);
+				$scope.endTurn();
+			}
+			break;
+
+		case 'RECESS':
+			console.log('New Phase RECESS');
+			txt = 'Znüni Zeit. Ruh dich etwas aus:\nTrink einen Kaffee und iss ein Sandwich!';
+			showalert(txt);
+			$scope.endTurn();
+			break;
+
 		case 'NOT_ENOUGH_MONEY':
 			console.log('New Phase NOT_ENOUGH_MONEY');
-			txt = 'Du hast leider nicht genug Geld für eine Aktion';
-			$alertpopup.find('.popup-con').text(txt);
-			$alertpopup.show();
-			await Sleep(1500)
-			$alertpopup.hide();
+			txt = 'Du hast leider nicht genug Geld für eine Aktion\nDie Runde geht automatisch an den nächsten Spieler.';
+			showalert(txt);
 			$scope.endTurn();
 			break;
 
 		case 'BUY_PROPERTY':
 			console.log('New Phase BUY_PROPERTY');
-			$scope.buyProperty();
+			var name = $scope.state.currentFieldProperty.name;
+			var cost = $scope.state.currentFieldProperty.propertyCost;
+			if (confirm('Willst du das Modul "' + name + '" besuchen?\nKostet nur ' + cost + ' CHF!')) {
+				$scope.buyProperty();
+			}
+			$scope.endTurn();
 			break;
 
 		case 'JUMP':
-			console.log('New Phase Jump');
-			$scope.jump();
+			console.log('New Phase JUMP');
+			if (confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!")) {
+				$scope.jump();
+			} else {
+				$scope.endTurn();
+			}
 			break;
 
 		case 'GO':
 			console.log('New Phase GO');
 			txt = 'Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!';
-			$alertpopup.find('.popup-con').text(txt);
-			$alertpopup.show();
-			await Sleep(1500)
-			$alertpopup.hide();
+			showalert(txt);
 			$scope.endTurn();
 			break;
 
 		case 'SHOWCARD':
 			console.log('New Phase Showcard');
 			txt = 'Du musst jetzt eine Chance Karte ziehen!';
-			$alertpopup.find('.popup-con').text(txt);
-			$alertpopup.show();
-			await Sleep(1500)
-			$alertpopup.hide();
+			showalert(txt);
 			break;
 
 		case 'GO_DETENTION':
 			console.log('New Phase GODETENTION');
 			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
-			$alertpopup.find('.popup-con').text(txt);
-			$alertpopup.show();
-			await Sleep(1500)
-			$alertpopup.hide();
 			moveToken($scope);
+			showalert(txt);
+			$scope.endTurn();
+			break;
+
+		case 'VISIT':
+			console.log('New Phase VISIT');
+			txt = 'Einen Abstecher ins Rektorat.';
+			showalert(txt);
+			$scope.endTurn();
+			break;
+
+		case 'FREECARD':
+			console.log('New Phase FREECARD');
+			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!\nDu warnst sie das wenn sie dich von der Schule schmeist, du ihr Geheimnis rumerzählst.\nSie lässt dich sofort gehen.';
+			showalert(txt);
 			$scope.endTurn();
 			break;
 
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
-			if (true) {
-
+			var verhandeln = false;
+			var leftTimeInDetention = $scope.state.currentPlayer.leftTimeInDetention;
+			txt = 'Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\n';
+			if (leftTimeInDetention > 0) {
+				if ($scope.state.currentPlayer.money >= 100) {
+					txt += 'Willst du versuchen über deinen Schulverweis zu verhandeln, anstatt Sie zu bestechen (100 CHF)?\nDu hast noch ' + leftTimeInDetention + 'Varhandlungsversuche.';
+					verhandeln = confirm(txt);
+					txt = '';
+				} else if ($scope.state.currentPlayer.money < 100) {
+					txt = 'Du hast nicht genug Geld um Sie zu bestechen, dir bleibt nichts übrig als zu verhandeln.\n';
+					verhandeln = true;
+				}
+			} else {
+				verhandeln = false;
+				txt += 'Du hast scho 3mal versucht Sie zu überzeugen; Ohne Erfolg!\n';
+				if ($scope.state.currentPlayer.money >= 100) {
+					txt += 'Dir bleibt nichts anders übrig als sie zu bestechen.\n';
+				} else if ($scope.state.currentPlayer.money < 100) {
+					txt += 'Ausserdem hast du nicht genug Geld um Sie zu bestechen.\n';
+				}
 			}
-			if (confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen (100 CHF)?')) {
-				// Todo: Verhandeln
-				txt = 'Würfle um herauszufinden ob du es schaffts Sie zu überzeugen.';
-				$alertpopup.find('.popup-con').text(txt);
-				$alertpopup.show();
-				await Sleep(1500)
-				$alertpopup.hide();
+
+			if (verhandeln) {
+				txt += 'Würfle ein Pash um Sie zu überzeugen.';
+				showalert(txt);
 			} else {
 				// Todo: bestechen
-				txt = 'Du bestichst Sie um nicht von der Schule zu fliegen.';
-				$alertpopup.find('.popup-con').text(txt);
-				$alertpopup.show();
-				await Sleep(1500)
-				$alertpopup.hide();
+				showalert(txt);
 				$scope.payDetentionRansom();
 			}
-			$scope.endTurn();
 			break;
 	}
 }
@@ -223,9 +277,6 @@ function resetHTML(list) {
 
 var app = angular.module('monopolyApp', []);
 app.controller('Controller', function ($scope) {
-
-	$scope.diceVal1;
-	$scope.diceVal2;
 
 	poll($scope);
 
@@ -371,16 +422,14 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-	// Roll the dice(s)
-	$scope.rollDice = function () {
+	// Check how many Dices should be rolled
+	$scope.checkDice = function () {
 		var path;
-		var send = false;
-
-		if ($scope.state.phase == 'DETETION') {
+		if ($scope.state.phase == 'DETENTION') {
 			path = 'rolltwodice';
-			send = true;
+			$scope.rollDice(path);
 		} else {
-			path += 'rolldice?firstDice=';
+			path = 'rolldice?firstDice=';
 			input = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
 			// Check if Player pressed abort
 			if (input != null) {
@@ -391,58 +440,55 @@ app.controller('Controller', function ($scope) {
 				} else {
 					console.log('success: assign value of first Dice');
 					path += input;
-					send = true;
+					$scope.rollDice(path);
 				}
 			}
-		}
-
-		if (send) {
-			// RollDice
-			$scope.getOp(path,
-				function (success) {
-					// Check if starting turn worked
-					if (success) {
-						console.log('success: rollDice');
-					} else {
-						console.error('error: rollDice');
-						alert('Error: Please try again!');
-					}
-				});
 		}
 	}
 
-	// Ask Player if he wants to Teleport
-	$scope.jump = function () {
-		var next = confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!");
-		if (next) {
-			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
-			// Check if Player submited a acceptable value
-			while (moveby == null || moveby == '' || moveby < 1 || moveby > 35) {
-				if (moveby == null || moveby == '') {
-					console.warn('error: assign value of jump Distance.');
-					alert('Error: Please try again!');
-				} else if (moveby < 1 || moveby > 35) {
-					console.warn('error: Value needs to be between 1-35');
+	// Roll the dice(s)
+	$scope.rollDice = function (path) {
+		$scope.getOp(path,
+			function (success) {
+				// Check if starting turn worked
+				if (success) {
+					console.log('success: rollDice');
+				} else {
+					console.error('error: rollDice');
 					alert('Error: Please try again!');
 				}
-				var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
-			}
+			});
+	}
 
-			// TODO: Player has to pay 100$ 
-			$scope.getOp('jumpplayer?moveby=' + moveby,
-				function (success) {
-					// Check if  success
-					if (success) {
-						console.log('success: jumpPlayer');
-						moveToken($scope);
-						$scope.checkField();
-					} else {
-						console.error('error: jumpPlayer');
-					}
-				});
-		} else {
-			$scope.endTurn();
+
+	// Ask Player if he wants to Teleport
+	$scope.jump = function () {
+
+		var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
+		// Check if Player submited a acceptable value
+		while (moveby == null || moveby == '' || moveby < 1 || moveby > 35) {
+			if (moveby == null || moveby == '') {
+				console.warn('error: assign value of jump Distance.');
+				alert('Error: Please try again!');
+			} else if (moveby < 1 || moveby > 35) {
+				console.warn('error: Value needs to be between 1-35');
+				alert('Error: Please try again!');
+			}
+			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
 		}
+
+		// TODO: Player has to pay 100$ 
+		$scope.getOp('jumpplayer?moveby=' + moveby,
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: jumpPlayer');
+					moveToken($scope);
+					$scope.checkField();
+				} else {
+					console.error('error: jumpPlayer');
+				}
+			});
 	}
 
 	// End Turn / switchPlayer
@@ -462,8 +508,7 @@ app.controller('Controller', function ($scope) {
 	// Ask Player if he wants to buy Property
 	$scope.buyProperty = function () {
 		const currplayer = $scope.state.currentPlayer;
-		var next = confirm("Willst du dieses Modul besuchen?\nKostet nur ${PropertyValue}CHF!");
-		$scope.getOp('userwantstobuy?buy=' + next + '&currentFieldIndex=' + currplayer.token.currFieldIndex,
+		$scope.getOp('userwantstobuy?currentFieldIndex=' + currplayer.token.currFieldIndex,
 			function (success) {
 				// Check if  success
 				if (success) {
@@ -487,13 +532,22 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
+	$scope.leaveDetention = function () {
+		$scope.getOp('leavedetention',
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: leaveDetention');
+				} else {
+					console.error('error: leaveDetention');
+				}
+			});
+	}
+
 	// Player pressed on Card Deck
 	$scope.showCard = async function () {
 		const txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
-		$alertpopup.find('.popup-con').text(txt);
-		$alertpopup.show();
-		await Sleep(2000)
-		$alertpopup.hide();
+		showalert(txt);
 	}
 
 	// Player pressed closepopup
