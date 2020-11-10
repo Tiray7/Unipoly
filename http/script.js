@@ -93,6 +93,16 @@ async function phaseChange($scope) {
 			$scope.checkField();
 			break;
 
+		case 'NOT_ENOUGH_MONEY':
+			console.log('New Phase NOT_ENOUGH_MONEY');
+			txt = 'Du hast leider nicht genug Geld für eine Aktion';
+			$alertpopup.find('.popup-con').text(txt);
+			$alertpopup.show();
+			await Sleep(1500)
+			$alertpopup.hide();
+			$scope.endTurn();
+			break;
+
 		case 'BUY_PROPERTY':
 			console.log('New Phase BUY_PROPERTY');
 			$scope.buyProperty();
@@ -122,7 +132,7 @@ async function phaseChange($scope) {
 			$alertpopup.hide();
 			break;
 
-		case 'GODETENTION':
+		case 'GO_DETENTION':
 			console.log('New Phase GODETENTION');
 			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
 			$alertpopup.find('.popup-con').text(txt);
@@ -135,6 +145,9 @@ async function phaseChange($scope) {
 
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
+			if (true) {
+
+			}
 			if (confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen (100 CHF)?')) {
 				// Todo: Verhandeln
 				txt = 'Würfle um herauszufinden ob du es schaffts Sie zu überzeugen.';
@@ -149,6 +162,7 @@ async function phaseChange($scope) {
 				$alertpopup.show();
 				await Sleep(1500)
 				$alertpopup.hide();
+				$scope.payDetentionRansom();
 			}
 			$scope.endTurn();
 			break;
@@ -456,6 +470,19 @@ app.controller('Controller', function ($scope) {
 					console.log('success: userwantstobuy');
 				} else {
 					console.error('error: userwantstobuy');
+				}
+			});
+	}
+
+	// Besteche die Direktorin
+	$scope.payDetentionRansom = function () {
+		$scope.getOp('paydetentionransom',
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: paydetentionransom');
+				} else {
+					console.error('error: paydetentionransom');
 				}
 			});
 	}

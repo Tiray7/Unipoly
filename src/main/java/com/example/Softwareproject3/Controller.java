@@ -103,4 +103,11 @@ public class Controller {
 		unipoly.buyProperty(buy, currentFieldIndex);
 		return unipoly;
 	}
+
+	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp payDetentionRansom(@RequestParam boolean buy, int currentFieldIndex) throws FieldIndexException {
+		unipoly.payDetentionRansom(buy, currentFieldIndex);
+		return unipoly;
+	}
 }
