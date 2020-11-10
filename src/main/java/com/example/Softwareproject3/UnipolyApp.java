@@ -123,6 +123,10 @@ public class UnipolyApp {
 		currentPlayer.getToken().moveBy(rolledValue);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
+	public void movePlayerTo(int fieldIndex) throws FieldIndexException {
+		currentPlayer.getToken().moveTo(fieldIndex);
+		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+	}
 
 	public void checkFieldOptions() throws FieldIndexException {
 		switch(currentPlayer.getToken().getCurrentFieldLabel()) {
@@ -145,6 +149,8 @@ public class UnipolyApp {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if(board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.DETENTION ) {
 			phase = UnipolyPhase.GODETENTION;
+			int detentionIndex = 9;
+			movePlayerTo(detentionIndex);
 		}
 	}
 
