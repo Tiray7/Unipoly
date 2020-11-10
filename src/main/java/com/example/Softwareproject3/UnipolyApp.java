@@ -119,13 +119,18 @@ public class UnipolyApp {
 		movePlayer(this.firstDice + secondDice);
 	}
 
-	public void movePlayer(int rolledValue) throws FieldIndexException {
+	private void movePlayer(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
-	public void movePlayerTo(int fieldIndex) throws FieldIndexException {
+	private void movePlayerTo(int fieldIndex) throws FieldIndexException {
 		currentPlayer.getToken().moveTo(fieldIndex);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+	}
+
+	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
+		//todo player has to pay 100
+		movePlayer(fieldIndex);
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
