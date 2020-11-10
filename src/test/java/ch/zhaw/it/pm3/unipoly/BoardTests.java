@@ -1,4 +1,4 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 import org.junit.Before;
 import org.junit.Test;

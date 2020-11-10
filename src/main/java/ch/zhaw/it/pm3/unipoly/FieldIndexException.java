@@ -1,4 +1,4 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 /**
  * The given field index is out of bounds if this exception is thrown.
