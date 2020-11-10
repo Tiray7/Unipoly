@@ -22,7 +22,7 @@ public class UnipolyApp {
 		ROLLING,
 		BUY_PROPERTY,
 		TURN,
-		JAILED,
+		DETENTION,
 		GODETENTION,
 		ENDGAME,
 		SHOWCARD,
