@@ -106,7 +106,7 @@ public class UnipolyApp {
 		currentPlayer = players.get(0);
 	}
 
-	public void rollDice() {
+	public void rollTwoDice() {
 		firstDice = new Random().nextInt(6) + 1;
 		secondDice = new Random().nextInt(6) + 1;
 		if(firstDice == secondDice) rolledPash = true;
