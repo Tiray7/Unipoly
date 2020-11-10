@@ -69,6 +69,13 @@ public class Controller {
 		return unipoly;
 	}
 
+	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp rollDice() throws FieldIndexException {
+		unipoly.rollDice();
+		return unipoly;
+	}
+
 	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public UnipolyApp endTurn() {
@@ -83,10 +90,10 @@ public class Controller {
 		return unipoly;
 	}
 
-	@RequestMapping(value = "/moveplayer", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp movePlayer(@RequestParam int moveby) throws FieldIndexException {
-		unipoly.movePlayer(moveby);
+	public UnipolyApp jumpPlayer(@RequestParam int moveby) throws FieldIndexException {
+		unipoly.jumpPlayer(moveby);
 		return unipoly;
 	}
 

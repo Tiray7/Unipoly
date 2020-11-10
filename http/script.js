@@ -135,7 +135,22 @@ async function phaseChange($scope) {
 
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
-			confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen?');
+			if (confirm('Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...\nMöchtest du um deinen Schulverweis verhandeln oder versuchen Sie zu bestechen (100 CHF)?')) {
+				// Todo: Verhandeln
+				txt = 'Würfle um herauszufinden ob du es schaffts Sie zu überzeugen.';
+				$alertpopup.find('.popup-con').text(txt);
+				$alertpopup.show();
+				await Sleep(1500)
+				$alertpopup.hide();
+			} else {
+				// Todo: bestechen
+				txt = 'Du bestichst Sie um nicht von der Schule zu fliegen.';
+				$alertpopup.find('.popup-con').text(txt);
+				$alertpopup.show();
+				await Sleep(1500)
+				$alertpopup.hide();
+			}
+			$scope.endTurn();
 			break;
 	}
 }
@@ -344,31 +359,41 @@ app.controller('Controller', function ($scope) {
 
 	// Roll the dice(s)
 	$scope.rollDice = function () {
+		var path;
+		var send = false;
 
-		var diceVal1 = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
-
-		// Check if Player pressed abort
-		if (diceVal1 != null) {
-
-			// Check if Player submited a acceptable value
-			if (diceVal1 == '' || diceVal1 < 1 || diceVal1 > 6) {
-				console.warn('error: The entered value is out of Range (1-6)!');
-				alert('Error: Value needs to be between 1-6!');
-			} else {
-				console.log('success: assign value of first Dice');
-
-				// Send Value of first Dice to java
-				$scope.getOp('rolldice?firstDice=' + diceVal1,
-					function (success) {
-						// Check if starting turn worked
-						if (success) {
-							console.log('success: rollDice');
-						} else {
-							console.error('error: rollDice');
-							alert('Error: Please try again!');
-						}
-					});
+		if ($scope.state.phase == 'DETETION') {
+			path = 'rolldice';
+			send = true;
+		} else {
+			path += 'rolldice?firstDice=';
+			input = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
+			// Check if Player pressed abort
+			if (input != null) {
+				// Check if Player submited a acceptable value
+				if (input == '' || input < 1 || input > 6) {
+					console.warn('error: The entered value is out of Range (1-6)!');
+					alert('Error: Value needs to be between 1-6!');
+				} else {
+					console.log('success: assign value of first Dice');
+					path += input;
+					send = true;
+				}
 			}
+		}
+
+		if (send) {
+			// RollDice
+			$scope.getOp(path,
+				function (success) {
+					// Check if starting turn worked
+					if (success) {
+						console.log('success: rollDice');
+					} else {
+						console.error('error: rollDice');
+						alert('Error: Please try again!');
+					}
+				});
 		}
 	}
 
@@ -390,15 +415,15 @@ app.controller('Controller', function ($scope) {
 			}
 
 			// TODO: Player has to pay 100$ 
-			$scope.getOp('moveplayer?moveby=' + moveby,
+			$scope.getOp('jumpplayer?moveby=' + moveby,
 				function (success) {
 					// Check if  success
 					if (success) {
-						console.log('success: MovePlayer');
+						console.log('success: jumpPlayer');
 						moveToken($scope);
 						$scope.checkField();
 					} else {
-						console.error('error: MovePlayer');
+						console.error('error: jumpPlayer');
 					}
 				});
 		} else {
