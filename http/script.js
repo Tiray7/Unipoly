@@ -110,6 +110,7 @@ async function phaseChange($scope) {
 			$alertpopup.show();
 			await Sleep(1500)
 			$alertpopup.hide();
+			$scope.endTurn();
 			break;
 
 		case 'SHOWCARD':
