@@ -37,7 +37,7 @@
 
 .board {
   font-variant-caps: small-caps;
-  font-family: "Raleway", sans-serif;
+  font-family: "raleway", Helvetica, sans-serif;
   display: grid;
   grid-template-columns: 125px repeat(8, 80px) 125px;
   grid-template-rows: 125px repeat(8, 80px) 125px;
@@ -67,12 +67,16 @@
 }
 
 #playerlist {
-  font-variant: normal;
-  font-size: 20px;
   padding-bottom: 5px;
   text-align: left;
   grid-column: 1 / 3;
   grid-row: 4/6;
+}
+
+#playerlist td {
+  font-family: "raleway", Helvetica, sans-serif;
+  font-variant: normal;
+  font-size: 20px;
 }
 
 #playerlist .listtoken {
@@ -124,11 +128,6 @@
   grid-column: 4;
   grid-row: 1 / 3;
 }
-.dice-con .label {
-  font-size: 17px;
-  font-weight: bold;
-  padding-bottom: 5px;
-}
 
 .chance-deck {
   grid-column: 3 / 7;
@@ -136,17 +135,6 @@
   transform: rotate(-30deg);
   /*margin-top: 60px;*/
   margin-left: 6em;
-}
-.chance-deck .label {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.label {
-  text-align: center;
-  font-weight: 500;
-  letter-spacing: 3px;
-  padding-bottom: 10px;
 }
 
 .dice {
@@ -158,7 +146,7 @@
 .deck {
   width: 160px;
   height: 115px;
-  background-image: url('chancecardback.png');
+  background-image: url("chancecardback.png");
   background-size: 100%;
   background-position: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

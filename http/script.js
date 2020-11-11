@@ -17,6 +17,9 @@ var $playerlist;
 var $dicesgif;
 var $lastphase;
 var $alertpopup;
+var $numbernpccon;
+var $numbernpc = 0;
+var $diceinput;
 
 $(document).ready(function () {
 
@@ -25,7 +28,8 @@ $(document).ready(function () {
 
 	// join
 	$gamemodeop = $('#gamemode');
-	$gamemodetext = $('#gamemode-text')
+	$gamemodetext = $('#gamemode-text');
+	$numbernpccon = $('#number-npc-con');
 	$joinName = $('#join-name');
 	$joinToken = $('#join-token');
 	$joinwaiting = $('#join-waiting');
@@ -37,6 +41,7 @@ $(document).ready(function () {
 	$playerlist = $('#playerlist');
 	$dicesgif = $('#rollingdices');
 	$rolledvaluetext = $('#rolledvalue');
+	$diceinput = $('#chooseDice_popup');
 
 	// Popups
 	$alertpopup = $('#alert_popup');
@@ -74,7 +79,7 @@ function moveToken($scope) {
 }
 
 async function showalert(text, time = 2000) {
-	$alertpopup.find('.popup-con').text(text);
+	$alertpopup.find('.popup-p').text(text);
 	$alertpopup.show();
 	await Sleep(time)
 	$alertpopup.hide();
@@ -264,6 +269,7 @@ function resetHTML(list) {
 		prevind.toggleClass('used ' + type);
 	}
 	$gameboard.hide();
+	$numbernpc = 0;
 	$rolledvaluetext.html('');
 	$menu.show();
 	$joinToken.hide();
@@ -320,15 +326,24 @@ app.controller('Controller', function ($scope) {
 	// Read User Input on Gamemode
 	$scope.gamemode = function (gamemode) {
 		var text;
-		const mode = gamemode;
-		$gamemode = mode;
+		$gamemode = gamemode;
 		$gamemodeop.hide();
-		if (mode == 'SINGLE') {
+		if (gamemode == 'SINGLE') {
 			text = 'Playing against AI';
-		} else if (mode == 'MULTI') {
+			$numbernpccon.show();
+		} else if (gamemode == 'MULTI') {
 			text = 'Playing in Multiplayer Modus';
+			$joinwaiting.show();
+			$joinName.show();
 		}
 		$gamemodetext.text(text);
+	}
+
+	// SinglePlayer is able to choose Number of NPCs
+	$scope.numbernpc = function (num) {
+		console.log(num + ' NPCs choosen');
+		$numbernpc = num;
+		$numbernpccon.hide();
 		$joinwaiting.show();
 		$joinName.show();
 	}
@@ -336,7 +351,7 @@ app.controller('Controller', function ($scope) {
 	$scope.join = function (token) {
 		var playerlist = '';
 		var list;
-		const mode = $gamemode;
+		// Call function join() in class UnipolyApp
 		$scope.getOp('join?name=' + $scope.username + "&token=" + token,
 			function (success) {
 				// Check if adding new Payer was successfull
@@ -347,27 +362,32 @@ app.controller('Controller', function ($scope) {
 					console.error('error: adding Player: ' + $scope.username);
 					alert('Error: adding Player: ' + $scope.username);
 				}
-
 				// List all added Players
 				list = $scope.state.players;
+				// Iterate trough all added Players and create a HTML text to display on right in the Menu
 				for (let i = 0; i < list.length; i++) {
 					type = list[i].token.type.toLowerCase();
 					playerlist += list[i].name + ': ' + type.charAt(0).toUpperCase() + type.slice(1) + '<br>';
 				}
-				if ((mode == 'SINGLE' && list.length == 1) || (mode == 'MULTI' && list.length >= 2)) {
+				// In Singleplayer only one Player should be able to join
+				// In Multiplayer up to 4 Player shoud be able to join and at least 2 have to
+				if (($gamemode == 'SINGLE' && list.length == 1) || ($gamemode == 'MULTI' && list.length >= 2)) {
+					// If the minimum of needed Player has joined, the option to start the game should be displayed
 					$joinstart.show();
 				}
-				if ((mode == 'SINGLE' && list.length < 1) || (mode == 'MULTI' && list.length < 4)) {
+				// If there is still room for more Players, The join Option should be displayed
+				if (($gamemode == 'SINGLE' && list.length < 1) || ($gamemode == 'MULTI' && list.length < 4)) {
 					$joinName.show();
 				}
 				$joinToken.hide();
+				// Display the current List of added Players
 				$joininglist.html(playerlist);
 			});
 	}
 
 	// Begin Game
 	$scope.start = function () {
-		$scope.getOp('start?gamemode=' + $gamemode,
+		$scope.getOp('start?gamemode=' + $gamemode + '&npcnum=' + $numbernpc,
 			function (success) {
 				// Check if Gamemode choice got accepted
 				if (success) {
@@ -422,27 +442,13 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-	// Check how many Dices should be rolled
-	$scope.checkDice = function () {
-		var path;
+	$scope.ToggleDiceInput = function () {
 		if ($scope.state.phase == 'DETENTION') {
-			path = 'rolltwodice';
-			$scope.rollDice(path);
+			console.log('Player is in Detention, therefor rolls both dices.')
+			$scope.rollDice('rolltwodice');
 		} else {
-			path = 'rolldice?firstDice=';
-			input = prompt('Gib den gewünschten Wert des Ersten Würfels ein (1-6):', '');
-			// Check if Player pressed abort
-			if (input != null) {
-				// Check if Player submited a acceptable value
-				if (input == '' || input < 1 || input > 6) {
-					console.warn('error: The entered value is out of Range (1-6)!');
-					alert('Error: Value needs to be between 1-6!');
-				} else {
-					console.log('success: assign value of first Dice');
-					path += input;
-					$scope.rollDice(path);
-				}
-			}
+			console.log('Player has to Input the first Dice.')
+			$diceinput.toggle();
 		}
 	}
 
