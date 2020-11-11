@@ -13,3 +13,10 @@
 #chooseDice_popup .popup-con {
     text-align: center;
 }
+
+div.popup-p {
+    font-family: "raleway", Helvetica, sans-serif;
+    font-size: 1.6em;
+    margin: 0;
+    font-weight: normal;
+}

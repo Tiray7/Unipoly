@@ -555,7 +555,25 @@ app.controller('Controller', function ($scope) {
 		if ($scope.state.phase == 'JUMP') {
 			$scope.jump(FieldIndex);
 		} else {
-			var txt = 'keine Info zu diesem Feld! Comming Soon!';
+			var field = $scope.state.board.fields[FieldIndex];
+			if (field.label == 'PROPERTY') {
+				txt = `<h2>${field.name}</h2>`;
+				if (field.ownerIndex == -1) {
+					txt += `Gehört: Niemandem<br>`;
+				} else {
+					txt += `Gehört: ${$scope.state.players[field.ownerIndex].name}<br>`;
+					txt += `Miete: ${field.currentRent}CHF<br>`;
+				}
+				txt += `Kaufpreis: ${field.propertyCost}CHF<br>`;
+				txt += `Miete LV1: ${field.rentLV1}CHF<br>`;
+				txt += `Miete LV2: ${field.rentLV2}CHF<br>`;
+				txt += `Miete LV3: ${field.rentLV3}CHF<br>`;
+				txt += `Miete LV4: ${field.rentLV4}CHF<br>`;
+				txt += `Miete LV5: ${field.rentLV5}CHF<br>`;
+			} else {
+				txt = `<h2>${field.label.charAt(0) + field.label.slice(1).toLowerCase()} Feld</h2>`;
+				txt += `${field.explanation}`;
+			}
 			showalert(txt);
 		}
 	}
@@ -568,7 +586,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
 		txt += `Module: ${player.propertyOwned}<br>`;
-		txt += `ModulGruppen: ${player.roadOwned}<br>`;
+		txt += `ModulGruppen: ${player.roadOwned}`;
 		showalert(txt);
 	}
 
