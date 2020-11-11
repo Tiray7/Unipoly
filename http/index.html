@@ -17,392 +17,425 @@
   <link rel="stylesheet" href="studentboard.css">
   <link rel="stylesheet" href="tokenstyle.css">
   <link rel="stylesheet" href="popupstyle.css">
+  <link rel="stylesheet" href="dice.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body ng-app='monopolyApp' ng-controller='Controller' class='noselect'>
-<header class="site-header">
-  <img class="logo" src="unipolybannerwhite.png" />
-  <div id="new-btn" href="#" class="box-btn" ng-click='resetGame()'>
-    <div class="btn btn-two">
-      <span>Start New Game</span>
+  <header class="site-header">
+    <img class="logo" src="unipolybannerwhite.png" />
+    <div id="new-btn" href="#" class="box-btn" ng-click='resetGame()'>
+      <div class="btn btn-two">
+        <span>Start New Game</span>
+      </div>
     </div>
-  </div>
-  <!--
+    <!--
   <h1 class="title">Unipoly</h1>
   <h2 class="description">Software Projekt - Ein Monopoly Spiel</h2>
   -->
-</header>
-<div id="board">
+  </header>
+  <div id="board">
 
-  <div id="menu" href="#" class="popup_background">
-    <div class="menu-container">
-      <div class="filtercon">
-        <div id='join'>
-          <span id='gamemode-text' href='#'>Choose a Gamemode!</span>
-          <div id='gamemode' href='#'>
-            <div class="box-btn-menu" ng-click='gamemode("SINGLE")'>
-              <div class="btn btn-two">
-                <span>Singleplayer</span>
+    <div id="menu" href="#" class="popup_background">
+      <div class="menu-container">
+        <div class="filtercon">
+          <div id='join'>
+            <h1 id='gamemode-text' href='#'>Choose a Gamemode!</h1>
+            <div id='gamemode' href='#'>
+              <div class="box-btn-menu" ng-click='gamemode("SINGLE")'>
+                <div class="btn btn-two">
+                  <span>Singleplayer</span>
+                </div>
+              </div>
+              <div class="box-btn-menu" ng-click='gamemode("MULTI")'>
+                <div class="btn btn-two">
+                  <span>Mulitplayer</span>
+                </div>
               </div>
             </div>
-            <div class="box-btn-menu" ng-click='gamemode("MULTI")'>
-              <div class="btn btn-two">
-                <span>Mulitplayer</span>
-              </div>
+            <div id='number-npc-con' href='#' hidden>
+              <h2>Against how many NPCs do you want to play?</h2>
+              <table>
+                <tr>
+                  <td class="grow" ng-click='numbernpc(1)'>
+                    1
+                  </td>
+                  <td class="grow" ng-click='numbernpc(2)'>
+                    2
+                  </td>
+                  <td class="grow" ng-click='numbernpc(3)'>
+                    3
+                  </td>
+                </tr>
+              </table>
             </div>
-          </div>
-          </span>
-          <div id='join-waiting' class="waiting" ng-show='state.phase=="WAITING"' hidden>
-            <h3>Player:</h3>
-            <div id='joininglist' href="#"></div>
-            <button id='join-start' class="btn-start grow" ng-click='start()' hidden>Start</button>
-          </div>
-          <div id='join-name' hidden>
-            <h3>Add Player:</h3>
-            <input ng-model='username'>
-            <button class="btn-join grow" ng-click='chooseToken()'>Join</button>
-          </div>
-          <div id='join-token' hidden>
-            <h3>Choose a token:</h3>
-            <table>
-              <tr>
-                <td ng-click='join("ATOM")' >
-                  <div class='atom token-menu grow' />
-                </td>
-                <td ng-click='join("ONEPLUS")'>
-                  <div class='oneplus token-menu grow' />
-                </td>
-                <td ng-click='join("EINSTEIN")'>
-                  <div class='einstein token-menu grow' />
-                </td>
-                <td ng-click='join("CRADLE")'>
-                  <div class='cradle token-menu grow' />
-                </td>
-              </tr>
-              <tr>
-                <td ng-click='join("EQUATION")'>
-                  <div class='equation token-menu grow' />
-                </td>
-                <td ng-click='join("HELIUM")'>
-                  <div class='helium token-menu grow' />
-                </td>
-                <td ng-click='join("LAB")'>
-                  <div class='lab token-menu grow' />
-                </td>
-                <td ng-click='join("LIGHTBULB")'>
-                  <div class='lightbulb token-menu grow' />
-                </td>
-              </tr>
-            </table>
+            <div id='join-waiting' class="waiting" hidden>
+              <h2>Player:</h2>
+              <h3 id='joininglist' href="#"></h3>
+              <button id='join-start' class="btn-start grow" ng-click='start()' hidden>Start</button>
+            </div>
+            <div id='join-name' hidden>
+              <h2>Add Player:</h2>
+              <input ng-model='username'>
+              <button class="btn-join grow" ng-click='chooseToken()'>Join</button>
+            </div>
+            <div id='join-token' hidden>
+              <h2>Choose a token:</h2>
+              <table>
+                <tr>
+                  <td ng-click='join("ATOM")'>
+                    <div class='atom token-menu grow' />
+                  </td>
+                  <td ng-click='join("ONEPLUS")'>
+                    <div class='oneplus token-menu grow' />
+                  </td>
+                  <td ng-click='join("EINSTEIN")'>
+                    <div class='einstein token-menu grow' />
+                  </td>
+                  <td ng-click='join("CRADLE")'>
+                    <div class='cradle token-menu grow' />
+                  </td>
+                </tr>
+                <tr>
+                  <td ng-click='join("EQUATION")'>
+                    <div class='equation token-menu grow' />
+                  </td>
+                  <td ng-click='join("HELIUM")'>
+                    <div class='helium token-menu grow' />
+                  </td>
+                  <td ng-click='join("LAB")'>
+                    <div class='lab token-menu grow' />
+                  </td>
+                  <td ng-click='join("LIGHTBULB")'>
+                    <div class='lightbulb token-menu grow' />
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="alert_popup" href="#" class="popup_background" ng-click='closealert()' hidden>
-    <div class="popup-con">
+    <div id="alert_popup" href="#" class="popup_background" ng-click='closealert()' hidden>
+      <div class="popup-con">
+        <h3 class="popup-p">Wähle den gewünschten Wert des Ersten Würfels:</h3>
+      </div>
     </div>
-  </div>
-
-  <div id="gameboard" href="#" class="table" hidden>
-    <div id="boardgrid" class="board">
-      <div class="center">
-        <div class="dice-con zoom" ng-click='checkDice()'>
-          <h2 class="label">Roll The Dices</h2>
-          <img class="dice" src="twodices.png" />
-        </div>
-        <div id="rollingdices" class="pop-dice-box">
-          <img src="tenor.gif" />
-        </div>
-        <div id="rolledvalue" class="dice-sol"></div>
-        <img class="board-title" src="unipolybanner.png" />
-        <div id="playerlist"></div>
-        <div id="drawchance" class="chance-deck zoom">
-          <!-- <h2 class="label"></h2> -->
-          <div class="deck" ng-click='showCard()'></div>
-        </div>
+    <div id="chooseDice_popup" href="#" class="popup_background" ng-click='ToggleDiceInput()' hidden>
+      <div class="popup-con">
+        <h3 class="popup-p">Wähle den gewünschten Wert des Ersten Würfels:</h3>
+        <table>
+          <tr>
+            <td class="dice1 grow" ng-click='rollDice("rolldice?firstDice=1")'></td>
+            <td class="dice2 grow" ng-click='rollDice("rolldice?firstDice=2")'></td>
+            <td class="dice3 grow" ng-click='rollDice("rolldice?firstDice=3")'></td>
+          </tr>
+          <tr>
+            <td class="dice4 grow" ng-click='rollDice("rolldice?firstDice=4")'></td>
+            <td class="dice5 grow" ng-click='rollDice("rolldice?firstDice=5")'></td>
+            <td class="dice6 grow" ng-click='rollDice("rolldice?firstDice=6")'></td>
+          </tr>
+        </table>
       </div>
+    </div>
 
-      <div id='pos0' class="space corner go">
-        <div class="container">
-          <div class="instructions">Nimm CHF 200 Honorar im vorbeigehen</div>
-          <div class="go-word">Los</div>
+    <div id="gameboard" href="#" class="table" hidden>
+      <div id="boardgrid" class="board">
+        <div class="center">
+          <div class="dice-con grow" ng-click='ToggleDiceInput()'>
+            <h2>Roll The Dices</h2>
+            <img class="dice" src="twodices.png" />
+          </div>
+          <div id="rollingdices" class="pop-dice-box">
+            <img src="tenor.gif" />
+          </div>
+          <div id="rolledvalue" class="dice-sol"></div>
+          <img class="board-title" src="unipolybanner.png" />
+          <div id="playerlist"></div>
+          <div id="drawchance" class="chance-deck grow">
+            <div class="deck" ng-click='showCard()'></div>
+          </div>
         </div>
-        <div class="arrow fa fa-long-arrow-left"></div>
-      </div>
 
-      <div class="row horizontal-row bottom-row">
-        <div id='pos8' class="space property">
+        <div id='pos0' class="space corner go">
           <div class="container">
-            <div class="color-bar light-blue"></div>
-            <div class="name">Psychologie</div>
-            <div class="price">Einschreibe- gebühr CHF 120</div>
+            <div class="instructions">Nimm CHF 200 Honorar im vorbeigehen</div>
+            <div class="go-word">Los</div>
           </div>
+          <div class="arrow fa fa-long-arrow-left"></div>
         </div>
-        <div id='pos7' class="space jumper">
-          <div class="container">
-            <div class="name">Springer</div>
-            <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis CHF 100</div>
-          </div>
-        </div>
-        <div id='pos6' class="space property">
-          <div class="container">
-            <div class="color-bar light-blue"></div>
-            <div class="name long-name">Geistes- wissenschaften</div>
-            <div class="price">Einschreibe- gebühr CHF 100</div>
-          </div>
-        </div>
-        <div id='pos5' class="space property">
-          <div class="container">
-            <div class="color-bar light-blue"></div>
-            <div class="name">Theologie</div>
-            <div class="price">Einschreibe- gebühr CHF 100</div>
-          </div>
-        </div>
-        <div id='pos4' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
-          </div>
-        </div>
-        <div id='pos3' class="space property">
-          <div class="container">
-            <div class="color-bar dark-purple"></div>
-            <div class="name">Geographie</div>
-            <div class="price">Einschreibe- gebühr CHF 60</div>
-          </div>
-        </div>
-        <div id='pos2' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
-          </div>
-        </div>
-        <div id='pos1' class="space property">
-          <div class="container">
-            <div class="color-bar dark-purple"></div>
-            <div class="name">Geschichte</div>
-            <div class="price">Einschreibe- gebühr CHF 60</div>
-          </div>
-        </div>
-      </div>
 
-      <div id='pos9' class="space corner jail">
-        <div class="just">Nur zu</div>
-        <div class="drawing">
-          <div class="container">
-            <div class="name">Beim</div>
-            <div class="window">
-              <img class="" src="nachsitzen.png" style="width:60px;height:45px;" />
-              <!--
+        <div class="row horizontal-row bottom-row">
+          <div id='pos8' class="space property">
+            <div class="container">
+              <div class="color-bar light-blue"></div>
+              <div class="name">Psychologie</div>
+              <div class="price">Einschreibe- gebühr CHF 120</div>
+            </div>
+          </div>
+          <div id='pos7' class="space jumper">
+            <div class="container">
+              <div class="name">Springer</div>
+              <i class="drawing fa fa-jumper"></i>
+              <div class="price">Preis CHF 100</div>
+            </div>
+          </div>
+          <div id='pos6' class="space property">
+            <div class="container">
+              <div class="color-bar light-blue"></div>
+              <div class="name long-name">Geistes- wissenschaften</div>
+              <div class="price">Einschreibe- gebühr CHF 100</div>
+            </div>
+          </div>
+          <div id='pos5' class="space property">
+            <div class="container">
+              <div class="color-bar light-blue"></div>
+              <div class="name">Theologie</div>
+              <div class="price">Einschreibe- gebühr CHF 100</div>
+            </div>
+          </div>
+          <div id='pos4' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
+          </div>
+          <div id='pos3' class="space property">
+            <div class="container">
+              <div class="color-bar dark-purple"></div>
+              <div class="name">Geographie</div>
+              <div class="price">Einschreibe- gebühr CHF 60</div>
+            </div>
+          </div>
+          <div id='pos2' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
+          </div>
+          <div id='pos1' class="space property">
+            <div class="container">
+              <div class="color-bar dark-purple"></div>
+              <div class="name">Geschichte</div>
+              <div class="price">Einschreibe- gebühr CHF 60</div>
+            </div>
+          </div>
+        </div>
+
+        <div id='pos9' class="space corner jail">
+          <div class="just">Nur zu</div>
+          <div class="drawing">
+            <div class="container">
+              <div class="name">Beim</div>
+              <div class="window">
+                <img class="" src="nachsitzen.png" style="width:60px;height:45px;" />
+                <!--
               <div class="bar"></div>
               <div class="bar"></div>
               <div class="bar"></div>
             -->
-              <i class="person fa fa-frown-o"></i>
+                <i class="person fa fa-frown-o"></i>
+              </div>
+              <div class="name">Nachsitzen</div>
             </div>
+          </div>
+          <div class="visiting">Besuch</div>
+        </div>
+
+        <div class="row vertical-row left-row">
+          <div id='pos17' class="space property">
+            <div class="container">
+              <div class="color-bar orange"></div>
+              <div class="name">Architektur</div>
+              <div class="price">Einschreibe- gebühr CHF 200</div>
+            </div>
+          </div>
+          <div id='pos16' class="space jumper">
+            <div class="container">
+              <div class="name">Springer</div>
+              <i class="drawing fa fa-jumper"></i>
+              <div class="price">Preis CHF 100</div>
+            </div>
+          </div>
+          <div id='pos15' class="space property">
+            <div class="container">
+              <div class="color-bar orange"></div>
+              <div class="name long-name">Bau- ingenieurwesen</div>
+              <div class="price">Einschreibe- gebühr CHF 180</div>
+            </div>
+          </div>
+          <div id='pos14' class="space property">
+            <div class="container">
+              <div class="color-bar orange"></div>
+              <div class="name long-name">Umwelt- ingenieurwesen</div>
+              <div class="price">Einschreibe- gebühr CHF 180</div>
+            </div>
+          </div>
+          <div id='pos13' class="space property">
+            <div class="container">
+              <div class="color-bar purple"></div>
+              <div class="name">Chemie</div>
+              <div class="price">Einschreibe- gebühr CHF 160</div>
+            </div>
+          </div>
+          <div id='pos12' class="space property">
+            <div class="container">
+              <div class="color-bar purple"></div>
+              <div class="name">Physik</div>
+              <div class="price">Einschreibe- gebühr CHF 140</div>
+            </div>
+          </div>
+          <div id='pos11' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
+          </div>
+          <div id='pos10' class="space property">
+            <div class="container">
+              <div class="color-bar purple"></div>
+              <div class="name">Biologie</div>
+              <div class="price">Einschreibe- gebühr CHF 140</div>
+            </div>
+          </div>
+        </div>
+
+        <div id='pos18' class="space corner free-parking">
+          <div class="container">
+            <div class="name">Znüni</div>
+            <i class="drawing fa fa-car"></i>
+            <div class="name">Pause</div>
+          </div>
+        </div>
+
+        <div class="row horizontal-row top-row">
+          <div id='pos19' class="space property">
+            <div class="container">
+              <div class="color-bar red"></div>
+              <div class="name long-name">Betriebs- wirtschaftslehre</div>
+              <div class="price">Einschreibe- gebühr CHF 220</div>
+            </div>
+          </div>
+          <div id='pos20' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question blue"></i>
+            </div>
+          </div>
+          <div id='pos21' class="space property">
+            <div class="container">
+              <div class="color-bar red"></div>
+              <div class="name long-name">Volks- wirtschaftslehre</div>
+              <div class="price">Einschreibe- gebühr CHF 220</div>
+            </div>
+          </div>
+          <div id='pos22' class="space property">
+            <div class="container">
+              <div class="color-bar red"></div>
+              <div class="name long-name">Wirtschafts- informatik</div>
+              <div class="price">Einschreibe- gebühr CHF 240</div>
+            </div>
+          </div>
+          <div id='pos23' class="space property">
+            <div class="container">
+              <div class="color-bar yellow"></div>
+              <div class="name long-name">Elektrotechnik</div>
+              <div class="price">Einschreibe- gebühr CHF 260</div>
+            </div>
+          </div>
+          <div id='pos24' class="space property">
+            <div class="container">
+              <div class="color-bar yellow"></div>
+              <div class="name long-name">Maschienenbau</div>
+              <div class="price">Einschreibe- gebühr CHF 260</div>
+            </div>
+          </div>
+          <div id='pos25' class="space jumper">
+            <div class="container">
+              <div class="name">Springer</div>
+              <i class="drawing fa fa-jumper"></i>
+              <div class="price">Preis CHF 100</div>
+            </div>
+          </div>
+          <div id='pos26' class="space property">
+            <div class="container">
+              <div class="color-bar yellow"></div>
+              <div class="name">Informatik</div>
+              <div class="price">Einschreibe- gebühr CHF 280</div>
+            </div>
+          </div>
+        </div>
+
+        <div id='pos27' class="space corner go-to-jail">
+          <div class="container">
+            <div class="name">Ab zum</div>
+            <i class="drawing fa fa-gavel"></i>
             <div class="name">Nachsitzen</div>
           </div>
         </div>
-        <div class="visiting">Besuch</div>
-      </div>
 
-      <div class="row vertical-row left-row">
-        <div id='pos17' class="space property">
-          <div class="container">
-            <div class="color-bar orange"></div>
-            <div class="name">Architektur</div>
-            <div class="price">Einschreibe- gebühr CHF 200</div>
+        <div class="row vertical-row right-row">
+          <div id='pos28' class="space property">
+            <div class="container">
+              <div class="color-bar green"></div>
+              <div class="name long-name">Veterinär- medizin</div>
+              <div class="price">Einschreibe- gebühr CHF 300</div>
+            </div>
           </div>
-        </div>
-        <div id='pos16' class="space jumper">
-          <div class="container">
-            <div class="name">Springer</div>
-            <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis CHF 100</div>
+          <div id='pos29' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
           </div>
-        </div>
-        <div id='pos15' class="space property">
-          <div class="container">
-            <div class="color-bar orange"></div>
-            <div class="name long-name">Bau- ingenieurwesen</div>
-            <div class="price">Einschreibe- gebühr CHF 180</div>
+          <div id='pos30' class="space property">
+            <div class="container">
+              <div class="color-bar green"></div>
+              <div class="name long-name">Biomedizin</div>
+              <div class="price">Einschreibe- gebühr CHF 300</div>
+            </div>
           </div>
-        </div>
-        <div id='pos14' class="space property">
-          <div class="container">
-            <div class="color-bar orange"></div>
-            <div class="name long-name">Umwelt- ingenieurwesen</div>
-            <div class="price">Einschreibe- gebühr CHF 180</div>
+          <div id='pos31' class="space property">
+            <div class="container">
+              <div class="color-bar green"></div>
+              <div class="name long-name">Humanmedizin</div>
+              <div class="price">Einschreibe- gebühr CHF 320</div>
+            </div>
           </div>
-        </div>
-        <div id='pos13' class="space property">
-          <div class="container">
-            <div class="color-bar purple"></div>
-            <div class="name">Chemie</div>
-            <div class="price">Einschreibe- gebühr CHF 160</div>
+          <div id='pos32' class="space chance">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
           </div>
-        </div>
-        <div id='pos12' class="space property">
-          <div class="container">
-            <div class="color-bar purple"></div>
-            <div class="name">Physik</div>
-            <div class="price">Einschreibe- gebühr CHF 140</div>
+          <div id='pos33' class="space property">
+            <div class="container">
+              <div class="color-bar dark-blue"></div>
+              <div class="name">Aviatik</div>
+              <div class="price">Einschreibe- gebühr CHF 350</div>
+            </div>
           </div>
-        </div>
-        <div id='pos11' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
+          <div id='pos34' class="space jumper">
+            <div class="container">
+              <div class="name">Springer</div>
+              <i class="drawing fa fa-jumper"></i>
+              <div class="price">Preis 100$</div>
+            </div>
           </div>
-        </div>
-        <div id='pos10' class="space property">
-          <div class="container">
-            <div class="color-bar purple"></div>
-            <div class="name">Biologie</div>
-            <div class="price">Einschreibe- gebühr CHF 140</div>
-          </div>
-        </div>
-      </div>
-
-      <div id='pos18' class="space corner free-parking">
-        <div class="container">
-          <div class="name">Znüni</div>
-          <i class="drawing fa fa-car"></i>
-          <div class="name">Pause</div>
-        </div>
-      </div>
-
-      <div class="row horizontal-row top-row">
-        <div id='pos19' class="space property">
-          <div class="container">
-            <div class="color-bar red"></div>
-            <div class="name long-name">Betriebs- wirtschaftslehre</div>
-            <div class="price">Einschreibe- gebühr CHF 220</div>
-          </div>
-        </div>
-        <div id='pos20' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question blue"></i>
-          </div>
-        </div>
-        <div id='pos21' class="space property">
-          <div class="container">
-            <div class="color-bar red"></div>
-            <div class="name long-name">Volks- wirtschaftslehre</div>
-            <div class="price">Einschreibe- gebühr CHF 220</div>
-          </div>
-        </div>
-        <div id='pos22' class="space property">
-          <div class="container">
-            <div class="color-bar red"></div>
-            <div class="name long-name">Wirtschafts- informatik</div>
-            <div class="price">Einschreibe- gebühr CHF 240</div>
-          </div>
-        </div>
-        <div id='pos23' class="space property">
-          <div class="container">
-            <div class="color-bar yellow"></div>
-            <div class="name long-name">Elektrotechnik</div>
-            <div class="price">Einschreibe- gebühr CHF 260</div>
-          </div>
-        </div>
-        <div id='pos24' class="space property">
-          <div class="container">
-            <div class="color-bar yellow"></div>
-            <div class="name long-name">Maschienenbau</div>
-            <div class="price">Einschreibe- gebühr CHF 260</div>
-          </div>
-        </div>
-        <div id='pos25' class="space jumper">
-          <div class="container">
-            <div class="name">Springer</div>
-            <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis CHF 100</div>
-          </div>
-        </div>
-        <div id='pos26' class="space property">
-          <div class="container">
-            <div class="color-bar yellow"></div>
-            <div class="name">Informatik</div>
-            <div class="price">Einschreibe- gebühr CHF 280</div>
-          </div>
-        </div>
-      </div>
-
-      <div id='pos27' class="space corner go-to-jail">
-        <div class="container">
-          <div class="name">Ab zum</div>
-          <i class="drawing fa fa-gavel"></i>
-          <div class="name">Nachsitzen</div>
-        </div>
-      </div>
-
-      <div class="row vertical-row right-row">
-        <div id='pos28' class="space property">
-          <div class="container">
-            <div class="color-bar green"></div>
-            <div class="name long-name">Veterinär- medizin</div>
-            <div class="price">Einschreibe- gebühr CHF 300</div>
-          </div>
-        </div>
-        <div id='pos29' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
-          </div>
-        </div>
-        <div id='pos30' class="space property">
-          <div class="container">
-            <div class="color-bar green"></div>
-            <div class="name long-name">Biomedizin</div>
-            <div class="price">Einschreibe- gebühr CHF 300</div>
-          </div>
-        </div>
-        <div id='pos31' class="space property">
-          <div class="container">
-            <div class="color-bar green"></div>
-            <div class="name long-name">Humanmedizin</div>
-            <div class="price">Einschreibe- gebühr CHF 320</div>
-          </div>
-        </div>
-        <div id='pos32' class="space chance">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
-          </div>
-        </div>
-        <div id='pos33' class="space property">
-          <div class="container">
-            <div class="color-bar dark-blue"></div>
-            <div class="name">Aviatik</div>
-            <div class="price">Einschreibe- gebühr CHF 350</div>
-          </div>
-        </div>
-        <div id='pos34' class="space jumper">
-          <div class="container">
-            <div class="name">Springer</div>
-            <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis 100$</div>
-          </div>
-        </div>
-        <div id='pos35' class="space property">
-          <div class="container">
-            <div class="color-bar dark-blue"></div>
-            <div class="name long-name">Rechtswissen- schaften</div>
-            <div class="price">Einschreibe- gebühr CHF 400</div>
+          <div id='pos35' class="space property">
+            <div class="container">
+              <div class="color-bar dark-blue"></div>
+              <div class="name long-name">Rechtswissen- schaften</div>
+              <div class="price">Einschreibe- gebühr CHF 400</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-</div>
-<script src="script.js"></script>
+  </div>
+  <script src="script.js"></script>
 </body>
 
 </html>

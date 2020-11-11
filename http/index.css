@@ -23,8 +23,24 @@ body {
 }
 
 h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
+  font-family: "raleway", Helvetica, sans-serif;
+  font-size: 2.1em;
+  margin: 0  0 1.5em 0;
+  font-weight: bold;
+}
+
+h2 {
+  font-family: "raleway", Helvetica, sans-serif;
+  font-size: 1.9em;
+  margin: 0  0 0.3em 0;
+  font-weight: normal;
+}
+
+h3 {
+  font-family: "raleway", Helvetica, sans-serif;
+  font-size: 1.6em;
+  margin: 0;
+  font-weight: normal;
 }
 
 hr {
@@ -122,4 +138,11 @@ progress {
 
 [hidden] {
   display: none;
+}
+
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+.grow:hover {
+  transform: scale(1.1);
 }

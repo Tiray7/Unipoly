@@ -38,8 +38,8 @@
     background-size: 100%;
 }
 
-.npc {
-    background-image: url("npc.png");
+.npci, .npcii, .npciii {
+    background-image: url("npc1.png");
     background-size: 100%;
 }
 
