@@ -21,7 +21,7 @@ public class UnipolyAppTests {
     public void testRollDice() {
         Integer[] values = {1, 2, 3, 4, 5, 6};
         List<Integer> range = Arrays.asList(values);
-        unipolyApp.rollDice();
+        unipolyApp.rollTwoDice();
         int firstDice = unipolyApp.getFirstDice();
         int secondDice = unipolyApp.getSecondDice();
 
