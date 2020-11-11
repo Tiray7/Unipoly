@@ -78,7 +78,7 @@ function moveToken($scope) {
 	currind.toggleClass('used ' + type);
 }
 
-async function showalert(text, time = 2000) {
+async function showalert(text, time = 2500) {
 	$alertpopup.find('.popup-p').text(text);
 	$alertpopup.show();
 	await Sleep(time)
@@ -151,7 +151,8 @@ async function phaseChange($scope) {
 		case 'JUMP':
 			console.log('New Phase JUMP');
 			if (confirm("Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!")) {
-				$scope.jump();
+				txt = 'Klick auf das Feld auf das du springen willst!';
+				showalert(txt);
 			} else {
 				$scope.endTurn();
 			}
@@ -447,9 +448,12 @@ app.controller('Controller', function ($scope) {
 		if ($scope.state.phase == 'DETENTION') {
 			console.log('Player is in Detention, therefor rolls both dices.')
 			$scope.rollDice('rolltwodice');
-		// If Player landed on ChanceCards he cant roll dices
+			// If Player landed on ChanceCards he cant roll dices
 		} else if ($scope.state.phase == 'SHOWCARD') {
 			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
+			showalert(txt);
+		} else if ($scope.state.phase == 'JUMP') {
+			txt = 'Du bist auf Springer Feld gelandet!\nKlick auf das Feld auf das du springen willst!';
 			showalert(txt);
 		} else {
 			console.log('Player has to Input the first Dice.')
@@ -471,25 +475,19 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-
-	// Ask Player if he wants to Teleport
-	$scope.jump = function () {
-
-		var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
-		// Check if Player submited a acceptable value
-		while (moveby == null || moveby == '' || moveby < 1 || moveby > 35) {
-			if (moveby == null || moveby == '') {
-				console.warn('error: assign value of jump Distance.');
-				alert('Error: Please try again!');
-			} else if (moveby < 1 || moveby > 35) {
-				console.warn('error: Value needs to be between 1-35');
-				alert('Error: Please try again!');
-			}
-			var moveby = prompt('Gib die gewünschte Entfernung ein (1-35):', '');
+	// Player klicked on a Field
+	$scope.fieldaction = function (FieldIndex) {
+		if ($scope.state.phase == 'JUMP') {
+			$scope.jump(FieldIndex);
+		} else {
+			var txt = 'keine Info zu diesem Feld! Comming Soon!';
+			showalert(txt);
 		}
+	}
 
-		// TODO: Player has to pay 100$ 
-		$scope.getOp('jumpplayer?moveby=' + moveby,
+	// Player wants to Teleport
+	$scope.jump = function (FieldIndex) {
+		$scope.getOp('jumpplayer?FieldIndex=' + FieldIndex,
 			function (success) {
 				// Check if  success
 				if (success) {
@@ -556,15 +554,16 @@ app.controller('Controller', function ($scope) {
 	}
 
 	// Player pressed on Card Deck
-	$scope.showCard = async function () {
+	$scope.showCard = function () {
 		var txt;
 		if ($scope.state.phase == 'SHOWCARD') {
 			txt = $scope.state.currentCardText;
+			showalert(txt);
+			$scope.endTurn();
 		} else {
 			txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
+			showalert(txt);
 		}
-		showalert(txt);
-		$scope.endTurn();
 	}
 
 	// Player pressed closepopup

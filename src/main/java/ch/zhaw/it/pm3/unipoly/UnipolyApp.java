@@ -70,7 +70,8 @@ public class UnipolyApp {
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
 	}
-	public String getCurrentCardText(){
+
+	public String getCurrentCardText() {
 		return currentCardText;
 	}
 
@@ -102,9 +103,12 @@ public class UnipolyApp {
 	// Start a new Game
 	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
 		if (Gamemode.SINGLE == mode) {
-			if(npcnum >= 1) initializePlayer("NPC1", TokenType.NPCI);
-			if(npcnum >= 2) initializePlayer("NPC2", TokenType.NPCII);
-			if(npcnum >= 3) initializePlayer("NPC3", TokenType.NPCIII);
+			if (npcnum >= 1)
+				initializePlayer("NPC1", TokenType.NPCI);
+			if (npcnum >= 2)
+				initializePlayer("NPC2", TokenType.NPCII);
+			if (npcnum >= 3)
+				initializePlayer("NPC3", TokenType.NPCIII);
 		}
 		currentPlayer = players.get(0);
 	}
@@ -113,17 +117,23 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLINGONE;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		movePlayer(this.firstDice + secondDice);
+		movePlayerBy(this.firstDice + secondDice);
 	}
 
-	private void movePlayer(int rolledValue) throws FieldIndexException {
+	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
+		currentPlayer.getToken()
+				.setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+	}
+
+	private void movePlayerTo(int FieldIndex) throws FieldIndexException {
+		currentPlayer.getToken().moveTo(FieldIndex);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
 
-	public void jumpPlayer(int moveby) throws FieldIndexException {
+	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
 		// TODO: Player has to pay 100 CHF
-		movePlayer(moveby);
+		movePlayerTo(FieldIndex);
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {

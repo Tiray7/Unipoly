@@ -92,8 +92,8 @@ public class Controller {
 
 	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp jumpPlayer(@RequestParam int moveby) throws FieldIndexException {
-		unipoly.jumpPlayer(moveby);
+	public UnipolyApp jumpPlayer(@RequestParam int FieldIndex) throws FieldIndexException {
+		unipoly.jumpPlayer(FieldIndex);
 		return unipoly;
 	}
 
