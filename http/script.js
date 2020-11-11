@@ -553,7 +553,7 @@ app.controller('Controller', function ($scope) {
 	// Player pressed on Card Deck
 	$scope.showCard = async function () {
 		var txt;
-		if ($scope.state.phase == 'DETENTION') {
+		if ($scope.state.phase == 'SHOWCARD') {
 			txt = $scope.state.currentCardText;
 		} else {
 			txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
