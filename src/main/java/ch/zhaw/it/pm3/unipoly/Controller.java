@@ -50,8 +50,8 @@ public class Controller {
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp start(@RequestParam Gamemode gamemode) throws FieldIndexException {
-		unipoly.start(gamemode);
+	public UnipolyApp start(@RequestParam Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
+		unipoly.start(gamemode, npcnum);
 		return unipoly;
 	}
 

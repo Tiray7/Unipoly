@@ -91,9 +91,11 @@ public class UnipolyApp {
 	}
 
 	// Start a new Game
-	public void start(Gamemode mode) throws FieldIndexException {
+	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
 		if (Gamemode.SINGLE == mode) {
-			initializePlayer("NPC1", TokenType.NPCI);
+			if(npcnum >= 1) initializePlayer("NPC1", TokenType.NPCI);
+			if(npcnum >= 2) initializePlayer("NPC2", TokenType.NPCII);
+			if(npcnum >= 3) initializePlayer("NPC3", TokenType.NPCIII);
 		}
 		currentPlayer = players.get(0);
 	}

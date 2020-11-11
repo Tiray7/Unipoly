@@ -17,8 +17,8 @@ var $playerlist;
 var $dicesgif;
 var $lastphase;
 var $alertpopup;
-var $numpernpccon;
-var $numpernpc;
+var $numbernpccon;
+var $numbernpc = 0;
 var $diceinput;
 
 $(document).ready(function () {
@@ -29,7 +29,7 @@ $(document).ready(function () {
 	// join
 	$gamemodeop = $('#gamemode');
 	$gamemodetext = $('#gamemode-text');
-	$numpernpccon = $('#number-npc-con');
+	$numbernpccon = $('#number-npc-con');
 	$joinName = $('#join-name');
 	$joinToken = $('#join-token');
 	$joinwaiting = $('#join-waiting');
@@ -269,6 +269,7 @@ function resetHTML(list) {
 		prevind.toggleClass('used ' + type);
 	}
 	$gameboard.hide();
+	$numbernpc = 0;
 	$rolledvaluetext.html('');
 	$menu.show();
 	$joinToken.hide();
@@ -329,7 +330,7 @@ app.controller('Controller', function ($scope) {
 		$gamemodeop.hide();
 		if (gamemode == 'SINGLE') {
 			text = 'Playing against AI';
-			$numpernpccon.show();
+			$numbernpccon.show();
 		} else if (gamemode == 'MULTI') {
 			text = 'Playing in Multiplayer Modus';
 			$joinwaiting.show();
@@ -341,8 +342,8 @@ app.controller('Controller', function ($scope) {
 	// SinglePlayer is able to choose Number of NPCs
 	$scope.numbernpc = function (num) {
 		console.log(num + ' NPCs choosen');
-		$numpernpc = num;
-		$numpernpccon.hide();
+		$numbernpc = num;
+		$numbernpccon.hide();
 		$joinwaiting.show();
 		$joinName.show();
 	}
@@ -386,7 +387,7 @@ app.controller('Controller', function ($scope) {
 
 	// Begin Game
 	$scope.start = function () {
-		$scope.getOp('start?gamemode=' + $gamemode,
+		$scope.getOp('start?gamemode=' + $gamemode + '&npcnum=' + $numbernpc,
 			function (success) {
 				// Check if Gamemode choice got accepted
 				if (success) {
