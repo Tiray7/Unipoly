@@ -43,6 +43,10 @@ public class UnipolyApp {
 		return bank;
 	}
 
+	public Board getBoard() {
+		return board;
+	}
+
 	public UnipolyPhase getPhase() {
 		return phase;
 	}
