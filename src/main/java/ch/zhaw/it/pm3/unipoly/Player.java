@@ -42,6 +42,7 @@ package ch.zhaw.it.pm3.unipoly;
         }
 
         public void jail(){
+            token.setCurrentFieldLabel(Config.FieldLabel.DETENTION);
             token.moveTo(10);
             doublesRolled = 0;
             this.stayJailedOneRund = 3;
