@@ -1,51 +1,60 @@
 package ch.zhaw.it.pm3.unipoly;
 
-    public class Player extends Owner {
+public class Player extends Owner {
 
-        private Token token;
-        private boolean bankrupt = false;
-        private boolean JailCard = false;
-        int stayJailedOneRund = 0;
-        int doublesRolled = 0;
+    private Token token;
+    private boolean bankrupt = false;
+    private boolean FreeCard = false;
+    private int leftTimeInDetention = 0;
 
-        public Player(String name, TokenType tokenType) {
-            super(name, 1500);
-            token = new Token(tokenType);
-        }
-
-        public boolean getJailCard(){
-            return JailCard;
-        }
-
-        public Token getToken() {
-            return token;
-        }
-
-        public void setToken(Token token){
-            this.token = token;
-        }
-
-        public void setJailCard(boolean outJail){
-            JailCard = outJail;
-        }
-
-        public boolean getBankrupt() {
-            return bankrupt;
-        }
-
-        public void setBankrupt(boolean isBankrupt) {
-            this.bankrupt = isBankrupt;
-        }
-
-        public boolean isJailed() {
-            return stayJailedOneRund > 0;
-        }
-
-        public void jail(){
-            token.setCurrentFieldLabel(Config.FieldLabel.DETENTION);
-            token.moveTo(10);
-            doublesRolled = 0;
-            this.stayJailedOneRund = 3;
-        }
+    public Player(String name, TokenType tokenType) {
+        super(name, 1500);
+        token = new Token(tokenType);
     }
 
+    public boolean getFreeCard() {
+        return FreeCard;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+    public void setFreeCard(boolean outDetention) {
+        FreeCard = outDetention;
+    }
+
+    public boolean getBankrupt() {
+        return bankrupt;
+    }
+
+    public void setBankrupt(boolean isBankrupt) {
+        this.bankrupt = isBankrupt;
+    }
+
+    public int getleftTimeInDetention() {
+        return leftTimeInDetention;
+    }
+
+    public void decreaseleftTimeInDetention() {
+        this.leftTimeInDetention--;
+    }
+    
+    public boolean inDetention() {
+        return leftTimeInDetention > 0;
+    }
+
+    public void goDetention() {
+        token.setCurrentFieldLabel(Config.FieldLabel.DETENTION);
+        token.moveTo(9);
+        this.leftTimeInDetention = 3;
+    }
+
+    public void outDetention() {
+        this.leftTimeInDetention = 0;
+    }
+}

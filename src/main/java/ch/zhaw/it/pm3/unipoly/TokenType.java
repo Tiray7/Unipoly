@@ -10,5 +10,7 @@ public enum TokenType {
 	LAB,
 	LIGHTBULB,
 	BANK,
-	NPC
+	NPCI,
+	NPCII,
+	NPCIII
 }
