@@ -50,7 +50,7 @@ $(document).ready(function () {
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
-	$lastphase = 'WAITING';
+	$lastphase = 'NONE';
 });
 
 function Sleep(milliseconds) {
@@ -102,11 +102,9 @@ function moveToken($scope) {
 	currind.toggleClass(`used ${type}`);
 }
 
-async function showalert(text, time = 10000) {
+async function showalert(text) {
 	$alertpopup.find('.popup-p').html(text);
 	$alertpopup.show();
-	await Sleep(time)
-	$alertpopup.hide();
 }
 
 function showyesOrno(text) {
@@ -151,38 +149,41 @@ function handleDetention($scope, bool = false, areadyasked = false) {
 // Update UI when phase changes
 async function phaseChange($scope, bool = false, areadyasked = false) {
 	const newphase = $scope.state.phase;
-	const lastphase = $lastphase;
 	var txt;
 
 	switch (newphase) {
-		case 'ROLLINGONE':
-			var diceVal1 = $scope.state.firstDice;
-			var diceVal2 = $scope.state.secondDice;
-			const total = diceVal1 + diceVal2;
-			txt = `<b>${$scope.state.currentPlayer.name} rolled:</b><br>${diceVal1} + ${diceVal2}<br>Total: ${total}`;
-			$dicesgif.show();
-			$dicesgif.delay(1100).fadeOut(200);
-			$rolledvaluetext.html(txt);
-			await Sleep(1350);
-			moveToken($scope);
-			$scope.checkField();
+		case 'WAITING':
+			console.log('New Phase WAITING');
+			if($lastphase == 'NONE') break;
+			txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
+			showalert(txt);
 			break;
-
-		case 'ROLLINGTWO':
-			txt = `<b>${$scope.state.currentPlayer.name} rolled:</b><br>${$scope.state.firstDice} and ${$scope.state.secondDice}`;
-			$rolledvaluetext.html(txt);
-			$dicesgif.show();
-			$dicesgif.delay(1100).fadeOut(200);
-			await Sleep(1350);
-
-			if ($scope.state.rolledPash) {
-				txt = 'Du hast es geschafft die Schuldirektorin zu überzeugen.'
-				showalert(txt);
-				$scope.leaveDetention();
+			
+		case 'ROLLING':
+			if ($lastphase == 'DETENTION') {
+				txt = `<b>${$scope.state.currentPlayer.name} würfelt:</b><br>${$scope.state.firstDice} und ${$scope.state.secondDice}`;
+				$dicesgif.show();
+				$dicesgif.delay(1100).fadeOut(200);
+				$rolledvaluetext.html(txt);
+				await Sleep(13550);
+				if ($scope.state.rolledPash) {
+					txt = `Du hast es geschafft die Schuldirektorin zu überzeugen mit ${$scope.state.firstDice} und ${$scope.state.secondDice}`;
+					showalert(txt);
+					$scope.leaveDetention();
+				} else {
+					txt = 'Du hast es nicht geschafft die Schuldirektorin zu überzeugen.'
+					showalert(txt);
+					$scope.endTurn();
+				}
 			} else {
-				txt = 'Du hast es nicht geschafft die Schuldirektorin zu überzeugen.'
-				showalert(txt);
-				$scope.endTurn();
+				const total = $scope.state.firstDice + $scope.state.secondDice;
+				txt = `<b>${$scope.state.currentPlayer.name} würfelt:</b><br>${$scope.state.firstDice} + ${$scope.state.secondDice}<br>Total: ${total}`;
+				$dicesgif.show();
+				$dicesgif.delay(1100).fadeOut(200);
+				$rolledvaluetext.html(txt);
+				await Sleep(1350);
+				moveToken($scope);
+				$scope.checkField();
 			}
 			break;
 
@@ -407,6 +408,7 @@ app.controller('Controller', function ($scope) {
 
 	// Begin Game
 	$scope.start = function () {
+		$lastphase = 'NONE';
 		$scope.getOp(`start?gamemode=${$gamemode}&npcnum=${$numbernpc}`,
 			function (success) {
 				// Check if Gamemode choice got accepted
@@ -424,6 +426,8 @@ app.controller('Controller', function ($scope) {
 						td = $(index).find("td.leer").first();
 						td.toggleClass('leer');
 						td.toggleClass(`used ${type}`);
+						txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
+						showalert(txt);
 					}
 				} else {
 					console.error('error: Start Game');
