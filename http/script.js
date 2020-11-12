@@ -17,6 +17,7 @@ var $playerlist;
 var $dicesgif;
 var $lastphase;
 var $alertpopup;
+var $yesnopopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
@@ -41,10 +42,11 @@ $(document).ready(function () {
 	$playerlist = $('#playerlist tr');
 	$dicesgif = $('#rollingdices');
 	$rolledvaluetext = $('#rolledvalue');
-	$diceinput = $('#chooseDice_popup');
 
 	// Popups
+	$diceinput = $('#chooseDice_popup');
 	$alertpopup = $('#alert_popup');
+	$yesnopopup = $('#yesno_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
@@ -67,6 +69,28 @@ function poll($scope) {
 	});
 }
 
+function resetHTML(list) {
+	// List all added Players
+	var prevind, type;
+	for (let i = 0; i < list.length; i++) {
+		type = list[i].token.type.toLowerCase();
+		prevind = $(`#pos${list[i].token.currFieldIndex}`).find("td." + type).first();
+		prevind.toggleClass('leer');
+		prevind.toggleClass(`used ${type}`);
+	}
+	$gameboard.hide();
+	$numbernpc = 0;
+	$rolledvaluetext.html('');
+	$menu.show();
+	$joinToken.hide();
+	$joinName.hide();
+	$joinstart.hide();
+	$joininglist.html('');
+	$joinwaiting.hide();
+	$gamemodetext.text('Choose a Gamemode!');
+	$gamemodeop.show();
+}
+
 // Move the PlayerToken
 function moveToken($scope) {
 	const type = $scope.state.currentPlayer.token.type.toLowerCase();
@@ -85,9 +109,49 @@ async function showalert(text, time = 10000) {
 	$alertpopup.hide();
 }
 
+function showyesOrno(text) {
+	$yesnopopup.find('.popup-p').text(text);
+	$yesnopopup.show();
+}
+
+function handleDetention($scope, bool = false, areadyasked = false) {
+	txt = '';
+	if (!areadyasked) {
+		var leftTimeInDetention = $scope.state.currentPlayer.leftTimeInDetention;
+		txt = 'Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...';
+		if (leftTimeInDetention > 0) {
+			if ($scope.state.currentPlayer.money >= 100) {
+				txt += `\nWillst du versuchen über deinen Schulverweis zu verhandeln, anstatt Sie zu bestechen (100 CHF)?\nDu hast noch ${leftTimeInDetention} Verhandlungsversuche.`;
+				showyesOrno(txt);
+				return;
+			} else {
+				txt = '<br>Du hast nicht genug Geld um Sie zu bestechen, dir bleibt nichts übrig als zu verhandeln.';
+				bool = true;
+			}
+		} else {
+			bool = false;
+			txt += '<br>Du hast schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!';
+			if ($scope.state.currentPlayer.money >= 100) {
+				txt += '<br>Dir bleibt nichts anders übrig als sie zu bestechen.';
+			} else {
+				txt += '<br>Ausserdem hast du nicht genug Geld um Sie zu bestechen.';
+			}
+		}
+	}
+
+	if (bool) {
+		txt += 'Würfle ein Pash um Sie zu überzeugen.';
+		showalert(txt);
+	} else {
+		showalert(txt);
+		$scope.payDetentionRansom();
+	}
+}
+
 // Update UI when phase changes
-async function phaseChange($scope) {
+async function phaseChange($scope, bool = false, areadyasked = false) {
 	const newphase = $scope.state.phase;
+	const lastphase = $lastphase;
 	var txt;
 
 	switch (newphase) {
@@ -138,21 +202,33 @@ async function phaseChange($scope) {
 
 		case 'BUY_PROPERTY':
 			console.log('New Phase BUY_PROPERTY');
-			var name = $scope.state.currentFieldProperty.name;
-			var cost = $scope.state.currentFieldProperty.propertyCost;
-			if (confirm(`Willst du das Modul "${name}" besuchen?<br>Kostet nur ${cost}CHF!`)) {
-				$scope.buyProperty();
+			if (areadyasked) {
+				if (bool) {
+					$scope.buyProperty();
+				}
+			} else {
+				txt = `Willst du das Modul "${$scope.state.currentFieldProperty.name}" besuchen?\nKostet nur ${$scope.state.currentFieldProperty.propertyCost}CHF!`;
+				showyesOrno(txt);
+				return;
 			}
 			$scope.endTurn();
 			break;
 
 		case 'JUMP':
 			console.log('New Phase JUMP');
-			if (confirm("Willst du zu einem anderem Feld springen?<br>Kostet nur 100 CHF!")) {
-				txt = 'Klick auf das Feld auf das du springen willst!';
-				showalert(txt);
+			if (areadyasked) {
+				if (bool) {
+					txt = 'Klick auf das Feld auf das du springen willst!';
+					showalert(txt);
+				} else {
+					txt = 'Dann endet deine Runde hier';
+					showalert(txt);
+					$scope.endTurn();
+				}
 			} else {
-				$scope.endTurn();
+				txt = "Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!";
+				showyesOrno(txt);
+				return;
 			}
 			break;
 
@@ -193,36 +269,7 @@ async function phaseChange($scope) {
 
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
-			var verhandeln = false;
-			var leftTimeInDetention = $scope.state.currentPlayer.leftTimeInDetention;
-			txt = 'Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...<br>';
-			if (leftTimeInDetention > 0) {
-				if ($scope.state.currentPlayer.money >= 100) {
-					txt += `Willst du versuchen über deinen Schulverweis zu verhandeln, anstatt Sie zu bestechen (100 CHF)?<br>Du hast noch ${leftTimeInDetention} Varhandlungsversuche.`;
-					verhandeln = confirm(txt);
-					txt = '';
-				} else if ($scope.state.currentPlayer.money < 100) {
-					txt = 'Du hast nicht genug Geld um Sie zu bestechen, dir bleibt nichts übrig als zu verhandeln.<br>';
-					verhandeln = true;
-				}
-			} else {
-				verhandeln = false;
-				txt += 'Du hast scho 3mal versucht Sie zu überzeugen; Ohne Erfolg!<br>';
-				if ($scope.state.currentPlayer.money >= 100) {
-					txt += 'Dir bleibt nichts anders übrig als sie zu bestechen.<br>';
-				} else if ($scope.state.currentPlayer.money < 100) {
-					txt += 'Ausserdem hast du nicht genug Geld um Sie zu bestechen.<br>';
-				}
-			}
-
-			if (verhandeln) {
-				txt += 'Würfle ein Pash um Sie zu überzeugen.';
-				showalert(txt);
-			} else {
-				// Todo: bestechen
-				showalert(txt);
-				$scope.payDetentionRansom();
-			}
+			handleDetention($scope, bool, areadyasked);
 			break;
 	}
 }
@@ -252,28 +299,6 @@ function update($scope, json) {
 	}
 
 	$scope.$apply();
-}
-
-function resetHTML(list) {
-	// List all added Players
-	var prevind, type;
-	for (let i = 0; i < list.length; i++) {
-		type = list[i].token.type.toLowerCase();
-		prevind = $(`#pos${list[i].token.currFieldIndex}`).find("td." + type).first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass(`used ${type}`);
-	}
-	$gameboard.hide();
-	$numbernpc = 0;
-	$rolledvaluetext.html('');
-	$menu.show();
-	$joinToken.hide();
-	$joinName.hide();
-	$joinstart.hide();
-	$joininglist.html('');
-	$joinwaiting.hide();
-	$gamemodetext.text('Choose a Gamemode!');
-	$gamemodeop.show();
 }
 
 var app = angular.module('monopolyApp', []);
@@ -498,7 +523,7 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-	// Ask Player if he wants to buy Property
+	// Ask Player wants to buy Property
 	$scope.buyProperty = function () {
 		const currplayer = $scope.state.currentPlayer;
 		$scope.getOp(`userwantstobuy?currentFieldIndex=${currplayer.token.currFieldIndex}`,
@@ -588,6 +613,11 @@ app.controller('Controller', function ($scope) {
 		txt += `Module: ${player.propertyOwned}<br>`;
 		txt += `ModulGruppen: ${player.roadOwned}`;
 		showalert(txt);
+	}
+
+	$scope.yesOrno = function (bool) {
+		$yesnopopup.hide();
+		phaseChange($scope, bool, true);
 	}
 
 	// Player pressed closepopup

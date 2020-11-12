@@ -122,6 +122,19 @@
         <div class="popup-p"></div>
       </div>
     </div>
+
+    <div id="yesno_popup" href="#" class="popup_background" hidden>
+      <div class="popup-con">
+        <h3 class="popup-p"></h3>
+        <table>
+          <tr>
+            <td class="grow" ng-click='yesOrno(true)'><h4>Yes</h4></td>
+            <td class="grow" ng-click='yesOrno(false)'><h4>No</h4></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
     <div id="chooseDice_popup" href="#" class="popup_background" ng-click="ToggleDiceInput()" hidden>
       <div class="popup-con">
         <h3 class="popup-p">Wähle den gewünschten Wert des Ersten Würfels:</h3>
