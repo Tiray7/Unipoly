@@ -5,8 +5,8 @@
 <head>
   <title>Unipoly</title>
   <!-- Libs -->
-  <script src='jquery-3.1.1.min.js' type='text/javascript'></script>
-  <script src='angular.min.js' type='text/javascript'></script>
+  <script src="jquery-3.1.1.min.js" type="text/javascript"></script>
+  <script src="angular.min.js" type="text/javascript"></script>
   <meta name="description" content="Software Projekt - Ein Monopoly Spiel" />
   <meta name="author" content="Team blabla" />
   <link rel="shortcut icon" href="unipolylogo.png" />
@@ -21,10 +21,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body ng-app='monopolyApp' ng-controller='Controller' class='noselect'>
+<body ng-app="monopolyApp" ng-controller="Controller" class="noselect">
   <header class="site-header">
     <img class="logo" src="unipolybannerwhite.png" />
-    <div id="new-btn" href="#" class="box-btn" ng-click='resetGame()'>
+    <div id="new-btn" href="#" class="box-btn" ng-click="resetGame()">
       <div class="btn btn-two">
         <span>Start New Game</span>
       </div>
@@ -39,9 +39,9 @@
     <div id="menu" href="#" class="popup_background">
       <div class="menu-container">
         <div class="filtercon">
-          <div id='join'>
-            <h1 id='gamemode-text' href='#'>Choose a Gamemode!</h1>
-            <div id='gamemode' href='#'>
+          <div id="join">
+            <h1 id="gamemode-text" href="#">Choose a Gamemode!</h1>
+            <div id="gamemode" href="#">
               <div class="box-btn-menu" ng-click='gamemode("SINGLE")'>
                 <div class="btn btn-two">
                   <span>Singleplayer</span>
@@ -53,61 +53,61 @@
                 </div>
               </div>
             </div>
-            <div id='number-npc-con' href='#' hidden>
+            <div id="number-npc-con" href="#" hidden>
               <h2>Against how many NPCs do you want to play?</h2>
               <table>
                 <tr>
-                  <td class="grow" ng-click='numbernpc(1)'>
+                  <td class="grow" ng-click="numbernpc(1)">
                     1
                   </td>
-                  <td class="grow" ng-click='numbernpc(2)'>
+                  <td class="grow" ng-click="numbernpc(2)">
                     2
                   </td>
-                  <td class="grow" ng-click='numbernpc(3)'>
+                  <td class="grow" ng-click="numbernpc(3)">
                     3
                   </td>
                 </tr>
               </table>
             </div>
-            <div id='join-waiting' class="waiting" hidden>
+            <div id="join-waiting" class="waiting" hidden>
               <h2>Player:</h2>
-              <h3 id='joininglist' href="#"></h3>
-              <button id='join-start' class="btn-start grow" ng-click='start()' hidden>Start</button>
+              <h3 id="joininglist" href="#"></h3>
+              <button id="join-start" class="btn-start grow" ng-click="start()" hidden>Start</button>
             </div>
-            <div id='join-name' hidden>
+            <div id="join-name" hidden>
               <h2>Add Player:</h2>
-              <input ng-model='username'>
-              <button class="btn-join grow" ng-click='chooseToken()'>Join</button>
+              <input ng-model="username">
+              <button class="btn-join grow" ng-click="chooseToken()">Join</button>
             </div>
-            <div id='join-token' hidden>
+            <div id="join-token" hidden>
               <h2>Choose a token:</h2>
               <table>
                 <tr>
                   <td ng-click='join("ATOM")'>
-                    <div class='atom token-menu grow' />
+                    <div class="atom token-menu grow"></div>
                   </td>
                   <td ng-click='join("ONEPLUS")'>
-                    <div class='oneplus token-menu grow' />
+                    <div class="oneplus token-menu grow"></div>
                   </td>
                   <td ng-click='join("EINSTEIN")'>
-                    <div class='einstein token-menu grow' />
+                    <div class="einstein token-menu grow"></div>
                   </td>
                   <td ng-click='join("CRADLE")'>
-                    <div class='cradle token-menu grow' />
+                    <div class="cradle token-menu grow" ></div>
                   </td>
                 </tr>
                 <tr>
                   <td ng-click='join("EQUATION")'>
-                    <div class='equation token-menu grow' />
+                    <div class="equation token-menu grow"></div>
                   </td>
                   <td ng-click='join("HELIUM")'>
-                    <div class='helium token-menu grow' />
+                    <div class="helium token-menu grow"></div>
                   </td>
                   <td ng-click='join("LAB")'>
-                    <div class='lab token-menu grow' />
+                    <div class="lab token-menu grow"></div>
                   </td>
                   <td ng-click='join("LIGHTBULB")'>
-                    <div class='lightbulb token-menu grow' />
+                    <div class="lightbulb token-menu grow"></div>
                   </td>
                 </tr>
               </table>
@@ -117,12 +117,12 @@
       </div>
     </div>
 
-    <div id="alert_popup" href="#" class="popup_background" ng-click='closealert()' hidden>
+    <div id="alert_popup" href="#" class="popup_background" ng-click="closealert()" hidden>
       <div class="popup-con">
-        <h3 class="popup-p">Wähle den gewünschten Wert des Ersten Würfels:</h3>
+        <div class="popup-p"></div>
       </div>
     </div>
-    <div id="chooseDice_popup" href="#" class="popup_background" ng-click='ToggleDiceInput()' hidden>
+    <div id="chooseDice_popup" href="#" class="popup_background" ng-click="ToggleDiceInput()" hidden>
       <div class="popup-con">
         <h3 class="popup-p">Wähle den gewünschten Wert des Ersten Würfels:</h3>
         <table>
@@ -143,7 +143,7 @@
     <div id="gameboard" href="#" class="table" hidden>
       <div id="boardgrid" class="board">
         <div class="center">
-          <div class="dice-con grow" ng-click='ToggleDiceInput()'>
+          <div class="dice-con grow" ng-click="ToggleDiceInput()">
             <h2>Roll The Dices</h2>
             <img class="dice" src="twodices.png" />
           </div>
@@ -152,13 +152,20 @@
           </div>
           <div id="rolledvalue" class="dice-sol"></div>
           <img class="board-title" src="unipolybanner.png" />
-          <div id="playerlist"></div>
+          <div id="playerlist">
+            <table>
+              <tr class="grow" ng-click="showPlayerInfo(0)"></tr>
+              <tr class="grow" ng-click="showPlayerInfo(1)"></tr>
+              <tr class="grow" ng-click="showPlayerInfo(2)"></tr>
+              <tr class="grow" ng-click="showPlayerInfo(3)"></tr>
+            </table>
+          </div>
           <div id="drawchance" class="chance-deck grow">
-            <div class="deck" ng-click='showCard()'></div>
+            <div class="deck" ng-click="showCard()"></div>
           </div>
         </div>
 
-        <div id='pos0' class="space corner go">
+        <div id="pos0" class="space corner go" ng-click="fieldaction(0)">
           <div class="container">
             <div class="instructions">Nimm CHF 200 Honorar im vorbeigehen</div>
             <div class="go-word">Los</div>
@@ -167,54 +174,54 @@
         </div>
 
         <div class="row horizontal-row bottom-row">
-          <div id='pos8' class="space property">
+          <div id="pos8" class="space property" ng-click="fieldaction(8)">
             <div class="container">
               <div class="color-bar light-blue"></div>
               <div class="name">Psychologie</div>
               <div class="price">Einschreibe- gebühr CHF 120</div>
             </div>
           </div>
-          <div id='pos7' class="space jumper">
+          <div id=" pos7" class="space jumper" ng-click="fieldaction(7)">
             <div class="container">
               <div class="name">Springer</div>
               <i class="drawing fa fa-jumper"></i>
               <div class="price">Preis CHF 100</div>
             </div>
           </div>
-          <div id='pos6' class="space property">
+          <div id="pos6" class="space property" ng-click="fieldaction(6)">
             <div class="container">
               <div class="color-bar light-blue"></div>
               <div class="name long-name">Geistes- wissenschaften</div>
               <div class="price">Einschreibe- gebühr CHF 100</div>
             </div>
           </div>
-          <div id='pos5' class="space property">
+          <div id="pos5" class="space property" ng-click="fieldaction(5)">
             <div class="container">
               <div class="color-bar light-blue"></div>
               <div class="name">Theologie</div>
               <div class="price">Einschreibe- gebühr CHF 100</div>
             </div>
           </div>
-          <div id='pos4' class="space chance">
+          <div id="pos4" class="space chance" ng-click="fieldaction(4)">
             <div class="container">
               <div class="name">Chance</div>
               <i class="drawing fa fa-question"></i>
             </div>
           </div>
-          <div id='pos3' class="space property">
+          <div id="pos3" class="space property" ng-click="fieldaction(3)">
             <div class="container">
               <div class="color-bar dark-purple"></div>
               <div class="name">Geographie</div>
               <div class="price">Einschreibe- gebühr CHF 60</div>
             </div>
           </div>
-          <div id='pos2' class="space chance">
+          <div id="pos2" class="space chance" ng-click="fieldaction(2)">
             <div class="container">
               <div class="name">Chance</div>
               <i class="drawing fa fa-question"></i>
             </div>
           </div>
-          <div id='pos1' class="space property">
+          <div id="pos1" class="space property" ng-click="fieldaction(1)">
             <div class="container">
               <div class="color-bar dark-purple"></div>
               <div class="name">Geschichte</div>
@@ -223,7 +230,7 @@
           </div>
         </div>
 
-        <div id='pos9' class="space corner jail">
+        <div id="pos9" class="space corner jail" ng-click="fieldaction(9)">
           <div class="just">Nur zu</div>
           <div class="drawing">
             <div class="container">
@@ -244,55 +251,55 @@
         </div>
 
         <div class="row vertical-row left-row">
-          <div id='pos17' class="space property">
+          <div id="pos17" class="space property" ng-click="fieldaction(17)">
             <div class="container">
               <div class="color-bar orange"></div>
               <div class="name">Architektur</div>
               <div class="price">Einschreibe- gebühr CHF 200</div>
             </div>
           </div>
-          <div id='pos16' class="space jumper">
+          <div id="pos16" class="space jumper" ng-click="fieldaction(16)">
             <div class="container">
               <div class="name">Springer</div>
               <i class="drawing fa fa-jumper"></i>
               <div class="price">Preis CHF 100</div>
             </div>
           </div>
-          <div id='pos15' class="space property">
+          <div id="pos15" class="space property" ng-click="fieldaction(15)">
             <div class="container">
               <div class="color-bar orange"></div>
               <div class="name long-name">Bau- ingenieurwesen</div>
               <div class="price">Einschreibe- gebühr CHF 180</div>
             </div>
           </div>
-          <div id='pos14' class="space property">
+          <div id="pos14" class="space property" ng-click="fieldaction(14)">
             <div class="container">
               <div class="color-bar orange"></div>
               <div class="name long-name">Umwelt- ingenieurwesen</div>
               <div class="price">Einschreibe- gebühr CHF 180</div>
             </div>
           </div>
-          <div id='pos13' class="space property">
+          <div id="pos13" class="space property" ng-click="fieldaction(13)">
             <div class="container">
               <div class="color-bar purple"></div>
               <div class="name">Chemie</div>
               <div class="price">Einschreibe- gebühr CHF 160</div>
             </div>
           </div>
-          <div id='pos12' class="space property">
+          <div id="pos12" class="space property" ng-click="fieldaction(12)">
             <div class="container">
               <div class="color-bar purple"></div>
               <div class="name">Physik</div>
               <div class="price">Einschreibe- gebühr CHF 140</div>
             </div>
           </div>
-          <div id='pos11' class="space chance">
+          <div id="pos11" class="space chance" ng-click="fieldaction(11)">
             <div class="container">
               <div class="name">Chance</div>
               <i class="drawing fa fa-question"></i>
             </div>
           </div>
-          <div id='pos10' class="space property">
+          <div id="pos10" class="space property" ng-click="fieldaction(10)">
             <div class="container">
               <div class="color-bar purple"></div>
               <div class="name">Biologie</div>
@@ -301,7 +308,7 @@
           </div>
         </div>
 
-        <div id='pos18' class="space corner free-parking">
+        <div id="pos18" class="space corner free-parking" ng-click="fieldaction(18)">
           <div class="container">
             <div class="name">Znüni</div>
             <i class="drawing fa fa-car"></i>
@@ -310,55 +317,55 @@
         </div>
 
         <div class="row horizontal-row top-row">
-          <div id='pos19' class="space property">
+          <div id="pos19" class="space property" ng-click="fieldaction(19)">
             <div class="container">
               <div class="color-bar red"></div>
               <div class="name long-name">Betriebs- wirtschaftslehre</div>
               <div class="price">Einschreibe- gebühr CHF 220</div>
             </div>
           </div>
-          <div id='pos20' class="space chance">
+          <div id="pos20" class="space chance" ng-click="ieldaction(20)">
             <div class="container">
               <div class="name">Chance</div>
               <i class="drawing fa fa-question blue"></i>
             </div>
           </div>
-          <div id='pos21' class="space property">
+          <div id="pos21" class="space property" ng-click="fieldaction(21)">
             <div class="container">
               <div class="color-bar red"></div>
               <div class="name long-name">Volks- wirtschaftslehre</div>
               <div class="price">Einschreibe- gebühr CHF 220</div>
             </div>
           </div>
-          <div id='pos22' class="space property">
+          <div id="pos22" class="space property" ng-click="fieldaction(22)">
             <div class="container">
               <div class="color-bar red"></div>
               <div class="name long-name">Wirtschafts- informatik</div>
               <div class="price">Einschreibe- gebühr CHF 240</div>
             </div>
           </div>
-          <div id='pos23' class="space property">
+          <div id="pos23" class="space property" ng-click="fieldaction(23)">
             <div class="container">
               <div class="color-bar yellow"></div>
               <div class="name long-name">Elektrotechnik</div>
               <div class="price">Einschreibe- gebühr CHF 260</div>
             </div>
           </div>
-          <div id='pos24' class="space property">
+          <div id="pos24" class="space property" ng-click="fieldaction(24)">
             <div class="container">
               <div class="color-bar yellow"></div>
               <div class="name long-name">Maschienenbau</div>
               <div class="price">Einschreibe- gebühr CHF 260</div>
             </div>
           </div>
-          <div id='pos25' class="space jumper">
+          <div id="pos25" class="space jumper" ng-click="fieldaction(25)">
             <div class="container">
               <div class="name">Springer</div>
               <i class="drawing fa fa-jumper"></i>
               <div class="price">Preis CHF 100</div>
             </div>
           </div>
-          <div id='pos26' class="space property">
+          <div id="pos26" class="space property" ng-click="fieldaction(26)">
             <div class="container">
               <div class="color-bar yellow"></div>
               <div class="name">Informatik</div>
@@ -367,7 +374,7 @@
           </div>
         </div>
 
-        <div id='pos27' class="space corner go-to-jail">
+        <div id="pos27" class="space corner go-to-jail" ng-click="fieldaction(27)">
           <div class="container">
             <div class="name">Ab zum</div>
             <i class="drawing fa fa-gavel"></i>
@@ -376,63 +383,63 @@
         </div>
 
         <div class="row vertical-row right-row">
-          <div id='pos28' class="space property">
+          <div id=" pos28" class="space property" ng-click="fieldaction(28)">
             <div class="container">
               <div class="color-bar green"></div>
               <div class="name long-name">Veterinär- medizin</div>
               <div class="price">Einschreibe- gebühr CHF 300</div>
             </div>
           </div>
-          <div id='pos29' class="space chance">
-            <div class="container">
-              <div class="name">Chance</div>
-              <i class="drawing fa fa-question"></i>
-            </div>
+          <div id=" pos29" class="space chance" ng-click="fieldaction(29)">
+          <div class="container">
+            <div class="name">Chance</div>
+            <i class="drawing fa fa-question"></i>
           </div>
-          <div id='pos30' class="space property">
-            <div class="container">
-              <div class="color-bar green"></div>
-              <div class="name long-name">Biomedizin</div>
-              <div class="price">Einschreibe- gebühr CHF 300</div>
-            </div>
+        </div>
+        <div id="pos30" class="space property" ng-click="fieldaction(30)">
+          <div class="container">
+            <div class="color-bar green"></div>
+            <div class="name long-name">Biomedizin</div>
+            <div class="price">Einschreibe- gebühr CHF 300</div>
           </div>
-          <div id='pos31' class="space property">
-            <div class="container">
-              <div class="color-bar green"></div>
-              <div class="name long-name">Humanmedizin</div>
-              <div class="price">Einschreibe- gebühr CHF 320</div>
-            </div>
+        </div>
+        <div id="pos31" class="space property" ng-click="fieldaction(31)">
+          <div class="container">
+            <div class="color-bar green"></div>
+            <div class="name long-name">Humanmedizin</div>
+            <div class="price">Einschreibe- gebühr CHF 320</div>
           </div>
-          <div id='pos32' class="space chance">
-            <div class="container">
-              <div class="name">Chance</div>
-              <i class="drawing fa fa-question"></i>
-            </div>
+        </div>
+        <div id="pos32" class="space chance" ng-click="fieldaction(32)">
+          <div class="container">
+            <div class="name">Chance</div>
+            <i class="drawing fa fa-question"></i>
           </div>
-          <div id='pos33' class="space property">
-            <div class="container">
-              <div class="color-bar dark-blue"></div>
-              <div class="name">Aviatik</div>
-              <div class="price">Einschreibe- gebühr CHF 350</div>
-            </div>
+        </div>
+        <div id="pos33" class="space property" ng-click="fieldaction(33)">
+          <div class="container">
+            <div class="color-bar dark-blue"></div>
+            <div class="name">Aviatik</div>
+            <div class="price">Einschreibe- gebühr CHF 350</div>
           </div>
-          <div id='pos34' class="space jumper">
-            <div class="container">
-              <div class="name">Springer</div>
-              <i class="drawing fa fa-jumper"></i>
-              <div class="price">Preis 100$</div>
-            </div>
+        </div>
+        <div id="pos34" class="space jumper" ng-click="fieldaction(34)">
+          <div class="container">
+            <div class="name">Springer</div>
+            <i class="drawing fa fa-jumper"></i>
+            <div class="price">Preis 100$</div>
           </div>
-          <div id='pos35' class="space property">
-            <div class="container">
-              <div class="color-bar dark-blue"></div>
-              <div class="name long-name">Rechtswissen- schaften</div>
-              <div class="price">Einschreibe- gebühr CHF 400</div>
-            </div>
+        </div>
+        <div id="pos35" class="space property" ng-click="fieldaction(35)">
+          <div class="container">
+            <div class="color-bar dark-blue"></div>
+            <div class="name long-name">Rechtswissen- schaften</div>
+            <div class="price">Einschreibe- gebühr CHF 400</div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
   </div>
   <script src="script.js"></script>

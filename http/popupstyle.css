@@ -1,6 +1,6 @@
 .popup-con {
     border-radius: 5px;
-    text-align: center;
+    text-align: left;
     background-color: #fff;
     margin: 17% auto auto; /* 15% from the top and centered */
     padding: 3em;
@@ -8,4 +8,15 @@
     max-width: 650px;
     width: -moz-fit-content;
     height: -moz-fit-content;
+}
+
+#chooseDice_popup .popup-con {
+    text-align: center;
+}
+
+div.popup-p {
+    font-family: "raleway", Helvetica, sans-serif;
+    font-size: 1.6em;
+    margin: 0;
+    font-weight: normal;
 }

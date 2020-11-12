@@ -94,6 +94,10 @@
   display: inline-block;
 }
 
+.container {
+  cursor: cell;
+}
+
 .dice-con {
   text-align: center;
   grid-column: 1 / 4;

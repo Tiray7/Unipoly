@@ -2,7 +2,9 @@ package ch.zhaw.it.pm3.unipoly;
 
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 @Component
@@ -16,6 +18,8 @@ public class UnipolyApp {
 	private boolean rolledPash = false;
 	private Bank bank;
 	private Board board;
+	private ArrayList<ChanceCards> cards;
+	private String currentCardText;
 	private FieldProperty currentFieldProperty;
 
 	enum UnipolyPhase {
@@ -27,6 +31,8 @@ public class UnipolyApp {
 		board = new Board();
 		bank = new Bank();
 		players = new ArrayList<>();
+		cards = Config.getChanceCards();
+		Collections.shuffle(cards);
 	}
 
 	public FieldProperty getcurrentFieldProperty() {
@@ -35,6 +41,10 @@ public class UnipolyApp {
 
 	public Bank getBank() {
 		return bank;
+	}
+
+	public Board getBoard() {
+		return board;
 	}
 
 	public UnipolyPhase getPhase() {
@@ -65,6 +75,10 @@ public class UnipolyApp {
 		this.rolledPash = rolledPash;
 	}
 
+	public String getCurrentCardText() {
+		return currentCardText;
+	}
+
 	// Add a new Player to the Game
 	public void join(String name, TokenType token) throws FieldIndexException {
 		checkIfPlayernameAlreadyExists(name, token);
@@ -93,9 +107,12 @@ public class UnipolyApp {
 	// Start a new Game
 	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
 		if (Gamemode.SINGLE == mode) {
-			if(npcnum >= 1) initializePlayer("NPC1", TokenType.NPCI);
-			if(npcnum >= 2) initializePlayer("NPC2", TokenType.NPCII);
-			if(npcnum >= 3) initializePlayer("NPC3", TokenType.NPCIII);
+			if (npcnum >= 1)
+				initializePlayer("NPC1", TokenType.NPCI);
+			if (npcnum >= 2)
+				initializePlayer("NPC2", TokenType.NPCII);
+			if (npcnum >= 3)
+				initializePlayer("NPC3", TokenType.NPCIII);
 		}
 		currentPlayer = players.get(0);
 	}
@@ -104,17 +121,23 @@ public class UnipolyApp {
 		phase = UnipolyPhase.ROLLINGONE;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
-		movePlayer(this.firstDice + secondDice);
+		movePlayerBy(this.firstDice + secondDice);
 	}
 
-	private void movePlayer(int rolledValue) throws FieldIndexException {
+	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
+		currentPlayer.getToken()
+				.setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+	}
+
+	private void movePlayerTo(int FieldIndex) throws FieldIndexException {
+		currentPlayer.getToken().moveTo(FieldIndex);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
 
-	public void jumpPlayer(int moveby) throws FieldIndexException {
+	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
 		// TODO: Player has to pay 100 CHF
-		movePlayer(moveby);
+		movePlayerTo(FieldIndex);
 	}
 
 	public void checkFieldOptions() throws FieldIndexException {
@@ -146,7 +169,6 @@ public class UnipolyApp {
 				phase = UnipolyPhase.FREECARD;
 			} else {
 				currentPlayer.goDetention();
-				currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 				phase = UnipolyPhase.GO_DETENTION;
 			}
 		}
@@ -183,8 +205,20 @@ public class UnipolyApp {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
 			phase = UnipolyPhase.SHOWCARD;
-			// draw chance card
-			// get money / pay money / whatever
+			cards.get(0);
+			currentCardText = cards.get(0).getText();
+			switch(cards.get(0).getCardType()){
+				case TODETENTION:
+					currentPlayer.goDetention();
+				case PAYMONEY:
+					//todo geld übertragen
+				case RECEIVEMONEY:
+					//todo geld übertragen
+				case DETENTIONFREECARD:
+					currentPlayer.setFreeCard(true);
+			}
+			cards.add(cards.get(0));
+			cards.remove(0);
 		}
 	}
 
