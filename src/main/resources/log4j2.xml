@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
+        <Property name="APP_LOG_ROOT">c:/temp</Property>
+    </Properties>
+
+    <Appenders>
+
+        <Console name="console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <RollingFile name="unipolyLog" fileName="${sys:APP_LOG_ROOT}/unipoly.log"
+                     filePattern="${sys:APP_LOG_ROOT}/unipoly-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <RollingFile name="controllerLog" fileName="${sys:APP_LOG_ROOT}/controller.log"
+                     filePattern="${sys:APP_LOG_ROOT}/controller-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <RollingFile name="springLog" fileName="${sys:APP_LOG_ROOT}/spring-framework.log"
+                     filePattern="${sys:APP_LOG_ROOT}/spring-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="ch.zhaw.it.pm3.unipoly.UnipolyApp" additivity="false" level="debug">
+            <AppenderRef ref="unipolyLog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Logger name="ch.zhaw.it.pm3.unipoly.Controller" additivity="false" level="debug">
+            <AppenderRef ref="controllerLog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Logger name="org.springframework" additivity="false" level="error">
+            <AppenderRef ref="springLog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
