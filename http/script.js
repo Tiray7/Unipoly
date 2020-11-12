@@ -166,7 +166,7 @@ async function phaseChange($scope) {
 
 		case 'SHOWCARD':
 			console.log('New Phase Showcard');
-			txt = 'Du musst jetzt eine Chance Karte ziehen!';
+			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
 			showalert(txt);
 			break;
 
@@ -443,9 +443,14 @@ app.controller('Controller', function ($scope) {
 	}
 
 	$scope.ToggleDiceInput = function () {
+		// If Player is in Detention he has to roll both Dices
 		if ($scope.state.phase == 'DETENTION') {
 			console.log('Player is in Detention, therefor rolls both dices.')
 			$scope.rollDice('rolltwodice');
+		// If Player landed on ChanceCards he cant roll dices
+		} else if ($scope.state.phase == 'SHOWCARD') {
+			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
+			showalert(txt);
 		} else {
 			console.log('Player has to Input the first Dice.')
 			$diceinput.toggle();
@@ -552,8 +557,14 @@ app.controller('Controller', function ($scope) {
 
 	// Player pressed on Card Deck
 	$scope.showCard = async function () {
-		const txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
+		var txt;
+		if ($scope.state.phase == 'SHOWCARD') {
+			txt = $scope.state.currentCardText;
+		} else {
+			txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
+		}
 		showalert(txt);
+		$scope.endTurn();
 	}
 
 	// Player pressed closepopup

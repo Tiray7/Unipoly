@@ -2,7 +2,9 @@ package ch.zhaw.it.pm3.unipoly;
 
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 @Component
@@ -16,6 +18,8 @@ public class UnipolyApp {
 	private boolean rolledPash = false;
 	private Bank bank;
 	private Board board;
+	private ArrayList<ChanceCards> cards;
+	private String currentCardText;
 	private FieldProperty currentFieldProperty;
 
 	enum UnipolyPhase {
@@ -27,6 +31,8 @@ public class UnipolyApp {
 		board = new Board();
 		bank = new Bank();
 		players = new ArrayList<>();
+		cards = Config.getChanceCards();
+		Collections.shuffle(cards);
 	}
 
 	public FieldProperty getcurrentFieldProperty() {
@@ -63,6 +69,9 @@ public class UnipolyApp {
 
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
+	}
+	public String getCurrentCardText(){
+		return currentCardText;
 	}
 
 	// Add a new Player to the Game
@@ -146,7 +155,6 @@ public class UnipolyApp {
 				phase = UnipolyPhase.FREECARD;
 			} else {
 				currentPlayer.goDetention();
-				currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 				phase = UnipolyPhase.GO_DETENTION;
 			}
 		}
@@ -183,8 +191,20 @@ public class UnipolyApp {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
 			phase = UnipolyPhase.SHOWCARD;
-			// draw chance card
-			// get money / pay money / whatever
+			cards.get(0);
+			currentCardText = cards.get(0).getText();
+			switch(cards.get(0).getCardType()){
+				case TODETENTION:
+					currentPlayer.goDetention();
+				case PAYMONEY:
+					//todo geld übertragen
+				case RECEIVEMONEY:
+					//todo geld übertragen
+				case DETENTIONFREECARD:
+					currentPlayer.setFreeCard(true);
+			}
+			cards.add(cards.get(0));
+			cards.remove(0);
 		}
 	}
 

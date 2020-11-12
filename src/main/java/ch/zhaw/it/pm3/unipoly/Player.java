@@ -43,12 +43,13 @@ public class Player extends Owner {
     public void decreaseleftTimeInDetention() {
         this.leftTimeInDetention--;
     }
-
+    
     public boolean inDetention() {
         return leftTimeInDetention > 0;
     }
 
     public void goDetention() {
+        token.setCurrentFieldLabel(Config.FieldLabel.DETENTION);
         token.moveTo(9);
         this.leftTimeInDetention = 3;
     }
