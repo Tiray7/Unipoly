@@ -1,29 +1,41 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Owner {
 
     int index;
     private final String name;
-    private double money;
+    private int money;
     private int RoadOwned;
     private int PropertyOwned;
-    private ArrayList<Integer> deedIndices;
+    private int Debt;
+    private Owner Debtor;
+    private Map<Integer, FieldProperty> ownedModuls;
 
-    public Owner(String id, double initialMoney) {
+    public Owner(String id, int initialMoney) {
         this.name = id;
         money = initialMoney;
+        ownedModuls = new HashMap<>();
     }
 
-    public String getName() {
-        return name;
+    public String getName() { return name; }
+    public int getMoney() { return money; }
+    public int getRoadOwned() { return RoadOwned; }
+    public int getDebt() { return Debt; }
+    public Owner getDebtor() { return Debtor; }
+    public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
+
+    public int setandgetPropertyOwned() {  
+        this.PropertyOwned = ownedModuls.size(); 
+        return PropertyOwned;
     }
 
-    public double getMoney() {
-        return money;
-    }
+    // TODO: !
+    public void setRoadOwned(int roadOwned) { this.RoadOwned = roadOwned; }
 
+    /*
     public double transfer(Owner peoperty, Field tile, double price) {
         if (!(this instanceof Bank)) {
             int i = this.getDeeds().indexOf(tile.getLabel());
@@ -47,33 +59,35 @@ public abstract class Owner {
 
         return peoperty.transfer(this, price);
     }
+    */
 
-
-    public double transfer(Owner property, Double amount) {
-        double newBalance = money - amount;
-        if (newBalance < 0) newBalance = 0;
-        double transfer = money - newBalance;
-        property.money += transfer;
-        money -= transfer;
-        return transfer;
+    // TODO: Player has to pay a certain amount to another Player/Bank
+    public void transferMoneyTo(Owner player, int amount) {
+        player.money += amount;
+        this.money -= amount;
     }
 
-    public int getRoadOwned() {
-        return RoadOwned;
+    // TODO: Player landed on an owned field
+    public boolean payRent(FieldProperty field) {
+        // Player has to pay Rent
+        // The Rent of the Field increases
+        // If the whole Modulgroup is owned by the Player, the rents of all Moduls increase in that group
+        return true;
     }
 
-    public int getPropertyOwned() {
-        return PropertyOwned;
-    }
-
-    public void setPropertyOwned(int numUtilitiesOwned) {
-        this.PropertyOwned = numUtilitiesOwned;
-    }
-
-    public void setRoadOwned(int roadOwned) {
-        this.RoadOwned = roadOwned;
-    }
-    public ArrayList<Integer> getDeeds() {
-        return deedIndices;
+    // TODO: Calculate what the Player owes
+    public boolean setandcheckDebt(Owner debtor, int amount) {
+        /*
+        if (currentplayer cant pay amount) {
+            Pay what you have to Debtor
+            set Debt
+            set Debtor
+            return true;
+        } else {
+            transferMoneyTo(debtor, amount);
+            return false;
+        }
+        */
+        return false;
     }
 }
