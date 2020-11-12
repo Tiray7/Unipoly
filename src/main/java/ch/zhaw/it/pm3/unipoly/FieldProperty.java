@@ -60,4 +60,24 @@ public class FieldProperty extends Field{
     public int getCurrentRent() {
         return currentRent;
     }
+
+    public int getRentLV1() {
+        return rentLV1;
+    }
+
+    public int getRentLV2() {
+        return rentLV2;
+    }
+
+    public int getRentLV3() {
+        return rentLV3;
+    }
+
+    public int getRentLV4() {
+        return rentLV4;
+    }
+
+    public int getRentLV5() {
+        return rentLV5;
+    }
 }
