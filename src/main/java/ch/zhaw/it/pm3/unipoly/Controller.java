@@ -1,10 +1,13 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
+import org.apache.logging.log4j.Level;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SpringBootApplication
 @RestController
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class Controller {
 
 	private UnipolyApp unipoly;
+	private static final Logger controllerMcLogger = LogManager.getLogger(Controller.class);
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
@@ -50,7 +55,7 @@ public class Controller {
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp start(@RequestParam Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
+	public UnipolyApp start(@RequestParam UnipolyApp.Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
 		unipoly.start(gamemode, npcnum);
 		return unipoly;
 	}

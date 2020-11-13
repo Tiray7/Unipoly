@@ -1,5 +1,7 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,6 +22,12 @@ public class UnipolyApp {
 	private ArrayList<ChanceCards> cards;
 	private String currentCardText;
 	private FieldProperty currentFieldProperty;
+
+	private static final Logger unipolyMcLogger = LogManager.getLogger(Controller.class);
+
+	enum Gamemode {
+		SINGLE, MULTI
+	}
 
 	enum UnipolyPhase {
 		WAITING, ROLLING, BUY_PROPERTY, TURN, DETENTION, GO_DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
