@@ -2,7 +2,6 @@ package ch.zhaw.it.pm3.unipoly;
 
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -10,7 +9,7 @@ import java.util.Random;
 @Component
 public class UnipolyApp {
 
-	private UnipolyPhase phase = UnipolyPhase.WAITING;
+	private UnipolyPhase phase;
 	private ArrayList<Player> players;
 	private Player currentPlayer;
 	private int firstDice;
@@ -23,10 +22,11 @@ public class UnipolyApp {
 	private FieldProperty currentFieldProperty;
 
 	enum UnipolyPhase {
-		WAITING, ROLLINGONE, ROLLINGTWO, BUY_PROPERTY, TURN, DETENTION, GO_DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
-		NOT_ENOUGH_MONEY, GO, VISIT, FREECARD, RECESS
+		WAITING, ROLLING, BUY_PROPERTY, TURN, DETENTION, GO_DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
+		NOT_ENOUGH_MONEY, GO, VISIT, FREECARD, RECESS, INDEBT, DEBTFREE, STILLDEBT, BANKRUPT
 	}
 
+	// UnipolyApp Constructor
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
@@ -35,50 +35,24 @@ public class UnipolyApp {
 		Collections.shuffle(cards);
 	}
 
-	public FieldProperty getcurrentFieldProperty() {
-		return currentFieldProperty;
-	}
+	/*------ GET functions ------------------------------------------------------------------*/
+	public FieldProperty getcurrentFieldProperty() { return currentFieldProperty; }
+	public Bank getBank() { return bank; }
+	public Board getBoard() { return board; }
+	public UnipolyPhase getPhase() { return phase; }
+	public ArrayList<Player> getPlayers() { return players;	}
+	public Player getCurrentPlayer() { return currentPlayer; }
+	public int getFirstDice() { return firstDice; }
+	public int getSecondDice() { return secondDice; }
+	public boolean isRolledPash() { return rolledPash; }
+	public String getCurrentCardText() { return currentCardText; }
 
-	public Bank getBank() {
-		return bank;
-	}
-
-	public Board getBoard() {
-		return board;
-	}
-
-	public UnipolyPhase getPhase() {
-		return phase;
-	}
-
-	public ArrayList<Player> getPlayers() {
-		return players;
-	}
-
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-
-	public int getFirstDice() {
-		return firstDice;
-	}
-
-	public int getSecondDice() {
-		return secondDice;
-	}
-
-	public boolean isRolledPash() {
-		return rolledPash;
-	}
-
+	/*------ SET functions -----------------------------------------------------------------*/
 	public void setRolledPash(boolean rolledPash) {
 		this.rolledPash = rolledPash;
 	}
 
-	public String getCurrentCardText() {
-		return currentCardText;
-	}
-
+	/*------ Function to configure the Game -------------------------------------------------*/
 	// Add a new Player to the Game
 	public void join(String name, TokenType token) throws FieldIndexException {
 		checkIfPlayernameAlreadyExists(name, token);
@@ -96,6 +70,7 @@ public class UnipolyApp {
 		}
 	}
 
+	// Initializing a new Player
 	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
 		Player player = new Player(name, token);
 		player.getToken().moveTo(0);
@@ -106,6 +81,7 @@ public class UnipolyApp {
 
 	// Start a new Game
 	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
+		// If SinglePlayer we have to create "npcnum" NPC Players
 		if (Gamemode.SINGLE == mode) {
 			if (npcnum >= 1)
 				initializePlayer("NPC1", TokenType.NPCI);
@@ -114,32 +90,39 @@ public class UnipolyApp {
 			if (npcnum >= 3)
 				initializePlayer("NPC3", TokenType.NPCIII);
 		}
+		// First Player which gets to play
 		currentPlayer = players.get(0);
+		phase = UnipolyPhase.WAITING;
 	}
 
+	/*------ rolling Dices and moving Players -------------------------------------------------*/
 	public void rollDice(int firstDice) throws FieldIndexException {
-		phase = UnipolyPhase.ROLLINGONE;
+		phase = UnipolyPhase.ROLLING;
 		this.firstDice = firstDice;
 		secondDice = new Random().nextInt(6) + 1;
+		// After Rolling the second dice, move the Player accordingly
 		movePlayerBy(this.firstDice + secondDice);
 	}
 
+	// Move Player relative by an amount
 	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
-		currentPlayer.getToken()
-				.setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
 
+	// Move Player direktly to a wished field
 	private void movePlayerTo(int FieldIndex) throws FieldIndexException {
 		currentPlayer.getToken().moveTo(FieldIndex);
 		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
 	}
 
+	// Player landed on a jump field and wishes to jump to a certain field
 	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
-		// TODO: Player has to pay 100 CHF
+		//currentPlayer.transferMoneyTo(bank, 100);
 		movePlayerTo(FieldIndex);
 	}
 
+	/*------ Specific Field functions -----------------------------------------------------*/
 	public void checkFieldOptions() throws FieldIndexException {
 		switch (currentPlayer.getToken().getCurrentFieldLabel()) {
 			case PROPERTY:
@@ -211,9 +194,9 @@ public class UnipolyApp {
 				case TODETENTION:
 					currentPlayer.goDetention();
 				case PAYMONEY:
-					//todo geld übertragen
+					// TODO: currentPlayer.transferMoneyTo(Owner player, Double amount)
 				case RECEIVEMONEY:
-					//todo geld übertragen
+					// TODO: player.transferMoneyTo(currentPlayer, Double amount)
 				case DETENTIONFREECARD:
 					currentPlayer.setFreeCard(true);
 			}
@@ -237,15 +220,54 @@ public class UnipolyApp {
 	private void playerIsOnGoField() throws FieldIndexException {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO) {
+			// bank.transferMoneyTo(currentPlayer, 400);
 			phase = UnipolyPhase.GO;
 		}
 	}
 
+	private void checkIfOverStart() {
+		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
+			// bank.transferMoneyTo(currentPlayer, 200);
+		}
+	}
+
+	/*------ Property Marketplace -------------------------------------------------*/
+	// TODO: buyProperty()
 	public void buyProperty(int currentFieldIndex) throws FieldIndexException {
 		board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
 		// geld abziehen und so
 	}
 
+	// TODO: sellProperty()
+	public void sellProperty(int currentFieldIndex) {
+	}
+
+	// TODO: landedOnOwnedProperty()
+	public void landedOnOwnedProperty(int currentFieldIndex) {
+	}
+
+	// TODO: landedOnMyProperty()
+	public void landedOnMyProperty(int currentFieldIndex) {
+	}
+
+	// TODO: payOfDebt()
+	public void payOffDebt(int FieldIndex) {
+		sellProperty(FieldIndex);
+		/*
+		if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(), currentPlayer.getDebt())) {
+			if(currentPlayer.setandgetPropertyOwned() > 0){
+				phase = UnipolyPhase.STILLDEBT;
+			} else {
+				phase = UnipolyPhase.BANKRUPT;
+			}
+		} else {
+			phase = UnipolyPhase.DEBTFREE;
+		}
+		*/
+	}
+
+
+	/*------ end and start new turn -------------------------------------------------*/
 	public void switchPlayer() {
 		if (currentPlayer.index == players.size() - 1)
 			currentPlayer = players.get(0);
@@ -258,15 +280,9 @@ public class UnipolyApp {
 			phase = UnipolyPhase.WAITING;
 	}
 
-	private void checkIfOverStart() {
-		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
-			// TODO: Bank pay player 200 CHF
-		}
-	}
-
 	/*------ Detention related funtions ---------------------------------------------------------------------*/
 	public void rollTwoDice() {
-		phase = UnipolyPhase.ROLLINGTWO;
+		phase = UnipolyPhase.ROLLING;
 		setRolledPash(false);
 		firstDice = new Random().nextInt(6) + 1;
 		secondDice = new Random().nextInt(6) + 1;
@@ -280,10 +296,11 @@ public class UnipolyApp {
 	public void payDetentionRansom() {
 		final int RANSOM = 100;
 		if (currentPlayer.getMoney() >= RANSOM) {
-			// TODO: player has to pay 100
+			// currentPlayer.transferMoneyTo(bank, RANSOM);
 			leaveDetention();
 		} else {
-			// TODO: Player has no money
+			// currentPlayer.setandcheckDebt(bank, RANSOM);
+			phase = UnipolyPhase.INDEBT;
 			switchPlayer();
 		}
 	}
@@ -292,5 +309,7 @@ public class UnipolyApp {
 		phase = UnipolyPhase.WAITING;
 		currentPlayer.outDetention();
 	}
+
+	/*------ ****** ---------------------------------------------------------------------*/
 
 }
