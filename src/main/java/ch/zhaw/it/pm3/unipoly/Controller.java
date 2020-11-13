@@ -1,5 +1,6 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import org.apache.logging.log4j.Level;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class Controller {
 
 	private UnipolyApp unipoly;
-	private static final Logger LOGGER = LogManager.getLogger(Controller.class);
+	private static final Logger controllerMcLogger = LogManager.getLogger(Controller.class);
 
 
 	public static void main(String[] args) {
@@ -54,7 +55,7 @@ public class Controller {
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp start(@RequestParam Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
+	public UnipolyApp start(@RequestParam UnipolyApp.Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
 		unipoly.start(gamemode, npcnum);
 		return unipoly;
 	}

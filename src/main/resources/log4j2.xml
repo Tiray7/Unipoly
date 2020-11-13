@@ -45,20 +45,17 @@
 
         <Logger name="ch.zhaw.it.pm3.unipoly.UnipolyApp" additivity="false" level="debug">
             <AppenderRef ref="unipolyLog"/>
-            <AppenderRef ref="console"/>
         </Logger>
 
         <Logger name="ch.zhaw.it.pm3.unipoly.Controller" additivity="false" level="debug">
             <AppenderRef ref="controllerLog"/>
-            <AppenderRef ref="console"/>
         </Logger>
 
-        <Logger name="org.springframework" additivity="false" level="error">
+        <Logger name="org.springframework" additivity="false" level="debug">
             <AppenderRef ref="springLog"/>
-            <AppenderRef ref="console"/>
         </Logger>
 
-        <Root level="INFO">
+        <Root level="info">
             <AppenderRef ref="console"/>
         </Root>
 
