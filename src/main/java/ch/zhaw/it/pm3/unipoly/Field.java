@@ -23,7 +23,4 @@ public class Field {
     public ArrayList<Player> getPlayers() {
         return players;
     }
-
-    public void setOwnerIndex(int index) {
-    }
 }

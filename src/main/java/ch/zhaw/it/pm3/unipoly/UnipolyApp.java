@@ -31,7 +31,7 @@ public class UnipolyApp {
 
 	enum UnipolyPhase {
 		WAITING, ROLLING, BUY_PROPERTY, TURN, DETENTION, GO_DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
-		NOT_ENOUGH_MONEY, GO, VISIT, FREECARD, RECESS, INDEBT, DEBTFREE, STILLDEBT, BANKRUPT
+		NOT_ENOUGH_MONEY, GO, VISIT, FREECARD, RECESS, INDEBT, DEBTFREE, BANKRUPT, ERROR
 	}
 
 	// UnipolyApp Constructor
@@ -80,9 +80,8 @@ public class UnipolyApp {
 
 	// Initializing a new Player
 	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
-		Player player = new Player(name, token);
+		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
-		player.index = players.size();
 		players.add(player);
 		player.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(0));
 	}
@@ -126,7 +125,7 @@ public class UnipolyApp {
 
 	// Player landed on a jump field and wishes to jump to a certain field
 	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
-		//currentPlayer.transferMoneyTo(bank, 100);
+		currentPlayer.transferMoneyTo(bank, 100);
 		movePlayerTo(FieldIndex);
 	}
 
@@ -228,22 +227,26 @@ public class UnipolyApp {
 	private void playerIsOnGoField() throws FieldIndexException {
 		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
 		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO) {
-			// bank.transferMoneyTo(currentPlayer, 400);
+			bank.transferMoneyTo(currentPlayer, 400);
 			phase = UnipolyPhase.GO;
 		}
 	}
 
 	private void checkIfOverStart() {
 		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
-			// bank.transferMoneyTo(currentPlayer, 200);
+			bank.transferMoneyTo(currentPlayer, 200);
 		}
 	}
 
 	/*------ Property Marketplace -------------------------------------------------*/
 	// TODO: buyProperty()
 	public void buyProperty(int currentFieldIndex) throws FieldIndexException {
-		board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
-		// geld abziehen und so
+		// check if he has enough
+		FieldProperty field = board.getFieldPropertyAtIndex(currentFieldIndex);
+		if(field.isOwnerBank()) {
+			currentPlayer.buyPropertyFrom(bank, field);
+		}
+		currentPlayer.buyPropertyFrom(players.get(field.getOwnerIndex()), field);
 	}
 
 	// TODO: sellProperty()
@@ -263,11 +266,8 @@ public class UnipolyApp {
 		sellProperty(FieldIndex);
 		/*
 		if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(), currentPlayer.getDebt())) {
-			if(currentPlayer.setandgetPropertyOwned() > 0){
-				phase = UnipolyPhase.STILLDEBT;
-			} else {
+			if(currentPlayer.setandgetPropertyOwned() == 0){
 				phase = UnipolyPhase.BANKRUPT;
-			}
 		} else {
 			phase = UnipolyPhase.DEBTFREE;
 		}
@@ -277,10 +277,10 @@ public class UnipolyApp {
 
 	/*------ end and start new turn -------------------------------------------------*/
 	public void switchPlayer() {
-		if (currentPlayer.index == players.size() - 1)
+		if (currentPlayer.getIndex() == players.size() - 1)
 			currentPlayer = players.get(0);
 		else
-			currentPlayer = players.get(currentPlayer.index + 1);
+			currentPlayer = players.get(currentPlayer.getIndex() + 1);
 
 		if (currentPlayer.inDetention())
 			phase = UnipolyPhase.DETENTION;
@@ -304,7 +304,7 @@ public class UnipolyApp {
 	public void payDetentionRansom() {
 		final int RANSOM = 100;
 		if (currentPlayer.getMoney() >= RANSOM) {
-			// currentPlayer.transferMoneyTo(bank, RANSOM);
+			currentPlayer.transferMoneyTo(bank, RANSOM);
 			leaveDetention();
 		} else {
 			// currentPlayer.setandcheckDebt(bank, RANSOM);

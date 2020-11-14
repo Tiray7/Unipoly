@@ -1,77 +1,78 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public abstract class Owner {
 
-    int index;
+    private final int index;
     private final String name;
     private int money;
     private int RoadOwned;
     private int PropertyOwned;
     private int Debt;
     private Owner Debtor;
-    private Map<Integer, FieldProperty> ownedModuls;
+    private ArrayList<FieldProperty> ownedModuls;
 
-    public Owner(String id, int initialMoney) {
+    public Owner(int index, String id, int initialMoney) {
+        this.index = index;
         this.name = id;
         money = initialMoney;
-        ownedModuls = new HashMap<>();
+        ownedModuls = new ArrayList<FieldProperty>();
     }
 
+    public int getIndex() { return index; }
+    public boolean isBank() { return this.index == -1; }
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getRoadOwned() { return RoadOwned; }
     public int getDebt() { return Debt; }
     public Owner getDebtor() { return Debtor; }
-    public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
+    public ArrayList<FieldProperty> getownedModuls() { return ownedModuls; }
 
     public int setandgetPropertyOwned() {  
         this.PropertyOwned = ownedModuls.size(); 
         return PropertyOwned;
     }
 
-    // TODO: !
+    // TODO: Call this function to check player own the road
+    // or maybe a function in fields
     public void setRoadOwned(int roadOwned) { this.RoadOwned = roadOwned; }
 
-    /*
-    public double transfer(Owner peoperty, Field tile, double price) {
-        if (!(this instanceof Bank)) {
-            int i = this.getDeeds().indexOf(tile.getLabel());
-            this.getDeeds().remove(i);
-        }
-        peoperty.getDeeds().add(tile.getLabel);
-        tile.setOwnerIndex(peoperty.index);
 
-
-        if(tile.getLabel == tile.getLabel) {
-            int numOwned = peoperty.PropertyOwned;
-            peoperty.setPropertyOwned(numOwned + 1);
-
-            if(this.name != "Bank")
-            {
-                numOwned = this.getPropertyOwned();
-                this.setPropertyOwned(numOwned - 1);
-            }
-
-        }
-
-        return peoperty.transfer(this, price);
-    }
-    */
-
-    // TODO: Player has to pay a certain amount to another Player/Bank
+    // Player has to pay a certain amount to another Player/Bank
     public void transferMoneyTo(Owner player, int amount) {
         player.money += amount;
         this.money -= amount;
     }
 
+     // TODO: transfer a Field
+     public void transferFieldTo(Owner owner, FieldProperty field) {
+        if(!owner.isBank()){ 
+            this.ownedModuls.add(field);
+            owner.ownedModuls.remove(field); 
+        }
+        field.setOwnerIndex(this.index);
+    }
+
     // TODO: Player landed on an owned field
     public boolean payRent(FieldProperty field) {
         // Player has to pay Rent
-        // The Rent of the Field increases
-        // If the whole Modulgroup is owned by the Player, the rents of all Moduls increase in that group
+        /*
+        amount = field.currentRent
+        Player owner = Owner of the field.
+        If the currentPlayer(this) is not the Owner
+            then first check with setandcheckDebt() if he is able to pay
+        if True:
+                Transfer the money
+        if False:
+                return false
+
+        if The Owner has whole modulgroup:
+                increase rent of whole modulgroup
+            else:
+                increse rent of this field
+            return true
+        */
         return true;
     }
 
@@ -89,5 +90,11 @@ public abstract class Owner {
         }
         */
         return false;
+    }
+
+    // TODO: buy a Property
+    public void buyPropertyFrom(Owner owner, FieldProperty field) {
+        transferMoneyTo(owner, field.getPropertyCost());
+        transferFieldTo(owner, field);
     }
 }
