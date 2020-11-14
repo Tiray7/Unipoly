@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Random;
 
 @Component
@@ -240,26 +241,46 @@ public class UnipolyApp {
 	}
 
 	/*------ Property Marketplace -------------------------------------------------*/
-	// TODO: buyProperty()
 	public void buyProperty(int currentFieldIndex) throws FieldIndexException {
-		board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
-		// geld abziehen und so
+		FieldProperty currentField = board.getFieldPropertyAtIndex(currentFieldIndex);
+		int NO_OWNER = -1;
+		if(currentField.getOwnerIndex() == NO_OWNER) {
+			currentField.setOwnerIndex(currentPlayer.index);
+			currentPlayer.transferMoneyTo(getBank(), currentField.getPropertyCost());
+			}
 	}
 
-	// TODO: sellProperty()
-	public void sellProperty(int currentFieldIndex) {
+	public void sellProperty(int FieldIndex) throws FieldIndexException {
+		FieldProperty fieldToBeSold = board.getFieldPropertyAtIndex(FieldIndex);
+		int NO_OWNER = -1;
+		if(currentPlayer.index == fieldToBeSold.getOwnerIndex()) {
+			fieldToBeSold.setOwnerIndex(NO_OWNER);
+			getBank().transferMoneyTo(currentPlayer,fieldToBeSold.getPropertyCost());
+		}
+		// TODO: If the whole Modulgroup is owned by Players,
+		//  the rents of all Moduls increase in that group,
+		//  depending on whether they are owned by one or several players
 	}
 
 	// TODO: landedOnOwnedProperty()
-	public void landedOnOwnedProperty(int currentFieldIndex) {
+	public void landedOnOwnedProperty(int currentFieldIndex) throws FieldIndexException {
+		FieldProperty currentField = board.getFieldPropertyAtIndex(currentFieldIndex);
+		if(currentPlayer.index != currentField.getOwnerIndex()){
+			currentPlayer.payRent(currentField);
+		}
 	}
 
 	// TODO: landedOnMyProperty()
-	public void landedOnMyProperty(int currentFieldIndex) {
+	public void landedOnMyProperty(int currentFieldIndex) throws FieldIndexException {
+		FieldProperty currentField = board.getFieldPropertyAtIndex(currentFieldIndex);
+		if(currentPlayer.index == currentField.getOwnerIndex()) {
+			currentField.raiseRent();
+		}
+
 	}
 
 	// TODO: payOfDebt()
-	public void payOffDebt(int FieldIndex) {
+	public void payOffDebt(int FieldIndex) throws FieldIndexException {
 		sellProperty(FieldIndex);
 		/*
 		if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(), currentPlayer.getDebt())) {

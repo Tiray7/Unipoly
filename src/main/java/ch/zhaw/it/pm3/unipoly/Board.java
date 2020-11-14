@@ -30,6 +30,10 @@ public class Board {
         return fields;
     }
 
+    public Map<Integer, FieldProperty> getProperties() {
+        return properties;
+    }
+
     public String getPropertyNameAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return properties.get(index).getName();

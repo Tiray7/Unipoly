@@ -72,16 +72,15 @@ public abstract class Owner {
         Owner ownerOfField = field.getPlayers().get(field.getOwnerIndex());
         this.transferMoneyTo(ownerOfField, field.getCurrentRent());
         field.raiseRent();
-        // TODO: If the whole Modulgroup is owned by the Player, the rents of all Moduls increase in that group
         return true;
     }
 
     // TODO: Calculate what the Player owes
     public boolean setandcheckDebt(Owner debtor, int amount) {
-
+/*
         if (this.getMoney()<amount) {
             
-            /*
+
             Pay what you have to Debtor
             set Debt
             set Debtor
@@ -90,9 +89,9 @@ public abstract class Owner {
             transferMoneyTo(debtor, amount);
             return false;
 
-             */
-        }
 
+        }
+*/
         return false;
     }
 }
