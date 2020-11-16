@@ -7,8 +7,8 @@ public class Player extends Owner {
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
 
-    public Player(String name, TokenType tokenType) {
-        super(name, 1500);
+    public Player(int index, String name, TokenType tokenType) {
+        super(index, name, 1500);
         token = new Token(tokenType);
     }
 
@@ -49,7 +49,6 @@ public class Player extends Owner {
     }
 
     public void goDetention() {
-        token.setCurrentFieldLabel(Config.FieldLabel.DETENTION);
         token.moveTo(9);
         this.leftTimeInDetention = 3;
     }

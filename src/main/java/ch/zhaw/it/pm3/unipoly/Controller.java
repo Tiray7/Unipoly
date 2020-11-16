@@ -104,8 +104,8 @@ public class Controller {
 
 	@RequestMapping(value = "/userwantstobuy", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp userWantsToBuy(int currentFieldIndex) throws FieldIndexException {
-		unipoly.buyProperty(currentFieldIndex);
+	public UnipolyApp userWantsToBuy() {
+		unipoly.buyProperty();
 		return unipoly;
 	}
 

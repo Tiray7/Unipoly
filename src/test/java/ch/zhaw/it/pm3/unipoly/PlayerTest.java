@@ -15,7 +15,7 @@ public class PlayerTest {
 
     @Before
     public void setUp() throws Exception {
-        player = new Player("Jack",TokenType.ATOM);
+        player = new Player(0,"Jack",TokenType.ATOM);
     }
 
     @Test
@@ -36,17 +36,10 @@ public class PlayerTest {
     }
 
     @Test
-    public void testGetDeeds() {
-        assert(player.getDeeds().size() == 0);
-    }
-
-
-
-    @Test
     public void testTransfer() {
-        Player player2 = new Player("Sam", TokenType.CRADLE);
+        Player player2 = new Player(1,"Sam", TokenType.CRADLE);
         assertEquals(player.getMoney(), 1500, 0);
-        assertEquals(player.transfer(player2, 100.0), 100, 0);
+        // TODO: assertEquals(player.transferMoneyTo(player2, 100), 100, 0);
         assertEquals(player.getMoney(), 1400, 0);
     }
 

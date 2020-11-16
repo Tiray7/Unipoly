@@ -12,16 +12,17 @@ import java.util.Random;
 public class UnipolyApp {
 
 	private UnipolyPhase phase;
-	private ArrayList<Player> players;
+	private final ArrayList<Player> players;
+	private final Bank bank;
+	private final Board board;
+	private final ArrayList<ChanceCards> cards;
 	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
 	private boolean rolledPash = false;
-	private Bank bank;
-	private Board board;
-	private ArrayList<ChanceCards> cards;
 	private String currentCardText;
-	private FieldProperty currentFieldProperty;
+	private Field currentField;
+	private String displayMessage;
 
 	private static final Logger unipolyMcLogger = LogManager.getLogger(Controller.class);
 
@@ -30,35 +31,36 @@ public class UnipolyApp {
 	}
 
 	enum UnipolyPhase {
-		WAITING, ROLLING, BUY_PROPERTY, TURN, DETENTION, GO_DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
-		NOT_ENOUGH_MONEY, GO, VISIT, FREECARD, RECESS, INDEBT, DEBTFREE, STILLDEBT, BANKRUPT
+		SHOWMESSAGE, GO_DETENTION, WAITING, ROLLING, BUY_PROPERTY, DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP, INDEBT,
+		DEBTFREE, BANKRUPT, ERROR
 	}
 
 	// UnipolyApp Constructor
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
+		bank.setownedModuls(board.getProperties());
 		players = new ArrayList<>();
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);
 	}
 
 	/*------ GET functions ------------------------------------------------------------------*/
-	public FieldProperty getcurrentFieldProperty() { return currentFieldProperty; }
+	public Field getcurrentField() { return currentField; }
 	public Bank getBank() { return bank; }
 	public Board getBoard() { return board; }
 	public UnipolyPhase getPhase() { return phase; }
-	public ArrayList<Player> getPlayers() { return players;	}
+	public ArrayList<Player> getPlayers() { return players; }
 	public Player getCurrentPlayer() { return currentPlayer; }
 	public int getFirstDice() { return firstDice; }
 	public int getSecondDice() { return secondDice; }
 	public boolean isRolledPash() { return rolledPash; }
 	public String getCurrentCardText() { return currentCardText; }
+	public String getdisplayMessage() { return displayMessage; }
 
 	/*------ SET functions -----------------------------------------------------------------*/
-	public void setRolledPash(boolean rolledPash) {
-		this.rolledPash = rolledPash;
-	}
+	private void setdisplayMessage(String text) { this.displayMessage = text; }
+	private void setRolledPash(boolean rolledPash) { this.rolledPash = rolledPash; }
 
 	/*------ Function to configure the Game -------------------------------------------------*/
 	// Add a new Player to the Game
@@ -80,11 +82,9 @@ public class UnipolyApp {
 
 	// Initializing a new Player
 	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
-		Player player = new Player(name, token);
+		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
-		player.index = players.size();
 		players.add(player);
-		player.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(0));
 	}
 
 	// Start a new Game
@@ -115,24 +115,24 @@ public class UnipolyApp {
 	// Move Player relative by an amount
 	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
-		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+		currentField = board.getFieldAtIndex(currentPlayer.getToken().getCurrFieldIndex());
 	}
 
 	// Move Player direktly to a wished field
 	private void movePlayerTo(int FieldIndex) throws FieldIndexException {
 		currentPlayer.getToken().moveTo(FieldIndex);
-		currentPlayer.getToken().setCurrentFieldLabel(board.getFieldTypeAtIndex(currentPlayer.getToken().getCurrFieldIndex()));
+		currentField = board.getFieldAtIndex(FieldIndex);
 	}
 
 	// Player landed on a jump field and wishes to jump to a certain field
 	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
-		//currentPlayer.transferMoneyTo(bank, 100);
+		currentPlayer.transferMoneyTo(bank, 100);
 		movePlayerTo(FieldIndex);
 	}
 
 	/*------ Specific Field functions -----------------------------------------------------*/
 	public void checkFieldOptions() throws FieldIndexException {
-		switch (currentPlayer.getToken().getCurrentFieldLabel()) {
+		switch (currentField.getLabel()) {
 			case PROPERTY:
 				playerIsOnPropertyField();
 			case CHANCE:
@@ -153,11 +153,12 @@ public class UnipolyApp {
 	}
 
 	private void playerIsOnGoToDetention() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.DETENTION) {
+		if (currentField.getLabel() == Config.FieldLabel.DETENTION) {
 			if (currentPlayer.getFreeCard()) {
 				currentPlayer.setFreeCard(false);
-				phase = UnipolyPhase.FREECARD;
+				setdisplayMessage(
+						"Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!<br>Du warnst sie das wenn sie dich von der Schule schmeist, du ihr Geheimnis rumerzählst.<br>Sie lässt dich sofort gehen.");
+				phase = UnipolyPhase.SHOWMESSAGE;
 			} else {
 				currentPlayer.goDetention();
 				phase = UnipolyPhase.GO_DETENTION;
@@ -166,39 +167,42 @@ public class UnipolyApp {
 	}
 
 	private void playerIsOnGoZnueniPause() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.RECESS) {
-			phase = UnipolyPhase.RECESS;
+		if (currentField.getLabel() == Config.FieldLabel.RECESS) {
+			setdisplayMessage("Znüni Zeit. Ruh dich etwas aus:<br>Trink einen Kaffee und iss ein Sandwich!");
+			phase = UnipolyPhase.SHOWMESSAGE;
 		}
 	}
 
 	private void playerIsOnPropertyField() throws FieldIndexException {
-		int NO_OWNER = -1;
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		currentFieldProperty = board.getFieldPropertyAtIndex(currentFieldIndex);
-		if (board.getPropertyOwner(currentFieldIndex) == NO_OWNER) {
-			if (currentPlayer.getMoney() >= board.getCostFromProperty(currentFieldIndex)) {
+		FieldProperty currentField = (FieldProperty) this.currentField;
+		if (currentField.isOwnerBank()) {
+			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				phase = UnipolyPhase.BUY_PROPERTY;
 			} else {
-				phase = UnipolyPhase.NOT_ENOUGH_MONEY;
+				setdisplayMessage(
+						"Du hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht automatisch an den nächsten Spieler.");
+				phase = UnipolyPhase.SHOWMESSAGE;
 			}
+		} else if (currentField.getOwnerIndex() == currentPlayer.getIndex()) {
+			landedOnMyProperty();
+		} else {
+			landedOnOwnedProperty();
 		}
 	}
 
 	private void playerIsOnVisit() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.VISIT) {
-			phase = UnipolyPhase.VISIT;
+		if (currentField.getLabel() == Config.FieldLabel.VISIT) {
+			setdisplayMessage("Zum Glück nur zu Besuch im Rektorat.");
+			phase = UnipolyPhase.SHOWMESSAGE;
 		}
 	}
 
 	private void playerIsOnChanceField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.CHANCE) {
+		if (currentField.getLabel() == Config.FieldLabel.CHANCE) {
 			phase = UnipolyPhase.SHOWCARD;
 			cards.get(0);
 			currentCardText = cards.get(0).getText();
-			switch(cards.get(0).getCardType()){
+			switch (cards.get(0).getCardType()) {
 				case TODETENTION:
 					currentPlayer.goDetention();
 				case PAYMONEY:
@@ -215,72 +219,88 @@ public class UnipolyApp {
 
 	private void playerIsOnJumpField() throws FieldIndexException {
 		final int COST_FOR_JUMP = 100;
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.JUMP) {
+		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 				phase = UnipolyPhase.JUMP;
 			} else {
-				phase = UnipolyPhase.NOT_ENOUGH_MONEY;
+				setdisplayMessage(
+						"Du hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht automatisch an den nächsten Spieler.");
+				phase = UnipolyPhase.SHOWMESSAGE;
 			}
 		}
 	}
 
 	private void playerIsOnGoField() throws FieldIndexException {
-		int currentFieldIndex = currentPlayer.getToken().getCurrFieldIndex();
-		if (board.getFieldTypeAtIndex(currentFieldIndex) == Config.FieldLabel.GO) {
-			// bank.transferMoneyTo(currentPlayer, 400);
-			phase = UnipolyPhase.GO;
+		if (currentField.getLabel() == Config.FieldLabel.GO) {
+			bank.transferMoneyTo(currentPlayer, 400);
+			setdisplayMessage("Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!");
+			phase = UnipolyPhase.SHOWMESSAGE;
 		}
 	}
 
 	private void checkIfOverStart() {
 		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
-			// bank.transferMoneyTo(currentPlayer, 200);
+			bank.transferMoneyTo(currentPlayer, 200);
 		}
 	}
 
 	/*------ Property Marketplace -------------------------------------------------*/
-	// TODO: buyProperty()
-	public void buyProperty(int currentFieldIndex) throws FieldIndexException {
-		board.getFieldPropertyAtIndex(currentFieldIndex).setOwnerIndex(currentPlayer.index);
-		// geld abziehen und so
+	public void buyProperty() {
+		currentPlayer.buyPropertyFrom(bank, currentPlayer.getToken().getCurrFieldIndex());
+		setdisplayMessage("Das Modul gehört nun");
+		phase = UnipolyPhase.SHOWMESSAGE;
 	}
 
-	// TODO: sellProperty()
-	public void sellProperty(int currentFieldIndex) {
+	private void sellProperty(int FieldIndex) throws FieldIndexException {
+		FieldProperty fieldToBeSold = board.getFieldPropertyAtIndex(FieldIndex);
+		int NO_OWNER = -1;
+		if (currentPlayer.getIndex() == fieldToBeSold.getOwnerIndex()) {
+			fieldToBeSold.setOwnerIndex(NO_OWNER);
+			bank.transferMoneyTo(currentPlayer, fieldToBeSold.getPropertyCost());
+		}
 	}
 
-	// TODO: landedOnOwnedProperty()
-	public void landedOnOwnedProperty(int currentFieldIndex) {
+	// player landed on owned Land
+	private void landedOnOwnedProperty() throws FieldIndexException {
+		if (currentPlayer.payRent(players.get(((FieldProperty)currentField).getOwnerIndex()), (FieldProperty) currentField)) {
+			// TODO: Quizfunction
+			setdisplayMessage("");
+			phase = UnipolyPhase.QUIZTIME;
+		} else {
+			setdisplayMessage(
+					"Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.");
+			phase = UnipolyPhase.INDEBT;
+		}
+		// TODO: If the whole Modulgroup is owned by Players,
+		// the rents of all Moduls increase in that group,
+		// depending on whether they are owned by one or several players
 	}
 
-	// TODO: landedOnMyProperty()
-	public void landedOnMyProperty(int currentFieldIndex) {
+	// TODO: Player landed on his own Modul
+	private void landedOnMyProperty() throws FieldIndexException {
+		setdisplayMessage("ModulUpgrade!!");
+		phase = UnipolyPhase.SHOWMESSAGE;
+		// TODO: If the whole Modulgroup is owned by Players,
+		// the rents of all Moduls increase in that group,
+		// depending on whether they are owned by one or several players
 	}
 
 	// TODO: payOfDebt()
-	public void payOffDebt(int FieldIndex) {
+	public void payOffDebt(int FieldIndex) throws FieldIndexException {
 		sellProperty(FieldIndex);
 		/*
-		if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(), currentPlayer.getDebt())) {
-			if(currentPlayer.setandgetPropertyOwned() > 0){
-				phase = UnipolyPhase.STILLDEBT;
-			} else {
-				phase = UnipolyPhase.BANKRUPT;
-			}
-		} else {
-			phase = UnipolyPhase.DEBTFREE;
-		}
-		*/
+		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
+		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
+		 * phase = UnipolyPhase.BANKRUPT; } else { phase = UnipolyPhase.DEBTFREE; }
+		 */
 	}
-
 
 	/*------ end and start new turn -------------------------------------------------*/
 	public void switchPlayer() {
-		if (currentPlayer.index == players.size() - 1)
+		if (currentPlayer.getIndex() == players.size() - 1)
 			currentPlayer = players.get(0);
 		else
-			currentPlayer = players.get(currentPlayer.index + 1);
+			currentPlayer = players.get(currentPlayer.getIndex() + 1);
 
 		if (currentPlayer.inDetention())
 			phase = UnipolyPhase.DETENTION;
@@ -303,18 +323,15 @@ public class UnipolyApp {
 
 	public void payDetentionRansom() {
 		final int RANSOM = 100;
-		if (currentPlayer.getMoney() >= RANSOM) {
-			// currentPlayer.transferMoneyTo(bank, RANSOM);
-			leaveDetention();
-		} else {
-			// currentPlayer.setandcheckDebt(bank, RANSOM);
+		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
+			setdisplayMessage("Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.");
 			phase = UnipolyPhase.INDEBT;
-			switchPlayer();
+		} else {
+			leaveDetention();
 		}
 	}
 
 	public void leaveDetention() {
-		phase = UnipolyPhase.WAITING;
 		currentPlayer.outDetention();
 	}
 

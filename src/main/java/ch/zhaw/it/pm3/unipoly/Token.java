@@ -5,7 +5,6 @@ public class Token {
     private TokenType type;
     private int prevFieldIndex = 0;
     private int currFieldIndex = 0;
-    private Config.FieldLabel currentFieldLabel;
 
     public Token(TokenType type) {
         this.type = type;
@@ -21,14 +20,6 @@ public class Token {
 
     public int getCurrFieldIndex() {
         return currFieldIndex;
-    }
-
-    public void setCurrentFieldLabel(Config.FieldLabel currentFieldLabel) {
-        this.currentFieldLabel = currentFieldLabel;
-    }
-
-    public Config.FieldLabel getCurrentFieldLabel() {
-        return currentFieldLabel;
     }
 
     public void moveTo(int fieldIndex) {
