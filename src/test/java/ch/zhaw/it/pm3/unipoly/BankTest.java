@@ -15,7 +15,7 @@ public class BankTest {
     @Before
     public void setUp() throws Exception {
         bank = new Bank();
-        playa = new Player("Dilan", TokenType.EINSTEIN);
+        playa = new Player(-1, "Dilan", TokenType.EINSTEIN);
     }
 
     @Test

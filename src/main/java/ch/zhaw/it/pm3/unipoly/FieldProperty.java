@@ -29,8 +29,23 @@ public class FieldProperty extends Field{
         this.ownerIndex = UNOWNED;
     }
 
+    public String getName() { return name; }
+    public int getPropertyCost() { return propertyCost; }
+    public int getOwnerIndex() { return ownerIndex; }
+    public int getCurrentRent() { return currentRent; }
+    public int getRentLV1() { return rentLV1; }
+    public int getRentLV2() { return rentLV2; }
+    public int getRentLV3() { return rentLV3; }
+    public int getRentLV4() { return rentLV4; }
+    public int getRentLV5() { return rentLV5; }
+    public int getModuleGroup(){ return moduleGroup; }
+
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
+    }
+
+    public boolean isOwnerBank() {
+       return ownerIndex == -1;
     }
 
     public void raiseRent() {
@@ -46,42 +61,4 @@ public class FieldProperty extends Field{
             currentRent = rentLV5;
         }
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPropertyCost() {
-        return propertyCost;
-    }
-
-    public int getOwnerIndex() {
-        return ownerIndex;
-    }
-
-    public int getCurrentRent() {
-        return currentRent;
-    }
-
-    public int getRentLV1() {
-        return rentLV1;
-    }
-
-    public int getRentLV2() {
-        return rentLV2;
-    }
-
-    public int getRentLV3() {
-        return rentLV3;
-    }
-
-    public int getRentLV4() {
-        return rentLV4;
-    }
-
-    public int getRentLV5() {
-        return rentLV5;
-    }
-
-    public int getModuleGroup(){ return moduleGroup; }
 }

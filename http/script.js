@@ -21,6 +21,8 @@ var $yesnopopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
+var $checkendturn;
+var $aftershowtext;
 
 $(document).ready(function () {
 
@@ -51,6 +53,7 @@ $(document).ready(function () {
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
 	$lastphase = 'NONE';
+	$checkendturn = false;
 });
 
 function Sleep(milliseconds) {
@@ -102,7 +105,9 @@ function moveToken($scope) {
 	currind.toggleClass(`used ${type}`);
 }
 
-async function showalert(text) {
+function showalert(text, bool, txt = '') {
+	$checkendturn = bool;
+	$aftershowtext = text;
 	$alertpopup.find('.popup-p').html(text);
 	$alertpopup.show();
 }
@@ -131,18 +136,16 @@ function handleDetention($scope, bool = false, areadyasked = false) {
 			txt += '<br>Du hast schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!';
 			if ($scope.state.currentPlayer.money >= 100) {
 				txt += '<br>Dir bleibt nichts anders übrig als sie zu bestechen.';
-			} else {
-				txt += '<br>Ausserdem hast du nicht genug Geld um Sie zu bestechen.';
 			}
 		}
 	}
 
 	if (bool) {
 		txt += 'Würfle ein Pash um Sie zu überzeugen.';
-		showalert(txt);
+		showalert(txt, false);
 	} else {
-		showalert(txt);
-		$scope.payDetentionRansom();
+		txt += '<br>Du bestichst sie also.';
+		showalert(txt, false, 'payDetentionRansom');
 	}
 }
 
@@ -154,11 +157,11 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 	switch (newphase) {
 		case 'WAITING':
 			console.log('New Phase WAITING');
-			if($lastphase == 'NONE') break;
+			if ($lastphase == 'NONE') break;
 			txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
-			showalert(txt);
+			showalert(txt, false);
 			break;
-			
+
 		case 'ROLLING':
 			if ($lastphase == 'DETENTION') {
 				txt = `<b>${$scope.state.currentPlayer.name} würfelt:</b><br>${$scope.state.firstDice} und ${$scope.state.secondDice}`;
@@ -168,12 +171,11 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 				await Sleep(13550);
 				if ($scope.state.rolledPash) {
 					txt = `Du hast es geschafft die Schuldirektorin zu überzeugen mit ${$scope.state.firstDice} und ${$scope.state.secondDice}`;
-					showalert(txt);
-					$scope.leaveDetention();
+					txt += '<br>Du darfst nun ganz normal deine Runde fortführen.';
+					showalert(txt, false, 'leaveDetention');
 				} else {
-					txt = 'Du hast es nicht geschafft die Schuldirektorin zu überzeugen.'
-					showalert(txt);
-					$scope.endTurn();
+					txt = 'Du hast es nicht geschafft die Schuldirektorin zu überzeugen.';
+					showalert(txt, true);
 				}
 			} else {
 				const total = $scope.state.firstDice + $scope.state.secondDice;
@@ -187,18 +189,15 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			}
 			break;
 
-		case 'RECESS':
-			console.log('New Phase RECESS');
-			txt = 'Znüni Zeit. Ruh dich etwas aus:<br>Trink einen Kaffee und iss ein Sandwich!';
-			showalert(txt);
-			$scope.endTurn();
+		case 'SHOWMESSAGE':
+			console.log('New Phase SHOWMESSAGE');
+			showalert($scope.state.displayMessage, true);
 			break;
 
-		case 'NOT_ENOUGH_MONEY':
-			console.log('New Phase NOT_ENOUGH_MONEY');
-			txt = 'Du hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht automatisch an den nächsten Spieler.';
-			showalert(txt);
-			$scope.endTurn();
+		case 'SHOWCARD':
+			console.log('New Phase SHOWCARD');
+			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
+			showalert(txt, false);
 			break;
 
 		case 'BUY_PROPERTY':
@@ -206,13 +205,14 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			if (areadyasked) {
 				if (bool) {
 					$scope.buyProperty();
+				} else {
+					$scope.endTurn();
 				}
 			} else {
-				txt = `Willst du das Modul "${$scope.state.currentFieldProperty.name}" besuchen?\nKostet nur ${$scope.state.currentFieldProperty.propertyCost}CHF!`;
+				txt = `Willst du das Modul "${$scope.state.currentField.name}" besuchen?\nKostet nur ${$scope.state.currentField.propertyCost}CHF!`;
 				showyesOrno(txt);
 				return;
 			}
-			$scope.endTurn();
 			break;
 
 		case 'JUMP':
@@ -220,11 +220,10 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			if (areadyasked) {
 				if (bool) {
 					txt = 'Klick auf das Feld auf das du springen willst!';
-					showalert(txt);
+					showalert(txt, false);
 				} else {
 					txt = 'Dann endet deine Runde hier';
-					showalert(txt);
-					$scope.endTurn();
+					showalert(txt, true);
 				}
 			} else {
 				txt = "Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!";
@@ -233,44 +232,29 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			}
 			break;
 
-		case 'GO':
-			console.log('New Phase GO');
-			txt = 'Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!';
-			showalert(txt);
-			$scope.endTurn();
-			break;
-
-		case 'SHOWCARD':
-			console.log('New Phase Showcard');
-			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
-			showalert(txt);
-			break;
-
 		case 'GO_DETENTION':
 			console.log('New Phase GODETENTION');
 			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
 			moveToken($scope);
-			showalert(txt);
-			$scope.endTurn();
-			break;
-
-		case 'VISIT':
-			console.log('New Phase VISIT');
-			txt = 'Einen Abstecher ins Rektorat.';
-			showalert(txt);
-			$scope.endTurn();
-			break;
-
-		case 'FREECARD':
-			console.log('New Phase FREECARD');
-			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!<br>Du warnst sie das wenn sie dich von der Schule schmeist, du ihr Geheimnis rumerzählst.<br>Sie lässt dich sofort gehen.';
-			showalert(txt);
-			$scope.endTurn();
+			showalert(txt, true);
 			break;
 
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
 			handleDetention($scope, bool, areadyasked);
+			break;
+
+		case 'INDEBT':
+			console.log('New Phase INDEBT');
+			txt = $scope.state.displayMessage;
+			txt += `<br>Du musst nun ${$scope.state.currentPlayer.debtor.name} zuerst deine Schulden zurück zahlen.<br>Der Schuldbetrag ist ${$scope.state.currentPlayer.debt}CHF.`;
+			showalert(txt, true);
+			break;
+
+		case 'QUIZTIME':
+			console.log('New Phase QUIZTIME');
+			txt = `Beantworte folgende Frage:`;
+			showalert(txt, true);
 			break;
 	}
 }
@@ -427,7 +411,7 @@ app.controller('Controller', function ($scope) {
 						td.toggleClass('leer');
 						td.toggleClass(`used ${type}`);
 						txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
-						showalert(txt);
+						showalert(txt, false);
 					}
 				} else {
 					console.error('error: Start Game');
@@ -474,10 +458,10 @@ app.controller('Controller', function ($scope) {
 			// If Player landed on ChanceCards he cant roll dices
 		} else if ($scope.state.phase == 'SHOWCARD') {
 			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
-			showalert(txt);
+			showalert(txt, false);
 		} else if ($scope.state.phase == 'JUMP') {
-			txt = 'Du bist auf Springer Feld gelandet!\nKlick auf das Feld auf das du springen willst!';
-			showalert(txt);
+			txt = 'Klick auf das Feld, auf das du springen willst!';
+			showalert(txt, false);
 		} else {
 			console.log('Player has to Input the first Dice.')
 			$diceinput.toggle();
@@ -529,8 +513,7 @@ app.controller('Controller', function ($scope) {
 
 	// Ask Player wants to buy Property
 	$scope.buyProperty = function () {
-		const currplayer = $scope.state.currentPlayer;
-		$scope.getOp(`userwantstobuy?currentFieldIndex=${currplayer.token.currFieldIndex}`,
+		$scope.getOp('userwantstobuy',
 			function (success) {
 				// Check if  success
 				if (success) {
@@ -569,13 +552,13 @@ app.controller('Controller', function ($scope) {
 	// Player pressed on Card Deck
 	$scope.showCard = function () {
 		var txt;
+		$checkendturn = false;
 		if ($scope.state.phase == 'SHOWCARD') {
 			txt = $scope.state.currentCardText;
-			showalert(txt);
-			$scope.endTurn();
+			showalert(txt, true);
 		} else {
 			txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
-			showalert(txt);
+			showalert(txt, false);
 		}
 	}
 
@@ -603,7 +586,7 @@ app.controller('Controller', function ($scope) {
 				txt = `<h2>${field.label.charAt(0) + field.label.slice(1).toLowerCase()} Feld</h2>`;
 				txt += `${field.explanation}`;
 			}
-			showalert(txt);
+			showalert(txt, false);
 		}
 	}
 
@@ -616,7 +599,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
 		txt += `Module: ${player.propertyOwned}<br>`;
 		txt += `ModulGruppen: ${player.roadOwned}`;
-		showalert(txt);
+		showalert(txt, false);
 	}
 
 	$scope.yesOrno = function (bool) {
@@ -627,5 +610,14 @@ app.controller('Controller', function ($scope) {
 	// Player pressed closepopup
 	$scope.closealert = function () {
 		$alertpopup.hide();
+		if ($checkendturn) {
+			$scope.endTurn();
+		} else if ($aftershowtext != '') {
+			if ($aftershowtext == 'payDetentionRansom') {
+				$scope.payDetentionRansom();
+			} else if ($aftershowtext == 'leaveDetention') {
+				$scope.leaveDetention();
+			}
+		}
 	}
 });

@@ -26,6 +26,11 @@ public class Board {
         return properties.get(index);
     }
 
+    public Field getFieldAtIndex(int index) throws FieldIndexException {
+        checkFieldIndex(index);
+        return fields.get(index);
+    }
+
     public Map<Integer, Field> getFields() {
         return fields;
     }
@@ -50,7 +55,6 @@ public class Board {
     public void raiseRentFromProperty(int index) {
         properties.get(index).raiseRent();
     }
-
 
     public int getPropertyOwner(int index) {
         return properties.get(index).getOwnerIndex();
