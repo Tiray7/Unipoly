@@ -7,9 +7,11 @@ public class Field {
     public Integer getLabel;
     private Config.FieldLabel label;
     private ArrayList<Player> players;
+    private String explanation;
 
-    public Field(Config.FieldLabel label) {
+    public Field(Config.FieldLabel label, String explanation) {
         this.label = label;
+        this.explanation = explanation;
     }
 
     public void setPlayers(ArrayList<Player> players) {
@@ -18,6 +20,10 @@ public class Field {
 
     public Config.FieldLabel getLabel() {
         return label;
+    }
+
+    public String getExplanation() {
+        return explanation;
     }
 
     public ArrayList<Player> getPlayers() {

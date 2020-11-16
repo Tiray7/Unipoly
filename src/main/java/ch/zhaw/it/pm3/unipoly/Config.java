@@ -38,22 +38,22 @@ public class Config {
     public static Map<Integer, Field> getInitialBoard() {
         Map<Integer, Field> assignment = new HashMap<>();
 
-        assignment.put(0, new Field(FieldLabel.GO));
-        assignment.put(9, new Field(FieldLabel.VISIT));
-        assignment.put(18, new Field(FieldLabel.RECESS));
-        assignment.put(27, new Field(FieldLabel.DETENTION));
+        assignment.put(0, new Field(FieldLabel.GO, "Das Los-Feld"));
+        assignment.put(9, new Field(FieldLabel.VISIT,"Zu Besuch beim Nachsitzen"));
+        assignment.put(18, new Field(FieldLabel.RECESS,"Mach eine Pause"));
+        assignment.put(27, new Field(FieldLabel.DETENTION,"Spieler muss zum Nachsitzen"));
 
-        assignment.put(2, new Field(FieldLabel.CHANCE));
-        assignment.put(4, new Field(FieldLabel.CHANCE));
-        assignment.put(11, new Field(FieldLabel.CHANCE));
-        assignment.put(20, new Field(FieldLabel.CHANCE));
-        assignment.put(29, new Field(FieldLabel.CHANCE));
-        assignment.put(32, new Field(FieldLabel.CHANCE));
+        assignment.put(2, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
+        assignment.put(4, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
+        assignment.put(11, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
+        assignment.put(20, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
+        assignment.put(29, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
+        assignment.put(32, new Field(FieldLabel.CHANCE, "Ziehe eine Chance-Karte"));
 
-        assignment.put(7, new Field(FieldLabel.JUMP));
-        assignment.put(16, new Field(FieldLabel.JUMP));
-        assignment.put(25, new Field(FieldLabel.JUMP));
-        assignment.put(34, new Field(FieldLabel.JUMP));
+        assignment.put(7, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
+        assignment.put(16, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
+        assignment.put(25, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
+        assignment.put(34, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
 
         assignment.put(1, new FieldProperty("Geschichte", FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0));
         assignment.put(3, new FieldProperty("Geogreaphie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450,0));
