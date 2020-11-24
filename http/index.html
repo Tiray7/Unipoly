@@ -156,6 +156,13 @@
     <div id="gameboard" href="#" class="table" hidden>
       <div id="boardgrid" class="board">
         <div class="center">
+          <div id="select_popup" hidden>
+            <div class="popup-con">
+              <h3 class="popup-p"></h3>
+              <div class="popup-div"></div>
+              <div id="sell_btn" class="grow" ng-click='sellProperty()' hidden><h4>Verkaufen</h4></div>
+            </div>
+          </div>
           <div class="dice-con grow" ng-click="ToggleDiceInput()">
             <h2>Roll The Dices</h2>
             <img class="dice" src="twodices.png" />
