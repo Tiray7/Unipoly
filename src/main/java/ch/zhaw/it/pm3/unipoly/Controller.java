@@ -122,4 +122,11 @@ public class Controller {
 		unipoly.leaveDetention();
 		return unipoly;
 	}
+
+	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp payOffDebt(@RequestParam int[] FieldIndexes) throws FieldIndexException {
+		unipoly.payOffDebt(FieldIndexes);
+		return unipoly;
+	}
 }

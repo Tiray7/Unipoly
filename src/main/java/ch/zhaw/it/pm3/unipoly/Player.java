@@ -8,7 +8,7 @@ public class Player extends Owner {
     private int leftTimeInDetention = 0;
 
     public Player(int index, String name, TokenType tokenType) {
-        super(index, name, 1500);
+        super(index, name, 300);
         token = new Token(tokenType);
     }
 
