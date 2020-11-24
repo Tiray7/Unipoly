@@ -251,14 +251,9 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWMESSAGE;
 	}
 
-	private void sellProperty(int FieldIndex) throws FieldIndexException {
-		// TODO: 
-		FieldProperty fieldToBeSold = board.getFieldPropertyAtIndex(FieldIndex);
-		int NO_OWNER = -1;
-		if (currentPlayer.getIndex() == fieldToBeSold.getOwnerIndex()) {
-			fieldToBeSold.setOwnerIndex(NO_OWNER);
-			bank.transferMoneyTo(currentPlayer, fieldToBeSold.getPropertyCost());
-		}
+	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
+		player.buyPropertyFrom(currentPlayer, FieldIndex);
+		// TODO: Reset FieldLevel and Group Modul Levels
 	}
 
 	// player landed on owned Land
@@ -288,7 +283,17 @@ public class UnipolyApp {
 
 	// TODO: payOfDebt(), Input is an array of fieldindexes the player wants to sell to the debtor
 	public void payOffDebt(int[] FieldIndexes) throws FieldIndexException {
-		
+		if(currentPlayer.getDebtor().isBank()) {
+			for(int i = 0; i < FieldIndexes.length; i++) {
+				sellProperty(FieldIndexes[i], bank);
+			}
+		} else {
+			for(int i = 0; i < FieldIndexes.length; i++) {
+				// TODO: transferFieldTo(Owner owner, int fieldIndex) 
+				// TODO: Reset FieldLevel and Group Modul Levels
+				// Payoff Debt in PropertyValue
+			}
+		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
 		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
