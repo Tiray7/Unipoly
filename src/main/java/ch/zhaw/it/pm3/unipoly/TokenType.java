@@ -1,4 +1,4 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 public enum TokenType {
 	ATOM,
@@ -10,5 +10,7 @@ public enum TokenType {
 	LAB,
 	LIGHTBULB,
 	BANK,
-	NPC
+	NPCI,
+	NPCII,
+	NPCIII
 }

@@ -37,7 +37,7 @@
 
 .board {
   font-variant-caps: small-caps;
-  font-family: "Raleway", sans-serif;
+  font-family: "raleway", Helvetica, sans-serif;
   display: grid;
   grid-template-columns: 125px repeat(8, 80px) 125px;
   grid-template-rows: 125px repeat(8, 80px) 125px;
@@ -63,17 +63,39 @@
 .board-title {
   grid-column: 1 / 6;
   grid-row: 1 / 6;
-  font: normal small-caps 400 90px / normal "raleway", Helvetica, sans-serif;
-  letter-spacing: 5px;
+  width: 440px;
 }
 
 #playerlist {
-  font-variant: normal;
-  font-size: 20px;
   padding-bottom: 5px;
   text-align: left;
   grid-column: 1 / 3;
   grid-row: 4/6;
+}
+
+#playerlist td {
+  font-family: "raleway", Helvetica, sans-serif;
+  font-variant: normal;
+  font-size: 20px;
+}
+
+#playerlist .listtoken {
+  box-sizing: border-box;
+  width: 25px;
+  height: 25px;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #cde6d0;
+  box-shadow: 1px 1px 2px rgb(112, 112, 112);
+  border-radius: 25px;
+  border: 1px solid #222;
+  margin: 1px;
+  display: inline-block;
+}
+
+.container {
+  cursor: cell;
 }
 
 .dice-con {
@@ -110,29 +132,13 @@
   grid-column: 4;
   grid-row: 1 / 3;
 }
-.dice-con .label {
-  font-size: 17px;
-  font-weight: bold;
-  padding-bottom: 5px;
-}
 
 .chance-deck {
   grid-column: 3 / 7;
-  grid-row: 3 / 7;
+  grid-row: 4 / 7;
   transform: rotate(-30deg);
-  margin-top: 60px;
-  margin-left: 60px;
-}
-.chance-deck .label {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.label {
-  text-align: center;
-  font-weight: 500;
-  letter-spacing: 3px;
-  padding-bottom: 10px;
+  /*margin-top: 60px;*/
+  margin-left: 6em;
 }
 
 .dice {
@@ -142,9 +148,12 @@
 }
 
 .deck {
-  border: 2px dashed #080808;
   width: 160px;
-  height: 120px;
+  height: 115px;
+  background-image: url("chancecardback.png");
+  background-size: 100%;
+  background-position: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .row {
@@ -291,8 +300,8 @@
 .jail .drawing {
   grid-column: 4 / 11;
   grid-row: 1 / 8;
-  width: 87.5px;
-  height: 87.5px;
+  width: 86px;
+  height: 86px;
   background: #fa811d;
   border-bottom: 2px solid #080808;
   border-left: 2px solid #080808;
@@ -314,8 +323,8 @@
   transform: rotate(45deg);
 }
 .jail .name {
-  margin-top: -0.5em;
-  font-size: 13px;
+  margin-top: -1em;
+  font-size: 10px;
 }
 .jail .window {
   margin-top: -0.5em;
@@ -323,8 +332,7 @@
   justify-content: space-around;
   align-items: center;
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 60px;
   background: #fafaf8;
   border: 2px solid #080808;
 }

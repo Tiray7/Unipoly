@@ -1,15 +1,14 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 public class Bank extends Owner {
 
     // if you visit a fach which owend by another player
     private double freeParking = 100;
-
     private final int numberOfMoodle = 32;
 
     // initial money is 2000000
     public Bank() {
-        super("Bank", 2000000);
+        super(-1, "Bank", 2000000);
     }
 
     public int getNumberOfMoodle(){
@@ -20,13 +19,7 @@ public class Bank extends Owner {
         return freeParking;
     }
 
-    // todo wait for tile class
-    // public void payTax(Player player, Tile tile){
-
-    //}
-
     public void awardFreeParking(Player player){
-        this.transfer(player, freeParking);
-        freeParking = 100;
+        this.transferMoneyTo(player, 100);
     }
 }

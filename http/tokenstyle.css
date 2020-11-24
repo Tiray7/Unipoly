@@ -38,6 +38,22 @@
     background-size: 100%;
 }
 
+.npci {
+    background-image: url("npc1.png");
+    background-size: 100%;
+}
+
+.npcii {
+    background-image: url("npc2.png");
+    background-size: 100%;
+}
+
+.npciii {
+    background-image: url("npc3.png");
+    background-size: 100%;
+}
+
+
 .token-menu {
     width: 60px;
     height: 60px;

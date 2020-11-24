@@ -1,12 +1,10 @@
-package com.example.Softwareproject3;
+package ch.zhaw.it.pm3.unipoly;
 
 public class Token {
     
     private TokenType type;
-
     private int prevFieldIndex = 0;
-
-    private int currFieldIndex = 0;;
+    private int currFieldIndex = 0;
 
     public Token(TokenType type) {
         this.type = type;
@@ -16,11 +14,11 @@ public class Token {
         return type;
     }
 
-    public int getprevFieldIndex() {
+    public int getPrevFieldIndex() {
         return prevFieldIndex;
     }
 
-    public int getcurrFieldIndex() {
+    public int getCurrFieldIndex() {
         return currFieldIndex;
     }
 
@@ -32,5 +30,8 @@ public class Token {
     public void moveBy(int amount) {
         prevFieldIndex = currFieldIndex;
         currFieldIndex = prevFieldIndex + amount;
+        if(currFieldIndex > 35){
+            currFieldIndex -= 36;
+        }
     }
 }

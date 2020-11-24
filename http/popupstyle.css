@@ -1,0 +1,80 @@
+.popup-con {
+  border-radius: 5px;
+  text-align: left;
+  background-color: #fff;
+  margin: 17% auto auto; /* 15% from the top and centered */
+  padding: 3em;
+  border: 1px solid #888;
+  max-width: 650px;
+  width: -moz-fit-content;
+  height: -moz-fit-content;
+}
+
+#chooseDice_popup .popup-con,
+#yesno_popup .popup-con {
+  text-align: center;
+}
+
+div.popup-p {
+  font-family: "raleway", Helvetica, sans-serif;
+  font-size: 1.6em;
+  margin: 0;
+  font-weight: normal;
+}
+
+#yesno_popup table {
+  display: inline-block;
+  border-collapse: separate;
+  border-spacing: 15px;
+}
+
+#yesno_popup td {
+  height: 4.3em;
+  width: 4.3em;
+  border-radius: 10px;
+  border: 1px solid #005ea0;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#chooseDice_popup table {
+  display: inline-block;
+  border-collapse: separate;
+  border-spacing: 1.5em;
+}
+
+#chooseDice_popup td {
+  width: 5em;
+  height: 5em;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.dice1 {
+  background-image: url("dice1.png");
+  background-size: 100%;
+}
+
+.dice2 {
+  background-image: url("dice2.png");
+  background-size: 100%;
+}
+
+.dice3 {
+  background-image: url("dice3.png");
+  background-size: 100%;
+}
+
+.dice4 {
+  background-image: url("dice4.png");
+  background-size: 100%;
+}
+
+.dice5 {
+  background-image: url("dice5.png");
+  background-size: 100%;
+}
+
+.dice6 {
+  background-image: url("dice6.png");
+  background-size: 100%;
+}
