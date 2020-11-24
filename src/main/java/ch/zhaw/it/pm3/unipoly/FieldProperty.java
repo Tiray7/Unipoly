@@ -16,7 +16,7 @@ public class FieldProperty extends Field{
 
     public FieldProperty(String name, Config.FieldLabel label, int propertyCost,
                          int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroup) {
-        super(label);
+        super(label, "");
         this.name = name;
         this.propertyCost = propertyCost;
         this.rentLV1 = rentLV1;
