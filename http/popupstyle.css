@@ -1,3 +1,20 @@
+.popup_background {
+  position: fixed; /* Stay in place */
+  z-index: 111; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.27);
+}
+
+#select_popup {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+}
+
 .popup-con {
   border-radius: 5px;
   text-align: left;
@@ -9,6 +26,19 @@
   width: -moz-fit-content;
   height: -moz-fit-content;
 }
+
+#select_popup .popup-con{
+  margin: 1em;
+  padding: 1.5em;
+  min-height: 24em;
+  font-variant-caps: normal;
+}
+
+#select_popup .popup-div{
+  font-family: "raleway", Helvetica, sans-serif;
+  font-size: 1.5em;
+}
+
 
 #chooseDice_popup .popup-con,
 #yesno_popup .popup-con {
@@ -28,7 +58,7 @@ div.popup-p {
   border-spacing: 15px;
 }
 
-#yesno_popup td {
+#yesno_popup td,  #sell_btn{
   height: 4.3em;
   width: 4.3em;
   border-radius: 10px;

@@ -64,8 +64,8 @@ public abstract class Owner {
 
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
-        this.transferMoneyTo(ownerOfField, field.getCurrentRent());
         field.raiseRent();
+        return this.setandcheckDebt(ownerOfField, 1000);
         // Player has to pay Rent
         /*
         amount = field.currentRent
@@ -83,24 +83,20 @@ public abstract class Owner {
                 increse rent of this field
             return true
         */
-        return true;
     }
 
 
 
-    // TODO: Calculate what the Player owes
+    // Calculate what the Player owes
     public boolean setandcheckDebt(Owner debtor, int amount) {
-/*
-        if (this.getMoney()<amount) {
-            Pay what you have to Debtor
-            set Debt
-            set Debtor
+        if (this.money < amount) {
+            transferMoneyTo(debtor, this.money);
+            Debt = amount - this.money;
+            Debtor = debtor;
             return true;
         } else {
             transferMoneyTo(debtor, amount);
             return false;
         }
-*/
-        return false;
     }
 }
