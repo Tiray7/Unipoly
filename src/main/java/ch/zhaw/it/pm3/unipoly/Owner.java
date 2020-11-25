@@ -24,6 +24,7 @@ public abstract class Owner {
 
     public int getIndex() { return index; }
     public boolean isBank() { return this.index == -1; }
+    public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getRoadOwned() { return RoadOwned; }
@@ -84,8 +85,6 @@ public abstract class Owner {
             return true
         */
     }
-
-
 
     // Calculate what the Player owes
     public boolean setandcheckDebt(Owner debtor, int amount) {

@@ -83,7 +83,7 @@ public class Controller {
 
 	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp endTurn() {
+	public UnipolyApp endTurn() throws FieldIndexException {
 		unipoly.switchPlayer();
 		return unipoly;
 	}
@@ -127,6 +127,13 @@ public class Controller {
 	@ResponseBody
 	public UnipolyApp payOffDebt(@RequestParam int[] FieldIndexes) throws FieldIndexException {
 		unipoly.payOffDebt(FieldIndexes);
+		return unipoly;
+	}
+
+	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp readCard() throws FieldIndexException {
+		unipoly.readCard();
 		return unipoly;
 	}
 }
