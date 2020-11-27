@@ -7,6 +7,12 @@ public class Player extends Owner {
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
 
+    /***
+     * constructor Player
+     * @param index present player index
+     * @param name present player name
+     * @param tokenType present what he has for token
+     */
     public Player(int index, String name, TokenType tokenType) {
         super(index, name, 300);
         token = new Token(tokenType);
