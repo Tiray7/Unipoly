@@ -15,7 +15,7 @@ public abstract class Owner {
     private Map<Integer, FieldProperty> ownedModuls;
 
     /***
-     * owner method
+     * owner constructor
      * @param index present owner index
      * @param id present owner ID
      * @param initialMoney present owner intial money which is 200000
