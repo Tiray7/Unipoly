@@ -8,12 +8,18 @@ public abstract class Owner implements Comparable {
     private final int index;
     private final String name;
     private int money;
-    private int RoadOwned;
+    private int ModulGroupOwned;
     private int PropertyOwned;
     private int Debt;
     private Owner Debtor;
     private Map<Integer, FieldProperty> ownedModuls;
 
+    /***
+     * owner constructor
+     * @param index present owner index
+     * @param id present owner ID
+     * @param initialMoney present owner intial money which is 200000
+     */
     public Owner(int index, String id, int initialMoney) {
         this.index = index;
         this.name = id;
@@ -47,25 +53,35 @@ public abstract class Owner implements Comparable {
         return comparply.getWealth() - this.getWealth();
     }
 
-    // TODO: Call this function to check player own the road
-    // or maybe a function in fields
-    public void setRoadOwned(int roadOwned) {
-        this.RoadOwned = roadOwned;
-    }
+    // TODO: Call this function to check player owns ModulGroup
+    public void setModulGroupOwned(int ModulGroupOwned) { this.ModulGroupOwned = ModulGroupOwned; }
 
-    // Player has to pay a certain amount to another Player/Bank
+    /***
+     * transfer money between players only with certain amount
+     * @param player which player is included with this transfer
+     * @param amount what is the amount to transfer
+     */
     public void transferMoneyTo(Owner player, int amount) {
         player.money += amount;
         this.money -= amount;
     }
 
-    // transfer a field
+    /***
+     * transfer field bewteen player
+     * @param owner present who will own the field
+     * @param fieldIndex field index , which field
+     */
     public void transferFieldTo(Owner owner, int fieldIndex) {
         this.ownedModuls.put(fieldIndex, owner.ownedModuls.get(fieldIndex));
         this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
         owner.ownedModuls.remove(fieldIndex);
     }
 
+    /***
+     * buying property from another player
+     * @param owner present the owner of the field
+     * @param FieldIndex fild index which field
+     */
     public void buyPropertyFrom(Owner owner, int FieldIndex) {
         transferMoneyTo(owner, owner.ownedModuls.get(FieldIndex).getPropertyCost());
         transferFieldTo(owner, FieldIndex);

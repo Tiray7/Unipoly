@@ -6,6 +6,10 @@ public class Token {
     private int prevFieldIndex = 0;
     private int currFieldIndex = 0;
 
+    /***
+     * token constructor
+     * @param type present token type
+     */
     public Token(TokenType type) {
         this.type = type;
     }
@@ -22,11 +26,19 @@ public class Token {
         return currFieldIndex;
     }
 
+    /***
+     * moveTo is a method to moving from field to another
+     * @param fieldIndex present which field
+     */
     public void moveTo(int fieldIndex) {
         prevFieldIndex = currFieldIndex;
         this.currFieldIndex = fieldIndex;
     }
 
+    /***
+     * moveBy is a method to know how log is it should be move by
+     * @param amount present the amount of moving from the old field to the new field
+     */
     public void moveBy(int amount) {
         prevFieldIndex = currFieldIndex;
         currFieldIndex = prevFieldIndex + amount;
