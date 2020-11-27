@@ -13,11 +13,20 @@ public class PlayerTest {
 
     Player player;
 
+    /***
+     * setting player const. for test
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         player = new Player(0,"Jack",TokenType.ATOM);
     }
 
+    /***
+     * test player const with 15000 as money and
+     * name as jack
+     * and token as atom
+     */
     @Test
     public void testPlayer() {
         assert(player.getMoney() == 1500);
@@ -25,16 +34,25 @@ public class PlayerTest {
         assert(player.getToken().getType() == TokenType.ATOM);
     }
 
+    /***
+     * test getting the right name
+     */
     @Test
     public void testGetName() {
         assertEquals(player.getName(), "Jack");
     }
 
+    /***
+     * testing if get the right amount of money
+     */
     @Test
     public void testGetMoney() {
         assertTrue(player.getMoney() == 1500);
     }
 
+    /***
+     * test if the transfer accour from each player
+     */
     @Test
     public void testTransfer() {
         Player player2 = new Player(1,"Sam", TokenType.CRADLE);
