@@ -3,7 +3,7 @@ package ch.zhaw.it.pm3.unipoly;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Owner {
+public abstract class Owner implements Comparable {
 
     private final int index;
     private final String name;
@@ -35,10 +35,23 @@ public abstract class Owner {
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
     public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
 
+    public int getWealth() { 
+        int ThisWealth = this.money;
+        for (FieldProperty modul : this.ownedModuls.values()) {
+            ThisWealth += modul.getCurrentRent();
+        }
+        return ThisWealth;
+    }
+
+    public int compareTo(Owner comparply) {
+        return comparply.getWealth() - this.getWealth();
+    }
+
     // TODO: Call this function to check player own the road
     // or maybe a function in fields
-    public void setRoadOwned(int roadOwned) { this.RoadOwned = roadOwned; }
-
+    public void setRoadOwned(int roadOwned) {
+        this.RoadOwned = roadOwned;
+    }
 
     // Player has to pay a certain amount to another Player/Bank
     public void transferMoneyTo(Owner player, int amount) {
@@ -50,7 +63,7 @@ public abstract class Owner {
     public void transferFieldTo(Owner owner, int fieldIndex) {
         this.ownedModuls.put(fieldIndex, owner.ownedModuls.get(fieldIndex));
         this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
-        owner.ownedModuls.remove(fieldIndex); 
+        owner.ownedModuls.remove(fieldIndex);
     }
 
     public void buyPropertyFrom(Owner owner, int FieldIndex) {
@@ -66,24 +79,17 @@ public abstract class Owner {
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
         field.raiseRent();
-        return this.setandcheckDebt(ownerOfField, 1000);
+        return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
         // Player has to pay Rent
         /*
-        amount = field.currentRent
-        Player owner = Owner of the field.
-        
-        then first check with setandcheckDebt() if he is able to pay
-        if True:
-                Transfer the money
-        if False:
-                return false
-
-        if The Owner has whole modulgroup:
-                increase rent of whole modulgroup
-            else:
-                increse rent of this field
-            return true
-        */
+         * amount = field.currentRent Player owner = Owner of the field.
+         * 
+         * then first check with setandcheckDebt() if he is able to pay if True:
+         * Transfer the money if False: return false
+         * 
+         * if The Owner has whole modulgroup: increase rent of whole modulgroup else:
+         * increse rent of this field return true
+         */
     }
 
     // Calculate what the Player owes

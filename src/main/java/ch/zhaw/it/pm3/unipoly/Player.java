@@ -8,7 +8,7 @@ public class Player extends Owner {
     private int leftTimeInDetention = 0;
 
     public Player(int index, String name, TokenType tokenType) {
-        super(index, name, 300);
+        super(index, name, 1500);
         token = new Token(tokenType);
     }
 
@@ -28,7 +28,7 @@ public class Player extends Owner {
         FreeCard = outDetention;
     }
 
-    public boolean getBankrupt() {
+    public boolean isBankrupt() {
         return bankrupt;
     }
 
@@ -55,5 +55,11 @@ public class Player extends Owner {
 
     public void outDetention() {
         this.leftTimeInDetention = 0;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

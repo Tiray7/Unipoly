@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -22,6 +23,7 @@ public class UnipolyApp {
 	private boolean rolledPash = false;
 	private Field currentField;
 	private String displayMessage = "";
+	private String gameoverString = "";
 
 	private static final Logger unipolyMcLogger = LogManager.getLogger(Controller.class);
 
@@ -30,8 +32,8 @@ public class UnipolyApp {
 	}
 
 	enum UnipolyPhase {
-		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION, ENDGAME, SHOWCARD, QUIZTIME, JUMP,
-		INDEBT, BANKRUPT, ERROR
+		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION, SHOWCARD, QUIZTIME, JUMP,
+		INDEBT, GAMEOVER, ERROR
 	}
 
 	// UnipolyApp Constructor
@@ -55,6 +57,7 @@ public class UnipolyApp {
 	public int getSecondDice() { return secondDice; }
 	public boolean isRolledPash() { return rolledPash; }
 	public String getdisplayMessage() { return displayMessage; }
+	public String getgameoverString() { return gameoverString; }
 
 	/*------ Function to configure the Game -------------------------------------------------*/
 	// Add a new Player to the Game
@@ -356,7 +359,7 @@ public class UnipolyApp {
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
 		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
-		 * phase = UnipolyPhase.BANKRUPT; } else { phase = UnipolyPhase.DEBTFREE; }
+		 * loser.setBankrupt(); GameOver(); } else { phase = UnipolyPhase.DEBTFREE; }
 		 */
 		switchPlayer();
 	}
@@ -380,6 +383,16 @@ public class UnipolyApp {
 		}
 	}
 
+	// TODO: Calculate Winner and Display it
+	private void GameOver() {
+		gameoverString = "<h1>GAME OVER</h1>";
+		ArrayList<Owner> ranking = new ArrayList<>(players);
+		Collections.sort(ranking);
+		for(Owner player: ranking){
+			gameoverString += "<p>"+ (ranking.indexOf(player) + 1) +".Place " + player.getName() + ", " + player.getWealth() + "</p>";
+		}
+		phase = UnipolyPhase.GAMEOVER;
+	}
 
 
 	/*------ Detention related funtions ---------------------------------------------------------------------*/

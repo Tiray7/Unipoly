@@ -19,6 +19,7 @@ var $lastphase;
 var $alertpopup;
 var $yesnopopup;
 var $selectpopup;
+var $gameoverpopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
@@ -55,6 +56,7 @@ $(document).ready(function () {
 	$yesnopopup = $('#yesno_popup');
 	$selectpopup = $('#select_popup');
 	$sell_btn = $('#sell_btn');
+	$gameoverpopup = $('#gameover_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
@@ -89,6 +91,7 @@ function resetHTML(list) {
 		prevind.toggleClass('leer');
 		prevind.toggleClass(`used ${type}`);
 	}
+	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
 	$rolledvaluetext.html('');
@@ -121,6 +124,11 @@ function showalert(text, bool, txt = '') {
 	$aftershowtext = txt;
 	$alertpopup.find('.popup-p').html(text);
 	$alertpopup.show();
+}
+
+function showGameOver(text) {
+	$gameoverpopup.find('.popup-end').html(text);
+	$gameoverpopup.show();
 }
 
 function showyesOrno(text) {
@@ -278,6 +286,11 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			console.log('New Phase QUIZTIME');
 			txt = `Beantworte folgende Frage:`;
 			showalert(txt, true);
+			break;
+
+		case 'GAMEOVER':
+			console.log('New Phase GAMEOVER');
+			showalert($scope.state.displayMessage, false, 'gameoverMessage');
 			break;
 	}
 }
@@ -698,6 +711,8 @@ app.controller('Controller', function ($scope) {
 				$scope.leaveDetention();
 			} else if ($aftershowtext == 'showselection') {
 				showSelection($scope);
+			} else if ($aftershowtext == 'gameoverMessage') {
+				showGameOver($scope.state.gameoverString);
 			}
 		}
 	}
