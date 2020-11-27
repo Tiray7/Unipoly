@@ -251,25 +251,21 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWMESSAGE;
 	}
 
-	private void sellProperty(int FieldIndex) throws FieldIndexException {
-		FieldProperty fieldToBeSold = board.getFieldPropertyAtIndex(FieldIndex);
-		int NO_OWNER = -1;
-		if (currentPlayer.getIndex() == fieldToBeSold.getOwnerIndex()) {
-			fieldToBeSold.setOwnerIndex(NO_OWNER);
-			bank.transferMoneyTo(currentPlayer, fieldToBeSold.getPropertyCost());
-		}
+	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
+		player.buyPropertyFrom(currentPlayer, FieldIndex);
+		// TODO: Reset FieldLevel and Group Modul Levels
 	}
 
 	// player landed on owned Land
 	private void landedOnOwnedProperty() throws FieldIndexException {
 		if (currentPlayer.payRent(players.get(((FieldProperty)currentField).getOwnerIndex()), (FieldProperty) currentField)) {
-			// TODO: Quizfunction
-			setdisplayMessage("");
-			phase = UnipolyPhase.QUIZTIME;
-		} else {
 			setdisplayMessage(
 					"Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.");
 			phase = UnipolyPhase.INDEBT;
+		} else {
+			// TODO: Quizfunction
+			setdisplayMessage("");
+			phase = UnipolyPhase.QUIZTIME;
 		}
 		// TODO: If the whole Modulgroup is owned by Players,
 		// the rents of all Moduls increase in that group,
@@ -285,14 +281,25 @@ public class UnipolyApp {
 		// depending on whether they are owned by one or several players
 	}
 
-	// TODO: payOfDebt()
-	public void payOffDebt(int FieldIndex) throws FieldIndexException {
-		sellProperty(FieldIndex);
+	// TODO: payOfDebt(), Input is an array of fieldindexes the player wants to sell to the debtor
+	public void payOffDebt(int[] FieldIndexes) throws FieldIndexException {
+		if(currentPlayer.getDebtor().isBank()) {
+			for(int i = 0; i < FieldIndexes.length; i++) {
+				sellProperty(FieldIndexes[i], bank);
+			}
+		} else {
+			for(int i = 0; i < FieldIndexes.length; i++) {
+				// TODO: transferFieldTo(Owner owner, int fieldIndex) 
+				// TODO: Reset FieldLevel and Group Modul Levels
+				// Payoff Debt in PropertyValue
+			}
+		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
 		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
 		 * phase = UnipolyPhase.BANKRUPT; } else { phase = UnipolyPhase.DEBTFREE; }
 		 */
+		switchPlayer();
 	}
 
 	/*------ end and start new turn -------------------------------------------------*/
@@ -321,17 +328,19 @@ public class UnipolyApp {
 		}
 	}
 
-	public void payDetentionRansom() {
+	public void payDetentionRansom() { 
 		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
 			setdisplayMessage("Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.");
 			phase = UnipolyPhase.INDEBT;
 		} else {
+			phase = UnipolyPhase.WAITING;
 			leaveDetention();
 		}
 	}
 
 	public void leaveDetention() {
+		phase = UnipolyPhase.WAITING;
 		currentPlayer.outDetention();
 	}
 

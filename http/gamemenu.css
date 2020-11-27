@@ -1,14 +1,3 @@
-.popup_background {
-  position: fixed; /* Stay in place */
-  z-index: 111; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.27);
-}
-
 .menu-container {
   border-radius: 15px;
   text-align: center;
@@ -133,4 +122,12 @@
 
 #join-token td:hover {
   background: #9ac;
+}
+
+.mine {
+  background-color: rgb(166, 255, 154);
+}
+
+.selling {
+  background-color: rgb(241, 100, 100);
 }

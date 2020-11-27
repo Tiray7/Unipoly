@@ -58,6 +58,7 @@
   grid-template-rows: repeat(5, 1fr);
   justify-items: center;
   align-items: center;
+  position: relative;
 }
 
 .board-title {

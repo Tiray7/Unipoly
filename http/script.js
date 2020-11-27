@@ -18,11 +18,15 @@ var $dicesgif;
 var $lastphase;
 var $alertpopup;
 var $yesnopopup;
+var $selectpopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
 var $checkendturn;
 var $aftershowtext;
+var $sellingprice;
+var $forselling;
+var $sell_btn;
 
 $(document).ready(function () {
 
@@ -49,11 +53,15 @@ $(document).ready(function () {
 	$diceinput = $('#chooseDice_popup');
 	$alertpopup = $('#alert_popup');
 	$yesnopopup = $('#yesno_popup');
+	$selectpopup = $('#select_popup');
+	$sell_btn = $('#sell_btn');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
 	$lastphase = 'NONE';
 	$checkendturn = false;
+	$sellingprice = 0;
+	$forselling = JSON.parse('{}');
 });
 
 function Sleep(milliseconds) {
@@ -107,7 +115,7 @@ function moveToken($scope) {
 
 function showalert(text, bool, txt = '') {
 	$checkendturn = bool;
-	$aftershowtext = text;
+	$aftershowtext = txt;
 	$alertpopup.find('.popup-p').html(text);
 	$alertpopup.show();
 }
@@ -115,6 +123,25 @@ function showalert(text, bool, txt = '') {
 function showyesOrno(text) {
 	$yesnopopup.find('.popup-p').text(text);
 	$yesnopopup.show();
+}
+
+function showSelection($scope) {
+	$sellingprice = $scope.state.currentPlayer.debt;
+	txt = `Wähle die Module die du verkaufen möchtest um deine Schulden abzahlen zu können!`;
+	$selectpopup.find('.popup-p').text(txt);
+	txt = `Du schuldest dd noch ${$sellingprice}CHF.`;
+	$selectpopup.find('.popup-div').text(txt);
+	if (Object.entries($scope.state.currentPlayer.ownedModuls).length === 0) {
+		console.log('Game Over');
+	} else {
+		Object.entries($scope.state.currentPlayer.ownedModuls).forEach(function (modul) {
+			console.log(modul[0]);
+			console.log(modul[1]);
+			field = $(`#pos${modul[0]}`).find('.container');
+			field.toggleClass('mine');
+		});
+	}
+	$selectpopup.show();
 }
 
 function handleDetention($scope, bool = false, areadyasked = false) {
@@ -168,7 +195,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 				$dicesgif.show();
 				$dicesgif.delay(1100).fadeOut(200);
 				$rolledvaluetext.html(txt);
-				await Sleep(13550);
+				await Sleep(1300);
 				if ($scope.state.rolledPash) {
 					txt = `Du hast es geschafft die Schuldirektorin zu überzeugen mit ${$scope.state.firstDice} und ${$scope.state.secondDice}`;
 					txt += '<br>Du darfst nun ganz normal deine Runde fortführen.';
@@ -248,7 +275,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			console.log('New Phase INDEBT');
 			txt = $scope.state.displayMessage;
 			txt += `<br>Du musst nun ${$scope.state.currentPlayer.debtor.name} zuerst deine Schulden zurück zahlen.<br>Der Schuldbetrag ist ${$scope.state.currentPlayer.debt}CHF.`;
-			showalert(txt, true);
+			showalert(txt, false, 'showselection');
 			break;
 
 		case 'QUIZTIME':
@@ -524,6 +551,30 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
+	// Ask Player wants to buy Property
+	$scope.sellProperty = function () {
+		var array = []
+		Object.entries($forselling).forEach(function (element) {
+			array.push(element[0]);
+		});
+		$scope.getOp(`payoffdebt?FieldIndexes=${array}`,
+			function (success) {
+				// Check if  success
+				if (success) {
+					$(`.mine`).forEach(function (element) {
+						element.removeClass('mine');
+					});
+					$(`.selling`).forEach(function (element) {
+						element.removeClass('selling');
+					});
+					$selectpopup.hide();
+					console.log('success: sellproperty');
+				} else {
+					console.error('error: sellproperty');
+				}
+			});
+	}
+
 	// Besteche die Direktorin
 	$scope.payDetentionRansom = function () {
 		$scope.getOp('paydetentionransom',
@@ -564,27 +615,51 @@ app.controller('Controller', function ($scope) {
 
 	// Player klicked on a Field
 	$scope.fieldaction = function (FieldIndex) {
+		var fieldInfo = $scope.state.board.fields[FieldIndex];
+		var currentfield = $(`#pos${FieldIndex}`).find('.container');
 		if ($scope.state.phase == 'JUMP') {
 			$scope.jump(FieldIndex);
+		} else if ($scope.state.phase == 'INDEBT' && (currentfield.hasClass('mine') || currentfield.hasClass('selling'))) {
+			if (currentfield.hasClass('mine')) {
+				$sellingprice -= fieldInfo.propertyCost;
+				$forselling[FieldIndex] = fieldInfo;
+			} else {
+				$sellingprice += fieldInfo.propertyCost;
+				delete $forselling[FieldIndex];
+			}
+			currentfield.toggleClass('mine');
+			currentfield.toggleClass('selling');
+			txt = `<p>Du schuldest ${$scope.state.currentPlayer.debtor.name} noch ${$sellingprice}CHF.</p>`;
+			txt += `<ul>`;
+			console.log($forselling);
+			Object.entries($forselling).forEach(function (element) {
+				txt += `<li>${element[1].name}: Verkaufspreis ${element[1].propertyCost}CHF</li>`;
+			});
+			txt += `</ul>`;
+			$selectpopup.find('.popup-div').html(txt);
+			if($sellingprice <= 0){
+				$sell_btn.show();
+			} else {
+				$sell_btn.hide();
+			}
 		} else {
-			var field = $scope.state.board.fields[FieldIndex];
-			if (field.label == 'PROPERTY') {
-				txt = `<h2>${field.name}</h2>`;
-				if (field.ownerIndex == -1) {
+			if (fieldInfo.label == 'PROPERTY') {
+				txt = `<h2>${fieldInfo.name}</h2>`;
+				if (fieldInfo.ownerIndex == -1) {
 					txt += `Gehört: Niemandem<br>`;
 				} else {
-					txt += `Gehört: ${$scope.state.players[field.ownerIndex].name}<br>`;
-					txt += `Miete: ${field.currentRent}CHF<br>`;
+					txt += `Gehört: ${$scope.state.players[fieldInfo.ownerIndex].name}<br>`;
+					txt += `Miete: ${fieldInfo.currentRent}CHF<br>`;
 				}
-				txt += `Kaufpreis: ${field.propertyCost}CHF<br>`;
-				txt += `Miete LV1: ${field.rentLV1}CHF<br>`;
-				txt += `Miete LV2: ${field.rentLV2}CHF<br>`;
-				txt += `Miete LV3: ${field.rentLV3}CHF<br>`;
-				txt += `Miete LV4: ${field.rentLV4}CHF<br>`;
-				txt += `Miete LV5: ${field.rentLV5}CHF<br>`;
+				txt += `Kaufpreis: ${fieldInfo.propertyCost}CHF<br>`;
+				txt += `Miete LV1: ${fieldInfo.rentLV1}CHF<br>`;
+				txt += `Miete LV2: ${fieldInfo.rentLV2}CHF<br>`;
+				txt += `Miete LV3: ${fieldInfo.rentLV3}CHF<br>`;
+				txt += `Miete LV4: ${fieldInfo.rentLV4}CHF<br>`;
+				txt += `Miete LV5: ${fieldInfo.rentLV5}CHF<br>`;
 			} else {
-				txt = `<h2>${field.label.charAt(0) + field.label.slice(1).toLowerCase()} Feld</h2>`;
-				txt += `${field.explanation}`;
+				txt = `<h2>${fieldInfo.label.charAt(0) + fieldInfo.label.slice(1).toLowerCase()} Feld</h2>`;
+				txt += `${fieldInfo.explanation}`;
 			}
 			showalert(txt, false);
 		}
@@ -602,6 +677,7 @@ app.controller('Controller', function ($scope) {
 		showalert(txt, false);
 	}
 
+	// Display the Yes or No Popup
 	$scope.yesOrno = function (bool) {
 		$yesnopopup.hide();
 		phaseChange($scope, bool, true);
@@ -617,6 +693,8 @@ app.controller('Controller', function ($scope) {
 				$scope.payDetentionRansom();
 			} else if ($aftershowtext == 'leaveDetention') {
 				$scope.leaveDetention();
+			} else if ($aftershowtext == 'showselection') {
+				showSelection($scope);
 			}
 		}
 	}
