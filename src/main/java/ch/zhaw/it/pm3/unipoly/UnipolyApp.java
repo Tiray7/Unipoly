@@ -196,7 +196,7 @@ public class UnipolyApp {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
-					displayMessage += "<br>" + currentPlayer.getName() + " ist auf BLABLA gelandet und kauft das Modul.<br>";
+					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName() + " gelandet und kauft das Modul.<br>";
 					buyProperty();
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
