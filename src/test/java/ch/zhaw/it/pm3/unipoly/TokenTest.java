@@ -5,43 +5,41 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.zhaw.it.pm3.unipoly.Token;
-import ch.zhaw.it.pm3.unipoly.TokenType;
-
 public class TokenTest {
-    Token t;
+    Token t_token;
+
     @Before
     public void setUp() throws Exception {
-        t = new Token(TokenType.LAB);
+        t_token = new Token(TokenType.LAB);
     }
 
     @Test
     public void testToken() {
-        assertNotNull(t);
+        assertNotNull(t_token);
     }
 
     @Test
     public void testGetType() {
-        assertEquals(t.getType(), TokenType.LAB);
+        assertEquals(t_token.getType(), TokenType.LAB);
     }
 
     @Test
     public void testGetTileIndex() {
-        assertEquals(t.getCurrFieldIndex(), 0);
+        assertEquals(t_token.getCurrFieldIndex(), 0);
     }
 
     @Test
     public void testMoveTo() {
-        assertEquals(t.getCurrFieldIndex(), 0);
-        t.moveTo(2);
-        assertEquals(t.getCurrFieldIndex(), 2);
+        assertEquals(t_token.getCurrFieldIndex(), 0);
+        t_token.moveTo(2);
+        assertEquals(t_token.getCurrFieldIndex(), 2);
     }
 
     @Test
     public void testMoveBy() {
-        assertEquals(t.getCurrFieldIndex(), 0);
-        t.moveBy(1);
-        assertEquals(t.getCurrFieldIndex(), 1);
+        assertEquals(t_token.getCurrFieldIndex(), 0);
+        t_token.moveBy(1);
+        assertEquals(t_token.getCurrFieldIndex(), 1);
     }
 
 }
