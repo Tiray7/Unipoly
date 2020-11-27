@@ -248,11 +248,9 @@ public class UnipolyApp {
 			case TODETENTION:
 				currentPlayer.goDetention();
 			case PAYMONEY:
-				// TODO: read amount player has to pay
-				currentPlayer.transferMoneyTo(bank, 200);
+				currentPlayer.transferMoneyTo(bank, cards.get(0).getAmount());
 			case RECEIVEMONEY:
-				// TODO: read amount player receives
-				bank.transferMoneyTo(currentPlayer, 200);
+				bank.transferMoneyTo(currentPlayer, cards.get(0).getAmount());
 			case DETENTIONFREECARD:
 				currentPlayer.setFreeCard(true);
 		}
