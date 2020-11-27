@@ -2,15 +2,11 @@ package ch.zhaw.it.pm3.unipoly;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.zhaw.it.pm3.unipoly.Bank;
-import ch.zhaw.it.pm3.unipoly.Player;
-import ch.zhaw.it.pm3.unipoly.TokenType;
-
 import static org.junit.Assert.assertEquals;
 
 public class BankTest {
     Bank bank;
-    Player playa;
+    Player player;
 
     /***
      * setting test up before start testing
@@ -19,7 +15,7 @@ public class BankTest {
     @Before
     public void setUp() throws Exception {
         bank = new Bank();
-        playa = new Player(-1, "Dilan", TokenType.EINSTEIN);
+        player = new Player(-1, "Dilan", TokenType.EINSTEIN);
     }
 
     /***
@@ -44,8 +40,8 @@ public class BankTest {
      */
     @Test
     public void testAwardFreeParking() {
-        bank.awardFreeParking(playa);
-        assertEquals(1600, playa.getMoney(), 0);
+        bank.awardFreeParking(player);
+        assertEquals(1600, player.getMoney(), 0);
     }
 
 }
