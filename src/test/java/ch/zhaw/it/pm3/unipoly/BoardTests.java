@@ -58,10 +58,7 @@ public class BoardTests {
     public void shouldThrowFieldIndexException() {
         assertThrows(FieldIndexException.class, () -> board.getPropertyNameAtIndex(67));
     }
-    @Test
-    public void shouldCheckIfWholeModuleGroupeIsOwned() throws FieldIndexException {
-        assertEquals(false, board.moduleGroupOfFieldIsOwned(board.getFieldPropertyAtIndex(1)));
-    }
+
     @Test
     public void fillModuleGroupeMaps(){
         board.getProperties().forEach((moduleGroupeIndex, fieldProperty) -> {
