@@ -64,12 +64,12 @@ public class UnipolyApp {
 
 	/*------ Function to configure the Game -------------------------------------------------*/
 	// Add a new Player to the Game
-	public void join(String name, TokenType token) throws FieldIndexException {
+	public void join(String name, Token.TokenType token) throws FieldIndexException {
 		checkIfPlayernameAlreadyExists(name, token);
 		initializePlayer(name, token);
 	}
 
-	private void checkIfPlayernameAlreadyExists(String name, TokenType token) {
+	private void checkIfPlayernameAlreadyExists(String name, Token.TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
 				throw new IllegalArgumentException("Player name already exists.");
@@ -81,7 +81,7 @@ public class UnipolyApp {
 	}
 
 	// Initializing a new Player
-	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
+	private void initializePlayer(String name, Token.TokenType token) throws FieldIndexException {
 		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
 		players.add(player);
@@ -92,11 +92,11 @@ public class UnipolyApp {
 		// If SinglePlayer we have to create "npcnum" NPC Players
 		if (Gamemode.SINGLE == mode) {
 			if (npcnum >= 1)
-				initializePlayer("NPC1", TokenType.NPCI);
+				initializePlayer("NPC1", Token.TokenType.NPCI);
 			if (npcnum >= 2)
-				initializePlayer("NPC2", TokenType.NPCII);
+				initializePlayer("NPC2", Token.TokenType.NPCII);
 			if (npcnum >= 3)
-				initializePlayer("NPC3", TokenType.NPCIII);
+				initializePlayer("NPC3", Token.TokenType.NPCIII);
 		}
 		// First Player which gets to play
 		currentPlayer = players.get(0);

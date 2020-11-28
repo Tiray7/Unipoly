@@ -1,4 +1,4 @@
-package ch.zhaw.it.pm3.unipoly;
+/*package ch.zhaw.it.pm3.unipoly;
 
 public enum TokenType {
 	ATOM,
@@ -13,4 +13,4 @@ public enum TokenType {
 	NPCI,
 	NPCII,
 	NPCIII
-}
+}*/

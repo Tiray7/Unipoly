@@ -14,7 +14,7 @@ public class TokenTest {
      */
     @Before
     public void setUp() throws Exception {
-        t_token = new Token(TokenType.LAB);
+        t_token = new Token(Token.TokenType.LAB);
     }
 
     /***
@@ -30,7 +30,7 @@ public class TokenTest {
      */
     @Test
     public void testGetType() {
-        assertEquals(t_token.getType(), TokenType.LAB);
+        assertEquals(t_token.getType(), Token.TokenType.LAB);
     }
 
     /***

@@ -13,7 +13,7 @@ public class Player extends Owner {
      * @param name present player name
      * @param tokenType present what he has for token
      */
-    public Player(int index, String name, TokenType tokenType) {
+    public Player(int index, String name, Token.TokenType tokenType) {
         super(index, name, 300);
         token = new Token(tokenType);
     }

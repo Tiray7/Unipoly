@@ -48,7 +48,7 @@ public class Controller {
 
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp join(@RequestParam String name, @RequestParam TokenType token) throws FieldIndexException {
+	public UnipolyApp join(@RequestParam String name, @RequestParam Token.TokenType token) throws FieldIndexException {
 		unipoly.join(name, token);
 		return unipoly;
 	}
