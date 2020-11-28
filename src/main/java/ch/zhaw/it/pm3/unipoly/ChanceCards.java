@@ -1,10 +1,16 @@
 package ch.zhaw.it.pm3.unipoly;
 
 public class ChanceCards {
-    private String text;
-    private ChanceCardType cardType;
-    private int amount;
+    private final String text;
+    private final ChanceCardType cardType;
+    private final int amount;
 
+   public enum ChanceCardType {
+        TODETENTION,
+        PAYMONEY,
+        RECEIVEMONEY,
+        DETENTIONFREECARD
+    }
     public ChanceCards(String text, ChanceCardType cardType, int amount) {
         this.text = text;
         this.cardType = cardType;
