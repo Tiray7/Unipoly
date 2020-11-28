@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class Board {
@@ -73,5 +74,28 @@ public class Board {
             if (entry.getValue().getLabel().equals(Config.FieldLabel.PROPERTY)) {
                 properties.put(entry.getKey(), (FieldProperty) entry.getValue());
             }
+    }
+
+    public boolean moduleGroupOfFieldIsOwned(FieldProperty currentField) {
+       int currentModule =  currentField.getModuleGroup();
+       AtomicInteger ownedModules = new AtomicInteger();
+       int NO_OWNER = -1;
+       boolean output = false;
+      properties.forEach((integer, fieldProperty) -> {
+                if (fieldProperty.getModuleGroup()==currentModule)
+                    if (fieldProperty.getOwnerIndex()!=NO_OWNER)
+                        ownedModules.getAndIncrement();
+              }
+              );
+
+           if (currentModule ==0||currentModule==7) {
+               if (ownedModules.equals(2))
+                   output = true;
+           } else {
+               if (ownedModules.equals(3))
+                   output = true;
+           }
+           return output;
+
     }
 }
