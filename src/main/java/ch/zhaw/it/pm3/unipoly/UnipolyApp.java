@@ -258,7 +258,8 @@ public class UnipolyApp {
 
 	// player landed on owned Land
 	private void landedOnOwnedProperty() throws FieldIndexException {
-		if (currentPlayer.payRent(players.get(((FieldProperty)currentField).getOwnerIndex()), (FieldProperty) currentField)) {
+		FieldProperty currentProperty = (FieldProperty) currentField;
+		if (currentPlayer.payRent(players.get((currentProperty).getOwnerIndex()), currentProperty)) {
 			setdisplayMessage(
 					"Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.");
 			phase = UnipolyPhase.INDEBT;
@@ -267,18 +268,15 @@ public class UnipolyApp {
 			setdisplayMessage("");
 			phase = UnipolyPhase.QUIZTIME;
 		}
-		// TODO: If the whole Modulgroup is owned by Players,
-		// the rents of all Moduls increase in that group,
-		// depending on whether they are owned by one or several players
+		((FieldProperty) currentField).checkAndRaiseRent();
 	}
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() throws FieldIndexException {
 		setdisplayMessage("ModulUpgrade!!");
 		phase = UnipolyPhase.SHOWMESSAGE;
-		// TODO: If the whole Modulgroup is owned by Players,
-		// the rents of all Moduls increase in that group,
-		// depending on whether they are owned by one or several players
+
+		((FieldProperty) currentField).checkAndRaiseRent();
 	}
 
 	// TODO: payOfDebt(), Input is an array of fieldindexes the player wants to sell to the debtor

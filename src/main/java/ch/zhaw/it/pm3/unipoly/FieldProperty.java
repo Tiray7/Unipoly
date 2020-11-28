@@ -70,6 +70,30 @@ public class FieldProperty extends Field{
         }
     }
 
+    public void raiseRentAll(){
+       for (FieldProperty fieldOfSameModule : moduleGroup) {
+            fieldOfSameModule.raiseRent();
+        }
+    }
+
+    public void checkAndRaiseRent(){
+        int countOwnedModules = 0;
+        raiseRentAll();
+        for (FieldProperty fieldOfSameModule : moduleGroup) {
+            if(this.moduleGroupIndex==fieldOfSameModule.moduleGroupIndex){
+                countOwnedModules++;
+            }
+        }
+        if(this.moduleGroupIndex==0||this.moduleGroupIndex==7) {
+            if (countOwnedModules == 2)
+                raiseRentAll();
+        } else {
+            if(countOwnedModules == 3)
+                raiseRentAll();
+        }
+    }
+
+
 
 
 }
