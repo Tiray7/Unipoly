@@ -11,7 +11,6 @@ public class BoardTests {
     @Before
     public void setUp() {
         board = new Board();
-        board.fillPropertyMap();
     }
 
     @Test
@@ -62,5 +61,13 @@ public class BoardTests {
     @Test
     public void shouldCheckIfWholeModuleGroupeIsOwned() throws FieldIndexException {
         assertEquals(false, board.moduleGroupOfFieldIsOwned(board.getFieldPropertyAtIndex(1)));
+    }
+    @Test
+    public void fillModuleGroupeMaps(){
+        board.getProperties().forEach((moduleGroupeIndex, fieldProperty) -> {
+            fieldProperty.getModuleGroup().forEach(fieldPropertyOfSameModule -> {
+                assertEquals(fieldProperty.getModuleGroupIndex(), fieldPropertyOfSameModule.getModuleGroupIndex());
+            });
+        });
     }
 }

@@ -3,6 +3,8 @@ package ch.zhaw.it.pm3.unipoly;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,7 +17,10 @@ public class Board {
         fields = Config.getInitialBoard();
         properties = new HashMap<>();
         fillPropertyMap();
+        fillModuleGroupeMap();
     }
+
+
 
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
@@ -69,20 +74,35 @@ public class Board {
         }
     }
 
-    void fillPropertyMap() {
+    private void fillPropertyMap() {
         for (Map.Entry<Integer, Field> entry : fields.entrySet())
             if (entry.getValue().getLabel().equals(Config.FieldLabel.PROPERTY)) {
                 properties.put(entry.getKey(), (FieldProperty) entry.getValue());
             }
     }
 
+    private void fillModuleGroupeMap() {
+        Map<Integer, List< FieldProperty>> moduleGroupeMaps = new HashMap<Integer, List<FieldProperty>>();
+        for(int i = 0; i<=7; i++){
+            moduleGroupeMaps.put(i,new LinkedList<FieldProperty>());
+        }
+        properties.forEach((integer, fieldProperty) -> {
+            moduleGroupeMaps.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
+        });
+        properties.forEach((integer, fieldProperty) -> {
+
+           fieldProperty.initializeModuleGroupe( moduleGroupeMaps.get(fieldProperty.getModuleGroupIndex()));
+        });
+    }
+
+    /*
     public boolean moduleGroupOfFieldIsOwned(FieldProperty currentField) {
-       int currentModule =  currentField.getModuleGroup();
+       int currentModule =  currentField.getModuleGroupIndex();
        AtomicInteger ownedModules = new AtomicInteger();
        int NO_OWNER = -1;
        boolean output = false;
       properties.forEach((integer, fieldProperty) -> {
-                if (fieldProperty.getModuleGroup()==currentModule)
+                if (fieldProperty.getModuleGroupIndex()==currentModule)
                     if (fieldProperty.getOwnerIndex()!=NO_OWNER)
                         ownedModules.getAndIncrement();
               }
@@ -97,5 +117,5 @@ public class Board {
            }
            return output;
 
-    }
+    }*/
 }
