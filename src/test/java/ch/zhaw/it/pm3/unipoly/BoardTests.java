@@ -60,8 +60,8 @@ public class BoardTests {
     }
 
     @Test
-    public void fillModuleGroupeMaps(){
-        board.getProperties().forEach((moduleGroupeIndex, fieldProperty) -> {
+    public void fillModuleGroupMaps(){
+        board.getProperties().forEach((moduleGroupIndex, fieldProperty) -> {
             fieldProperty.getModuleGroup().forEach(fieldPropertyOfSameModule -> {
                 assertEquals(fieldProperty.getModuleGroupIndex(), fieldPropertyOfSameModule.getModuleGroupIndex());
             });
