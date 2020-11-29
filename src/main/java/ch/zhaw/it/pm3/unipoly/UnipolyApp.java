@@ -328,7 +328,7 @@ public class UnipolyApp {
 		}
 	}
 
-	public void payDetentionRansom() {
+	public void payDetentionRansom() { 
 		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
 			setdisplayMessage("Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.");

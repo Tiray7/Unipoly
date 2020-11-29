@@ -20,8 +20,6 @@ public class Board {
         fillModuleGroupeMap();
     }
 
-
-
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return fields.get(index).getLabel();
