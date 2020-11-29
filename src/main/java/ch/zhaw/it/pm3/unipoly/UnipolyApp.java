@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.HashMap;
+
 
 @Component
 public class UnipolyApp {
@@ -39,7 +41,7 @@ public class UnipolyApp {
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
-		bank.setownedModuls(board.getProperties());
+		bank.setownedModuls(new HashMap<Integer, FieldProperty>(board.getProperties()));
 		players = new ArrayList<>();
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);
