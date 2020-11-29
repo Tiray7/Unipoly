@@ -78,18 +78,23 @@ public class FieldProperty extends Field{
 
     public void checkAndRaiseRent(){
         int countOwnedModules = 0;
-        raiseRentAll();
+        int countSameOwner = 0;
+        int NO_OWNER = -1;
         for (FieldProperty fieldOfSameModule : moduleGroup) {
-            if(this.moduleGroupIndex==fieldOfSameModule.moduleGroupIndex){
+            if(fieldOfSameModule.getOwnerIndex()!=NO_OWNER){
                 countOwnedModules++;
             }
+            if(this.getOwnerIndex()==fieldOfSameModule.getOwnerIndex()){
+                countSameOwner++;
+            }
         }
-        if(this.moduleGroupIndex==0||this.moduleGroupIndex==7) {
-            if (countOwnedModules == 2)
+
+        if(countOwnedModules==moduleGroup.size()){
+            raiseRentAll();
+            if(countSameOwner==moduleGroup.size())
                 raiseRentAll();
         } else {
-            if(countOwnedModules == 3)
-                raiseRentAll();
+            raiseRent();
         }
     }
 

@@ -116,6 +116,5 @@ public class Board {
                    output = true;
            }
            return output;
-
     }*/
 }
