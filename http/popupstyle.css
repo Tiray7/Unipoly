@@ -79,6 +79,18 @@ div.popup-p {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.end-btn {
+  margin: 3em 1.5em 0em 1.5em;
+  background-color: #3C3C3C;
+}
+
+.popup-end h1 {
+  margin: 0em;
+}
+.popup-end {
+  font-size: 2em;
+}
+
 .dice1 {
   background-image: url("dice1.png");
   background-size: 100%;
