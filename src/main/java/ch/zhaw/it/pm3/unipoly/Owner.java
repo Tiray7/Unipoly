@@ -3,12 +3,12 @@ package ch.zhaw.it.pm3.unipoly;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Owner {
+public abstract class Owner implements Comparable {
 
     private final int index;
     private final String name;
     private int money;
-    private int RoadOwned;
+    private int ModulGroupOwned;
     private int PropertyOwned;
     private int Debt;
     private Owner Debtor;
@@ -30,6 +30,7 @@ public abstract class Owner {
 
     public int getIndex() { return index; }
     public boolean isBank() { return this.index == -1; }
+    public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getRoadOwned() { return RoadOwned; }
@@ -40,9 +41,20 @@ public abstract class Owner {
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
     public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
 
+    public int getWealth() { 
+        int ThisWealth = this.money;
+        for (FieldProperty modul : this.ownedModuls.values()) {
+            ThisWealth += modul.getCurrentRent();
+        }
+        return ThisWealth;
+    }
 
-    public void setRoadOwned(int roadOwned) { this.RoadOwned = roadOwned; }
+    public int compareTo(Owner comparply) {
+        return comparply.getWealth() - this.getWealth();
+    }
 
+    // TODO: Call this function to check player owns ModulGroup
+    public void setModulGroupOwned(int ModulGroupOwned) { this.ModulGroupOwned = ModulGroupOwned; }
 
     /***
      * transfer money between players only with certain amount
@@ -62,7 +74,7 @@ public abstract class Owner {
     public void transferFieldTo(Owner owner, int fieldIndex) {
         this.ownedModuls.put(fieldIndex, owner.ownedModuls.get(fieldIndex));
         this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
-        owner.ownedModuls.remove(fieldIndex); 
+        owner.ownedModuls.remove(fieldIndex);
     }
 
     /***
@@ -83,27 +95,18 @@ public abstract class Owner {
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
         field.raiseRent();
-        return this.setandcheckDebt(ownerOfField, 1000);
+        return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
         // Player has to pay Rent
         /*
-        amount = field.currentRent
-        Player owner = Owner of the field.
-        
-        then first check with setandcheckDebt() if he is able to pay
-        if True:
-                Transfer the money
-        if False:
-                return false
-
-        if The Owner has whole modulgroup:
-                increase rent of whole modulgroup
-            else:
-                increse rent of this field
-            return true
-        */
+         * amount = field.currentRent Player owner = Owner of the field.
+         * 
+         * then first check with setandcheckDebt() if he is able to pay if True:
+         * Transfer the money if False: return false
+         * 
+         * if The Owner has whole modulgroup: increase rent of whole modulgroup else:
+         * increse rent of this field return true
+         */
     }
-
-
 
     // Calculate what the Player owes
     public boolean setandcheckDebt(Owner debtor, int amount) {

@@ -19,6 +19,7 @@ var $lastphase;
 var $alertpopup;
 var $yesnopopup;
 var $selectpopup;
+var $gameoverpopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
@@ -55,6 +56,7 @@ $(document).ready(function () {
 	$yesnopopup = $('#yesno_popup');
 	$selectpopup = $('#select_popup');
 	$sell_btn = $('#sell_btn');
+	$gameoverpopup = $('#gameover_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
@@ -89,6 +91,7 @@ function resetHTML(list) {
 		prevind.toggleClass('leer');
 		prevind.toggleClass(`used ${type}`);
 	}
+	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
 	$rolledvaluetext.html('');
@@ -105,12 +108,15 @@ function resetHTML(list) {
 // Move the PlayerToken
 function moveToken($scope) {
 	const type = $scope.state.currentPlayer.token.type.toLowerCase();
-	const prevind = $(`#pos${$scope.state.currentPlayer.token.prevFieldIndex}`).find("td." + type).first();
-	const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td.leer").first();
-	prevind.toggleClass('leer');
-	prevind.toggleClass(`used ${type}`);
-	currind.toggleClass('leer');
-	currind.toggleClass(`used ${type}`);
+	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td").hasClass(type)) {
+		console.log('moveToken');
+		const prevind = $(`#pos${$scope.state.currentPlayer.token.prevFieldIndex}`).find("td." + type).first();
+		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td.leer").first();
+		prevind.toggleClass('leer');
+		prevind.toggleClass(`used ${type}`);
+		currind.toggleClass('leer');
+		currind.toggleClass(`used ${type}`);
+	}
 }
 
 function showalert(text, bool, txt = '') {
@@ -118,6 +124,11 @@ function showalert(text, bool, txt = '') {
 	$aftershowtext = txt;
 	$alertpopup.find('.popup-p').html(text);
 	$alertpopup.show();
+}
+
+function showGameOver(text) {
+	$gameoverpopup.find('.popup-end').html(text);
+	$gameoverpopup.show();
 }
 
 function showyesOrno(text) {
@@ -182,6 +193,17 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 	var txt;
 
 	switch (newphase) {
+		case 'SHOWANDSWITCH':
+			console.log('New Phase SHOWANDSWITCH');
+			moveToken($scope);
+			showalert($scope.state.displayMessage, true);
+			break;
+
+		case 'SHOWCARD':
+			console.log('New Phase SHOWCARD');
+			showalert($scope.state.displayMessage, false);
+			break;
+
 		case 'WAITING':
 			console.log('New Phase WAITING');
 			if ($lastphase == 'NONE') break;
@@ -216,17 +238,6 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			}
 			break;
 
-		case 'SHOWMESSAGE':
-			console.log('New Phase SHOWMESSAGE');
-			showalert($scope.state.displayMessage, true);
-			break;
-
-		case 'SHOWCARD':
-			console.log('New Phase SHOWCARD');
-			txt = 'Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!';
-			showalert(txt, false);
-			break;
-
 		case 'BUY_PROPERTY':
 			console.log('New Phase BUY_PROPERTY');
 			if (areadyasked) {
@@ -259,13 +270,6 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			}
 			break;
 
-		case 'GO_DETENTION':
-			console.log('New Phase GODETENTION');
-			txt = 'Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!';
-			moveToken($scope);
-			showalert(txt, true);
-			break;
-
 		case 'DETENTION':
 			console.log('New Phase DETENTION');
 			handleDetention($scope, bool, areadyasked);
@@ -282,6 +286,11 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			console.log('New Phase QUIZTIME');
 			txt = `Beantworte folgende Frage:`;
 			showalert(txt, true);
+			break;
+
+		case 'GAMEOVER':
+			console.log('New Phase GAMEOVER');
+			showalert($scope.state.displayMessage, false, 'gameoverMessage');
 			break;
 	}
 }
@@ -305,7 +314,7 @@ function update($scope, json) {
 	}
 
 	// Check if phase changed, update accordingly
-	if ($lastphase !== $scope.state.phase) {
+	if ($lastphase !== $scope.state.phase || $lastphase == 'SHOWANDSWITCH') {
 		phaseChange($scope);
 		$lastphase = $scope.state.phase;
 	}
@@ -605,8 +614,15 @@ app.controller('Controller', function ($scope) {
 		var txt;
 		$checkendturn = false;
 		if ($scope.state.phase == 'SHOWCARD') {
-			txt = $scope.state.currentCardText;
-			showalert(txt, true);
+			$scope.getOp('readcard',
+				function (success) {
+					// Check if  success
+					if (success) {
+						console.log('success: readcard');
+					} else {
+						console.error('error: readcard');
+					}
+				});
 		} else {
 			txt = 'Du musst auf einem Chance Feld landen um eine Chance Karte ziehen zu dürfen.';
 			showalert(txt, false);
@@ -637,7 +653,7 @@ app.controller('Controller', function ($scope) {
 			});
 			txt += `</ul>`;
 			$selectpopup.find('.popup-div').html(txt);
-			if($sellingprice <= 0){
+			if ($sellingprice <= 0) {
 				$sell_btn.show();
 			} else {
 				$sell_btn.hide();
@@ -695,6 +711,8 @@ app.controller('Controller', function ($scope) {
 				$scope.leaveDetention();
 			} else if ($aftershowtext == 'showselection') {
 				showSelection($scope);
+			} else if ($aftershowtext == 'gameoverMessage') {
+				showGameOver($scope.state.gameoverString);
 			}
 		}
 	}

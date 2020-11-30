@@ -44,4 +44,10 @@ public class Bank extends Owner {
     public void awardFreeParking(Player player){
         this.transferMoneyTo(player, 100);
     }
+
+    @Override
+    public int compareTo(Object o) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
