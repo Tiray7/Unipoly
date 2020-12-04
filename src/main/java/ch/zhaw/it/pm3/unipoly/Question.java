@@ -26,8 +26,8 @@ public class Question {
         this.question = question;
         this.solution = solution;
         this.option1 = option1;
-        this.option1 = option2;
-        this.option1 = option3;
+        this.option2 = option2;
+        this.option3 = option3;
         answerOptions.put(1, option1);
         answerOptions.put(2, option2);
         answerOptions.put(3, option3);
