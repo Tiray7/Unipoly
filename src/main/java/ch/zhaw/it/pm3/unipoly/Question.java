@@ -33,4 +33,27 @@ public class Question {
         answerOptions.put(3, option3);
     }
 
+    public String getQuestion() {
+        return question;
+    }
+
+    public Hashtable<Integer, String> getAnswerOptions() {
+        return answerOptions;
+    }
+
+    public int getSolution() {
+        return solution;
+    }
+
+    public String getOption1() {
+        return option1;
+    }
+
+    public String getOption2() {
+        return option2;
+    }
+
+    public String getOption3() {
+        return option3;
+    }
 }
