@@ -8,7 +8,7 @@ public class ChanceCards {
 
     /***
      * ChanceCard constructor
-     * @param text test on the card
+     * @param text text on the card
      * @param cardType type of the card
      * @param amount amount of the card
      */

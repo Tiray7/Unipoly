@@ -9,9 +9,9 @@ public class Player extends Owner {
 
     /***
      * constructor Player
-     * @param index present player index
-     * @param name present player name
-     * @param tokenType present what he has for token
+     * @param index is the player index
+     * @param name is the player name
+     * @param tokenType is the token type
      */
     public Player(int index, String name, TokenType tokenType) {
         super(index, name, 1500);
