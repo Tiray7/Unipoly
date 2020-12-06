@@ -139,7 +139,7 @@ function showyesOrno(text) {
 }
 
 function showquiz($scope) {
-	question = `Beantworte folgende Frage:<br>`;
+	question = `Beantworte folgende Frage:\n`;
 	$quizpopup.find('.popup-p').text(question);
 	$quizpopup.find('#quizanswer_0').html(`<h4>Antwort 1</h4>`);
 	$quizpopup.find('#quizanswer_1').html(`<h4>Antwort 2</h4>`);
@@ -732,9 +732,9 @@ app.controller('Controller', function ($scope) {
 		$quizpopup.hide();
 		const correctans = (x == 0);
 		if (correctans) {
-			showalert(`Das war die richtige Antwort!<br>Du erhältst ${fieldInfo.currentECTSLevel} ECTS`, true);
+			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currFieldIndex} ECTS`, true);
 		} else {
-			showalert('Das war die falsche Antwort!<br>DU erhältst keine ECTS', true);
+			showalert('Das war die falsche Antwort!<br>Du erhältst keine ECTS', true);
 		}
 		$scope.getOp(`quizanswer?x=${correctans}`,
 			function (success) {
