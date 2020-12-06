@@ -43,7 +43,7 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * UnipolyApp class Constructor
+	 * UnipolyApp class constructor
 	 */
 
 	public UnipolyApp() {

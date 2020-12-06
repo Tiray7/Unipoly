@@ -11,7 +11,7 @@ public class Board {
     private final Map<Integer, FieldProperty> properties;
 
     /***
-     * Board contractor
+     * Board constructor
      */
     public Board() {
         fields = Config.getInitialBoard();
