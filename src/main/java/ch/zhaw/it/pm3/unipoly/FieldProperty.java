@@ -1,10 +1,11 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import java.util.List;
+
 /**
  * This class is for creating the property fields.
  */
-
-public class FieldProperty extends Field {
+public class FieldProperty extends Field{
 
     private final int propertyCost;
     private final String name;
@@ -13,7 +14,8 @@ public class FieldProperty extends Field {
     private final int rentLV3;
     private final int rentLV4;
     private final int rentLV5;
-    private final int moduleGroup;
+    private final int moduleGroupIndex;
+    private int ECTS;
     private int currentRent;
     private int ownerIndex;
     private static final int UNOWNED = -1;
@@ -40,30 +42,25 @@ public class FieldProperty extends Field {
         this.rentLV3 = rentLV3;
         this.rentLV4 = rentLV4;
         this.rentLV5 = rentLV5;
-        this.moduleGroup = moduleGroup;
+        this.moduleGroupIndex = moduleGroup;
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
+        this.ECTS = 5 + moduleGroup;
     }
 
+    /*------ GET functions ------------------------------------------*/
     public String getName() { return name; }
-
     public int getPropertyCost() { return propertyCost; }
-
     public int getOwnerIndex() { return ownerIndex; }
-
     public int getCurrentRent() { return currentRent; }
-
     public int getRentLV1() { return rentLV1; }
-
     public int getRentLV2() { return rentLV2; }
-
     public int getRentLV3() { return rentLV3; }
-
     public int getRentLV4() { return rentLV4; }
-
     public int getRentLV5() { return rentLV5; }
-
-    public int getModuleGroup(){ return moduleGroup; }
+    public int getModuleGroupIndex(){ return moduleGroupIndex; }
+    public int getECTS() { return ECTS; }
+    /*---------------------------------------------------------------*/
 
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
@@ -74,7 +71,10 @@ public class FieldProperty extends Field {
     }
 
     /**This method levels up the rent of the property when called.**/
-    public void raiseRent() {
+    public void raiseRentAndECTS() {
+        if (currentRent != rentLV5) {
+            ECTS += 2;
+        }
         if (currentRent == rentLV1) {
             currentRent = rentLV2;
         } else if (currentRent == rentLV2) {
@@ -87,4 +87,5 @@ public class FieldProperty extends Field {
             currentRent = rentLV5;
         }
     }
+
 }
