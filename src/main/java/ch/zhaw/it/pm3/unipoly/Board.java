@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -67,7 +66,7 @@ public class Board {
     }
 
     public void raiseRentFromProperty(int index) {
-        properties.get(index).raiseRent();
+        properties.get(index).raiseRentAndECTS();
     }
 
     public int getPropertyOwner(int index) {
@@ -100,12 +99,12 @@ public class Board {
 
 
 
-    public void raiseRentAll(int moduleGroupIndex){
+    public void raiseAll(int moduleGroupIndex){
         for (FieldProperty fieldOfSameModule : moduleGroups.get(moduleGroupIndex)) {
-            fieldOfSameModule.raiseRent();
+            fieldOfSameModule.raiseRentAndECTS();
         }
     }
-    public void checkAndRaiseRent(FieldProperty currentProperty){
+    public void checkAndRaiseRentAndECTS(FieldProperty currentProperty){
         int moduleGroupIndex = currentProperty.getModuleGroupIndex();
         LinkedList<FieldProperty> currentModuleGroup = moduleGroups.get(moduleGroupIndex);
 
@@ -122,11 +121,11 @@ public class Board {
         }
 
         if(countOwnedModules==currentModuleGroup.size()){
-            raiseRentAll(moduleGroupIndex);
+            raiseAll(moduleGroupIndex);
             if(countSameOwner==currentModuleGroup.size())
-                raiseRentAll(moduleGroupIndex);
+                raiseAll(moduleGroupIndex);
         } else {
-            currentProperty.raiseRent();
+            currentProperty.raiseRentAndECTS();
         }
     }
 }

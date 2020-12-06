@@ -14,7 +14,6 @@ public class FieldPropertyTest {
         List<Player> players;
         Bank bank;
 
-
         /***
          * setting test up before start testing
          */
@@ -34,7 +33,7 @@ public class FieldPropertyTest {
             players.get(0).buyPropertyFrom(bank, 1);
             players.get(0).buyPropertyFrom(bank, 3);
 
-            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
+            board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
 
             assertEquals(board.getProperties().get(1).getRentLV3(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV3(), board.getProperties().get(3).getCurrentRent());
@@ -42,7 +41,7 @@ public class FieldPropertyTest {
             players.get(0).buyPropertyFrom(bank, 5);
             players.get(0).buyPropertyFrom(bank, 6);
             players.get(0).buyPropertyFrom(bank, 8);
-            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(8));
+            board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(8));
             assertEquals(board.getProperties().get(5).getRentLV3(), board.getProperties().get(5).getCurrentRent());
             assertEquals(board.getProperties().get(6).getRentLV3(), board.getProperties().get(6).getCurrentRent());
             assertEquals(board.getProperties().get(8).getRentLV3(), board.getProperties().get(8).getCurrentRent());
@@ -53,7 +52,7 @@ public class FieldPropertyTest {
             players.get(0).buyPropertyFrom(bank, 1);
             players.get(1).buyPropertyFrom(bank, 3);
 
-            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
+            board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
             assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV2(), board.getProperties().get(3).getCurrentRent());
         }
@@ -61,8 +60,18 @@ public class FieldPropertyTest {
         public void ModuleGroupPartiallyOwnedTest() throws FieldIndexException {
             players.get(0).buyPropertyFrom(bank, 1);
 
-            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
+            board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
             assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV1(), board.getProperties().get(3).getCurrentRent());
+        }
+
+        @Test
+        public void ECTSSystemTest() throws FieldIndexException {
+            assertEquals(5, board.getProperties().get(1).getECTS());
+            board.getProperties().forEach((Integer, FieldProperty)->{
+                assertEquals(FieldProperty.getModuleGroupIndex()+5, FieldProperty.getECTS());
+                FieldProperty.raiseRentAndECTS();
+                assertEquals(FieldProperty.getModuleGroupIndex()+7, FieldProperty.getECTS());
+            });
         }
 }

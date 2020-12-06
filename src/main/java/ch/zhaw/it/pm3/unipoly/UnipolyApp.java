@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -330,12 +329,12 @@ public class UnipolyApp {
 			displayMessage = "";
 			phase = UnipolyPhase.QUIZTIME;
 		}
-		board.checkAndRaiseRent((FieldProperty) currentField);
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 	}
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() throws FieldIndexException {
-		board.checkAndRaiseRent((FieldProperty) currentField);
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 		displayMessage = "ModulUpgrade!!";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
