@@ -7,13 +7,22 @@ import java.util.Map;
 
 
 public class Config {
-    // minimum number of players
+
+    /***
+     * minimum number of players
+     */
     public static final int MIN_NUMBER_OF_PLAYERS = 2;
 
-    // start and end field indexes of the board
+
+    /***
+     * start and end field indexes of the board
+     */
     public static final int FIELD_MIN = 0;
     public static final int FIELD_MAX = 35;
 
+    /***
+     * FieldLabel enum to define labels
+     */
     public enum FieldLabel {
         GO("go"),
         PROPERTY("property"),
@@ -35,6 +44,10 @@ public class Config {
         }
     }
 
+    /***
+     * Initialize the Board
+     * @return the board
+     */
     public static Map<Integer, Field> getInitialBoard() {
         Map<Integer, Field> assignment = new HashMap<>();
 
@@ -81,6 +94,10 @@ public class Config {
         return Collections.unmodifiableMap(assignment);
     }
 
+    /***
+     * get the chance Cards
+     * @return the cards
+     */
     public static ArrayList<ChanceCards> getChanceCards() {
         ArrayList<ChanceCards> assignment = new ArrayList<>();
 
