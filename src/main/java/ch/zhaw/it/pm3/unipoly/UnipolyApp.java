@@ -441,7 +441,7 @@ public class UnipolyApp {
 	 */
 	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
 		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
+		board.getProperties().get(FieldIndex).resetLevel();
 	}
 
 	/***
