@@ -1,5 +1,7 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import java.util.List;
+
 public class FieldProperty extends Field{
 
     private final int propertyCost;
@@ -9,10 +11,12 @@ public class FieldProperty extends Field{
     private final int rentLV3;
     private final int rentLV4;
     private final int rentLV5;
-    private final int moduleGroup;
+    private final int moduleGroupIndex;
+    private int ECTS;
     private int currentRent;
     private int ownerIndex;
     private static final int UNOWNED = -1;
+
 
     public FieldProperty(String name, Config.FieldLabel label, int propertyCost,
                          int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroup) {
@@ -24,9 +28,10 @@ public class FieldProperty extends Field{
         this.rentLV3 = rentLV3;
         this.rentLV4 = rentLV4;
         this.rentLV5 = rentLV5;
-        this.moduleGroup = moduleGroup;
+        this.moduleGroupIndex = moduleGroup;
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
+        this.ECTS = 5 + moduleGroup;
     }
 
     public String getName() { return name; }
@@ -38,7 +43,11 @@ public class FieldProperty extends Field{
     public int getRentLV3() { return rentLV3; }
     public int getRentLV4() { return rentLV4; }
     public int getRentLV5() { return rentLV5; }
-    public int getModuleGroup(){ return moduleGroup; }
+    public int getModuleGroupIndex(){ return moduleGroupIndex; }
+    public int getECTS() {
+        return ECTS;
+    }
+
 
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
@@ -48,7 +57,11 @@ public class FieldProperty extends Field{
        return ownerIndex == -1;
     }
 
-    public void raiseRent() {
+    public void raiseRentAndECTS() {
+        if (currentRent != rentLV5) {
+            ECTS += 2;
+        }
+
         if (currentRent == rentLV1) {
             currentRent = rentLV2;
         } else if (currentRent == rentLV2) {
@@ -61,4 +74,5 @@ public class FieldProperty extends Field{
             currentRent = rentLV5;
         }
     }
+
 }

@@ -69,7 +69,7 @@ public class Config {
         assignment.put(34, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
 
         assignment.put(1, new FieldProperty("Geschichte", FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0));
-        assignment.put(3, new FieldProperty("Geogreaphie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450,0));
+        assignment.put(3, new FieldProperty("Geographie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450,0));
         assignment.put(5, new FieldProperty("Theologie", FieldLabel.PROPERTY, 100, 30, 90, 270, 400, 550,1));
         assignment.put(6, new FieldProperty("Geisteswissenschaften", FieldLabel.PROPERTY, 100, 30, 90, 270, 400, 550,1));
         assignment.put(8, new FieldProperty("Psychologie", FieldLabel.PROPERTY, 120, 40, 100, 300, 450, 600,1));
@@ -101,16 +101,16 @@ public class Config {
     public static ArrayList<ChanceCards> getChanceCards() {
         ArrayList<ChanceCards> assignment = new ArrayList<>();
 
-        assignment.add(new ChanceCards("	Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.	", ChanceCardType.PAYMONEY, 80));
-        assignment.add(new ChanceCards("	Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.	", ChanceCardType.PAYMONEY, 100));
-        assignment.add(new ChanceCards("	Zahle deine Semestergebühr von CHF 700.	", ChanceCardType.PAYMONEY, 700));
-        assignment.add(new ChanceCards("	Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.	", ChanceCardType.PAYMONEY, 20));
-        assignment.add(new ChanceCards("	Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.	", ChanceCardType.RECEIVEMONEY, 100));
-        assignment.add(new ChanceCards("	Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Von deinem Nebenjob verdienst du CHF 400.	", ChanceCardType.RECEIVEMONEY, 400));
-        assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCardType.TODETENTION, 0));
-        assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCardType.DETENTIONFREECARD, 0));
+        assignment.add(new ChanceCards("	Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.	", ChanceCards.ChanceCardType.PAYMONEY, 80));
+        assignment.add(new ChanceCards("	Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.	", ChanceCards.ChanceCardType.PAYMONEY, 100));
+        assignment.add(new ChanceCards("	Zahle deine Semestergebühr von CHF 700.	", ChanceCards.ChanceCardType.PAYMONEY, 700));
+        assignment.add(new ChanceCards("	Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.	", ChanceCards.ChanceCardType.PAYMONEY, 20));
+        assignment.add(new ChanceCards("	Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("	Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 100));
+        assignment.add(new ChanceCards("	Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("	Von deinem Nebenjob verdienst du CHF 400.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 400));
+        assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCards.ChanceCardType.TODETENTION, 0));
+        assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCards.ChanceCardType.DETENTIONFREECARD, 0));
 
         return assignment;
     }

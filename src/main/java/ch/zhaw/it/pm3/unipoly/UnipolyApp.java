@@ -4,10 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.HashMap;
+
 
 @Component
 public class UnipolyApp {
@@ -49,7 +50,7 @@ public class UnipolyApp {
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
-		bank.setownedModuls(board.getProperties());
+		bank.setownedModuls(new HashMap<>(board.getProperties()));
 		players = new ArrayList<>();
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);
@@ -76,17 +77,18 @@ public class UnipolyApp {
 	 * @param token token type
 	 * @throws FieldIndexException
 	 */
-	public void join(String name, TokenType token) throws FieldIndexException {
+	public void join(String name, Token.TokenType token) throws FieldIndexException {
 		checkIfPlayernameAlreadyExists(name, token);
 		initializePlayer(name, token);
 	}
+
 
 	/***
 	 * check If Player name Already Exists methode
 	 * @param name player name
 	 * @param token token type
 	 */
-	private void checkIfPlayernameAlreadyExists(String name, TokenType token) {
+	private void checkIfPlayernameAlreadyExists(String name, Token.TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
 				throw new IllegalArgumentException("Player name already exists.");
@@ -97,13 +99,14 @@ public class UnipolyApp {
 		}
 	}
 
+
 	/***
 	 * Initializing a new Player
 	 * @param name player name
 	 * @param token token type
 	 * @throws FieldIndexException
 	 */
-	private void initializePlayer(String name, TokenType token) throws FieldIndexException {
+	private void initializePlayer(String name, Token.TokenType token) throws FieldIndexException {
 		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
 		players.add(player);
@@ -121,11 +124,11 @@ public class UnipolyApp {
 
 		if (Gamemode.SINGLE == mode) {
 			if (npcnum >= 1)
-				initializePlayer("NPC1", TokenType.NPCI);
+				initializePlayer("NPC1", Token.TokenType.NPCI);
 			if (npcnum >= 2)
-				initializePlayer("NPC2", TokenType.NPCII);
+				initializePlayer("NPC2", Token.TokenType.NPCII);
 			if (npcnum >= 3)
-				initializePlayer("NPC3", TokenType.NPCIII);
+				initializePlayer("NPC3", Token.TokenType.NPCIII);
 		}
 		// First Player which gets to play
 		currentPlayer = players.get(0);
@@ -437,18 +440,14 @@ public class UnipolyApp {
 			displayMessage = "";
 			phase = UnipolyPhase.QUIZTIME;
 		}
-		// TODO: If the whole Modulgroup is owned by Players,
-		// the rents of all Moduls increase in that group,
-		// depending on whether they are owned by one or several players
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 	}
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() throws FieldIndexException {
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 		displayMessage = "ModulUpgrade!!";
 		phase = UnipolyPhase.SHOWANDSWITCH;
-		// TODO: If the whole Modulgroup is owned by Players,
-		// the rents of all Moduls increase in that group,
-		// depending on whether they are owned by one or several players
 	}
 
 	// TODO: payOfDebt(), Input is an array of fieldindexes the player wants to sell

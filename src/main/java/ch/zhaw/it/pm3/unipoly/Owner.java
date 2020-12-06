@@ -33,7 +33,6 @@ public abstract class Owner implements Comparable {
     public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
-    public int getRoadOwned() { return RoadOwned; }
     public int getDebt() { return Debt; }
     public int getPropertyOwned() { return PropertyOwned; }
     public Owner getDebtor() { return Debtor; }
@@ -94,7 +93,6 @@ public abstract class Owner implements Comparable {
 
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
-        field.raiseRent();
         return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
         // Player has to pay Rent
         /*
