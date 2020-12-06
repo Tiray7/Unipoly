@@ -450,10 +450,15 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
-		if (currentPlayer.payRent(players.get(((FieldProperty) currentField).getOwnerIndex()),
+		FieldProperty currentProperty = ((FieldProperty) currentField);
+		if (currentPlayer.payRent(players.get(currentProperty.getOwnerIndex()),
 				(FieldProperty) currentField)) {
-			displayMessage = "Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
-			phase = UnipolyPhase.INDEBT;
+			if(currentPlayer.getWealth() < currentProperty.getCurrentRent()){
+				GameOver();
+			} else {
+				displayMessage = "Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
+				phase = UnipolyPhase.INDEBT;
+			}
 		} else {
 			phase = UnipolyPhase.QUIZTIME;
 		}
@@ -470,6 +475,9 @@ public class UnipolyApp {
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
 			currentPlayer.increaseECTS(((FieldProperty) currentField).getCurrentECTSLevel());
+			if(currentPlayer.isBachelor()){
+				GameOver();
+			}
 		} else {
 			// TODO: Quiz got answered falsely
 		}
@@ -499,8 +507,7 @@ public class UnipolyApp {
 		} else {
 			currentPlayer.setDebtor(null);
 			currentPlayer.setDebt(0);
-			phase = UnipolyPhase.SHOWANDSWITCH;
-			// Todo phase = UnipolyPhase.DEBTFREE;
+			phase = UnipolyPhase.WAITING;
 		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
@@ -566,12 +573,24 @@ public class UnipolyApp {
 	 * GameOver() method
 	 */
 	private void GameOver() {
+		Player Bachelor = null;
+		for (int i = 0; i < players.size(); i++) {
+			if(players.get(i).isBachelor())
+				Bachelor = players.get(i);
+		}
+
 		gameoverString = "<h1>GAME OVER</h1>";
 		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
-		for (Owner player : ranking) {
-			gameoverString += "<p>" + (ranking.indexOf(player) + 1) + ".Place " + player.getName() + ", "
-					+ player.getWealth() + "</p>";
+
+		if (Bachelor!=null) {
+			ranking.remove(Bachelor);
+			ranking.add(0,Bachelor);
+		}
+
+		for (int i = 0; i < ranking.size(); i++) {
+			Owner player = ranking.get(i);
+			gameoverString += "<p>"+ (i + 1) +".Place " + player.getName() + ", " + player.getWealth() + "</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}
@@ -606,7 +625,6 @@ public class UnipolyApp {
 				phase = UnipolyPhase.INDEBT;
 			}
 		} else {
-			phase = UnipolyPhase.WAITING;
 			leaveDetention();
 		}
 	}
