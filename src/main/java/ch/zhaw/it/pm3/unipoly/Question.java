@@ -1,7 +1,5 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.Hashtable;
-
 /**
  * This class is for questions, which players have to answer when they land on someones property.
  */
