@@ -44,6 +44,8 @@ public class Player extends Owner {
         this.ECTS += amount;
     }
 
+    public boolean isBachelor(){ return ECTS>=180;}
+
     public boolean isBankrupt() {
         return bankrupt;
     }
