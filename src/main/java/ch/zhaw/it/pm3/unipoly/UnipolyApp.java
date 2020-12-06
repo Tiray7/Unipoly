@@ -42,7 +42,7 @@ public class UnipolyApp {
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
-		bank.setownedModuls(new HashMap<Integer, FieldProperty>(board.getProperties()));
+		bank.setownedModuls(new HashMap<>(board.getProperties()));
 		players = new ArrayList<>();
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);

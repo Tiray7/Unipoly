@@ -33,7 +33,6 @@ public abstract class Owner implements Comparable {
     public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
-    public int getRoadOwned() { return RoadOwned; }
     public int getDebt() { return Debt; }
     public int getPropertyOwned() { return PropertyOwned; }
     public Owner getDebtor() { return Debtor; }

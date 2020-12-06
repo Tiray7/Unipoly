@@ -6,18 +6,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class Board {
     private final Map<Integer, Field> fields;
     private final Map<Integer, FieldProperty> properties;
+    private final Map<Integer, LinkedList<FieldProperty>> moduleGroups;
 
     public Board() {
         fields = Config.getInitialBoard();
         properties = new HashMap<>();
+        moduleGroups = new HashMap<>();
         fillPropertyMap();
-        fillModuleGroupeMap();
+        fillModuleGroups();
     }
 
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
@@ -79,40 +80,12 @@ public class Board {
             }
     }
 
-    private void fillModuleGroupeMap() {
-        Map<Integer, List< FieldProperty>> moduleGroupeMaps = new HashMap<Integer, List<FieldProperty>>();
+    private void fillModuleGroups() {
         for(int i = 0; i<=7; i++){
-            moduleGroupeMaps.put(i,new LinkedList<FieldProperty>());
+            moduleGroups.put(i, new LinkedList<>());
         }
         properties.forEach((integer, fieldProperty) -> {
-            moduleGroupeMaps.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
-        });
-        properties.forEach((integer, fieldProperty) -> {
-
-           fieldProperty.initializeModuleGroupe( moduleGroupeMaps.get(fieldProperty.getModuleGroupIndex()));
+            moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
         });
     }
-
-    /*
-    public boolean moduleGroupOfFieldIsOwned(FieldProperty currentField) {
-       int currentModule =  currentField.getModuleGroupIndex();
-       AtomicInteger ownedModules = new AtomicInteger();
-       int NO_OWNER = -1;
-       boolean output = false;
-      properties.forEach((integer, fieldProperty) -> {
-                if (fieldProperty.getModuleGroupIndex()==currentModule)
-                    if (fieldProperty.getOwnerIndex()!=NO_OWNER)
-                        ownedModules.getAndIncrement();
-              }
-              );
-
-           if (currentModule ==0||currentModule==7) {
-               if (ownedModules.equals(2))
-                   output = true;
-           } else {
-               if (ownedModules.equals(3))
-                   output = true;
-           }
-           return output;
-    }*/
 }
