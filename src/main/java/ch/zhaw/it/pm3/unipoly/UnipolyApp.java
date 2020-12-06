@@ -284,7 +284,7 @@ public class UnipolyApp {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
-							+ " gelandet und kauft das Modul.";
+							+ " gelandet und kauft das Modul.<br>";
 					buyProperty();
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;

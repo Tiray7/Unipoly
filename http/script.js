@@ -84,15 +84,9 @@ function poll($scope) {
 	});
 }
 
-function resetHTML(list) {
-	// List all added Players
-	var prevind, type;
-	for (let i = 0; i < list.length; i++) {
-		type = list[i].token.type.toLowerCase();
-		prevind = $(`#pos${list[i].token.currFieldIndex}`).find("td." + type).first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass(`used ${type}`);
-	}
+function resetHTML() {
+	console.log("resetHTML()");
+	$('td.used').attr('class','leer');
 	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
@@ -114,10 +108,8 @@ function moveToken($scope) {
 		console.log('moveToken');
 		const prevind = $(`#pos${$scope.state.currentPlayer.token.prevFieldIndex}`).find("td." + type).first();
 		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td.leer").first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass(`used ${type}`);
-		currind.toggleClass('leer');
-		currind.toggleClass(`used ${type}`);
+		prevind.attr('class','leer');
+		currind.attr('class',`used ${type}`);
 	}
 }
 
@@ -159,8 +151,6 @@ function showSelection($scope) {
 		console.log('Game Over');
 	} else {
 		Object.entries($scope.state.currentPlayer.ownedModuls).forEach(function (modul) {
-			console.log(modul[0]);
-			console.log(modul[1]);
 			field = $(`#pos${modul[0]}`).find('.container');
 			field.toggleClass('mine');
 		});
@@ -456,8 +446,7 @@ app.controller('Controller', function ($scope) {
 						type = list[i].token.type.toLowerCase();
 						index = `#pos${list[i].token.currFieldIndex}`;
 						td = $(index).find("td.leer").first();
-						td.toggleClass('leer');
-						td.toggleClass(`used ${type}`);
+						td.attr('class',`used ${type}`);
 						txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
 						showalert(txt, false);
 					}
@@ -468,15 +457,17 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-	$scope.resetGame = function () {
-		const list = $scope.state.players;
-		if (confirm("Are you sure you want to Reset the Game?")) {
+	$scope.resetGame = function (bool = false) {
+		if (!bool) {
+			bool = confirm("Are you sure you want to Reset the Game?");
+		} 
+		if (bool) {
 			$scope.getOp('resetgame',
 				function (success) {
 					// Check if Game Reset was a succsess
 					if (success) {
 						console.log('success: resetGame');
-						resetHTML(list);
+						resetHTML();
 					} else {
 						console.error('error: resetGame');
 						alert('Error: Please try again!');
