@@ -323,7 +323,7 @@ public class UnipolyApp {
 
 	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
 		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		// TODO: Reset FieldLevel and Group Modul Levels
+		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
 	}
 
 	// player landed on owned Land

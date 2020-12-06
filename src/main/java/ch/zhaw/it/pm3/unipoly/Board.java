@@ -128,4 +128,8 @@ public class Board {
             currentProperty.raiseRentAndECTS();
         }
     }
+
+    public void resetLevelAll(int modulGroupIndex){
+        moduleGroups.get(modulGroupIndex).forEach(FieldProperty::resetLevel);
+    }
 }

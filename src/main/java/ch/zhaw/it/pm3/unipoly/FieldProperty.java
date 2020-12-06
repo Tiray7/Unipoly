@@ -1,7 +1,5 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.List;
-
 public class FieldProperty extends Field{
 
     private final int propertyCost;
@@ -12,7 +10,7 @@ public class FieldProperty extends Field{
     private final int rentLV4;
     private final int rentLV5;
     private final int moduleGroupIndex;
-    private int ECTS;
+    private int currentECTSLevel;
     private int currentRent;
     private int ownerIndex;
     private static final int UNOWNED = -1;
@@ -31,7 +29,7 @@ public class FieldProperty extends Field{
         this.moduleGroupIndex = moduleGroup;
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
-        this.ECTS = 5 + moduleGroup;
+        this.currentECTSLevel = 5 + moduleGroup;
     }
 
     public String getName() { return name; }
@@ -44,10 +42,9 @@ public class FieldProperty extends Field{
     public int getRentLV4() { return rentLV4; }
     public int getRentLV5() { return rentLV5; }
     public int getModuleGroupIndex(){ return moduleGroupIndex; }
-    public int getECTS() {
-        return ECTS;
+    public int getCurrentECTSLevel() {
+        return currentECTSLevel;
     }
-
 
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
@@ -59,7 +56,7 @@ public class FieldProperty extends Field{
 
     public void raiseRentAndECTS() {
         if (currentRent != rentLV5) {
-            ECTS += 2;
+            currentECTSLevel += 2;
         }
 
         if (currentRent == rentLV1) {
@@ -73,6 +70,11 @@ public class FieldProperty extends Field{
         } else if (currentRent == rentLV4) {
             currentRent = rentLV5;
         }
+    }
+
+    public void resetLevel(){
+        currentECTSLevel = moduleGroupIndex + 5;
+        currentRent = rentLV1;
     }
 
 }
