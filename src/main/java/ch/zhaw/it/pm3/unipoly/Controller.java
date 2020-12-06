@@ -188,4 +188,15 @@ public class Controller {
 
 		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
+
+	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException {
+		unipoly.readCard();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
+	}
 }
