@@ -7,7 +7,6 @@ import java.util.Hashtable;
  */
 public class Question {
     String question;
-    Hashtable<Integer, String> answerOptions;
     int solution;
     String option1;
     String option2;
@@ -28,32 +27,13 @@ public class Question {
         this.option1 = option1;
         this.option2 = option2;
         this.option3 = option3;
-        answerOptions.put(1, option1);
-        answerOptions.put(2, option2);
-        answerOptions.put(3, option3);
     }
 
-    public String getQuestion() {
-        return question;
-    }
-
-    public Hashtable<Integer, String> getAnswerOptions() {
-        return answerOptions;
-    }
-
-    public int getSolution() {
-        return solution;
-    }
-
-    public String getOption1() {
-        return option1;
-    }
-
-    public String getOption2() {
-        return option2;
-    }
-
-    public String getOption3() {
-        return option3;
-    }
+    /*------ GET functions ------------------------------------------*/
+    public String getQuestion() { return question; }
+    public int getSolution() { return solution; }
+    public String getOption1() { return option1; }
+    public String getOption2() { return option2; }
+    public String getOption3() { return option3; }
+    /*---------------------------------------------------------------*/
 }

@@ -20,12 +20,14 @@ public class Player extends Owner {
         token = new Token(tokenType);
     }
 
+    /*------ GET functions ------------------------------------------*/
     public boolean getFreeCard() { return FreeCard; }
     public Token getToken() { return token; }
     public int getECTS() { return ects; }
     public boolean isBankrupt() { return bankrupt; }
     public int getleftTimeInDetention() { return leftTimeInDetention; }
-
+    /*---------------------------------------------------------------*/
+    
     public void setToken(Token token) {
         this.token = token;
     }

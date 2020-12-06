@@ -22,7 +22,6 @@ public class Controller {
 	private UnipolyApp unipoly;
 	private static final Logger unipolyLogger = LogManager.getLogger(Controller.class);
 
-
 	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
 	}
@@ -57,8 +56,9 @@ public class Controller {
 
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> join(@RequestParam(value="name",required = false) String name,
-										   @RequestParam(value="token",required = false) Token.TokenType token) throws FieldIndexException, IOException {
+	public ResponseEntity<UnipolyApp> join(@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "token", required = false) Token.TokenType token)
+			throws FieldIndexException, IOException {
 		unipoly.join(name, token);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -69,8 +69,9 @@ public class Controller {
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> start(@RequestParam(value="gamemode", required = false) UnipolyApp.Gamemode gamemode,
-											@RequestParam(value="npcnum", required = false) Integer npcnum) throws FieldIndexException, IOException {
+	public ResponseEntity<UnipolyApp> start(
+			@RequestParam(value = "gamemode", required = false) UnipolyApp.Gamemode gamemode,
+			@RequestParam(value = "npcnum", required = false) Integer npcnum) throws FieldIndexException, IOException {
 		unipoly.start(gamemode, npcnum);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -92,7 +93,8 @@ public class Controller {
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> rollDice(@RequestParam(value="firstDice",required = false) Integer firstDice) throws FieldIndexException, IOException {
+	public ResponseEntity<UnipolyApp> rollDice(@RequestParam(value = "firstDice", required = false) Integer firstDice)
+			throws FieldIndexException, IOException {
 		unipoly.rollDice(firstDice);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -136,7 +138,9 @@ public class Controller {
 
 	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> jumpPlayer(@RequestParam(value="FieldIndex",required = false) Integer FieldIndex) throws FieldIndexException, IOException {
+	public ResponseEntity<UnipolyApp> jumpPlayer(
+			@RequestParam(value = "FieldIndex", required = false) Integer FieldIndex)
+			throws FieldIndexException, IOException {
 		unipoly.jumpPlayer(FieldIndex);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -180,7 +184,9 @@ public class Controller {
 
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value="FieldIndexes",required = false) int[] FieldIndexes) throws FieldIndexException, JsonProcessingException {
+	public ResponseEntity<UnipolyApp> payOffDebt(
+			@RequestParam(value = "FieldIndexes", required = false) int[] FieldIndexes)
+			throws FieldIndexException, JsonProcessingException {
 		unipoly.payOffDebt(FieldIndexes);
 
 		ObjectMapper objectMapper = new ObjectMapper();

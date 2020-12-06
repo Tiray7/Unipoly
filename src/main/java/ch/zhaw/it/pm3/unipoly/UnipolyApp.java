@@ -10,7 +10,6 @@ import java.util.Hashtable;
 import java.util.Random;
 import java.util.HashMap;
 
-
 @Component
 public class UnipolyApp {
 
@@ -19,7 +18,7 @@ public class UnipolyApp {
 	private final Bank bank;
 	private final Board board;
 	private final ArrayList<ChanceCards> cards;
-	private final Hashtable<String, Question> questions;
+	private final Hashtable<Integer, Question> questions;
 	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
@@ -41,8 +40,7 @@ public class UnipolyApp {
 	 * UnipolyPhase to define which phase in the game is
 	 */
 	enum UnipolyPhase {
-		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION, SHOWCARD, QUIZTIME, JUMP,
-		INDEBT, GAMEOVER, ERROR
+		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION, SHOWCARD, QUIZTIME, JUMP, INDEBT, GAMEOVER, ERROR
 	}
 
 	/***
@@ -65,6 +63,7 @@ public class UnipolyApp {
 	public Board getBoard() { return board; }
 	public UnipolyPhase getPhase() { return phase; }
 	public ArrayList<Player> getPlayers() { return players; }
+	public Hashtable<Integer, Question> getQuestions() { return questions; }
 	public Player getCurrentPlayer() { return currentPlayer; }
 	public int getFirstDice() { return firstDice; }
 	public int getSecondDice() { return secondDice; }
@@ -84,7 +83,8 @@ public class UnipolyApp {
 
 	/***
 	 * Join Add a new Player to the Game
-	 * @param name name of player
+	 * 
+	 * @param name  name of player
 	 * @param token token type
 	 * @throws FieldIndexException
 	 */
@@ -93,10 +93,10 @@ public class UnipolyApp {
 		initializePlayer(name, token);
 	}
 
-
 	/***
 	 * check If Player name Already Exists methode
-	 * @param name player name
+	 * 
+	 * @param name  player name
 	 * @param token token type
 	 */
 	private void checkIfPlayernameAlreadyExists(String name, Token.TokenType token) {
@@ -110,10 +110,10 @@ public class UnipolyApp {
 		}
 	}
 
-
 	/***
 	 * Initializing a new Player
-	 * @param name player name
+	 * 
+	 * @param name  player name
 	 * @param token token type
 	 * @throws FieldIndexException
 	 */
@@ -123,11 +123,10 @@ public class UnipolyApp {
 		players.add(player);
 	}
 
-
-
 	/***
 	 * Start a new Game
-	 * @param mode which mode of the game , single or multi
+	 * 
+	 * @param mode   which mode of the game , single or multi
 	 * @param npcnum If SinglePlayer we have to create "npcnum" NPC Players
 	 * @throws FieldIndexException
 	 */
@@ -146,11 +145,9 @@ public class UnipolyApp {
 		phase = UnipolyPhase.WAITING;
 	}
 
-
-
-
 	/***
-	 * rolling Dices  and move player
+	 * rolling Dices and move player
+	 * 
 	 * @param firstDice first dice
 	 * @throws FieldIndexException
 	 */
@@ -162,10 +159,9 @@ public class UnipolyApp {
 		movePlayerBy(this.firstDice + secondDice);
 	}
 
-
-
 	/***
 	 * Move Player relative by an amount
+	 * 
 	 * @param rolledValue amount to move by
 	 * @throws FieldIndexException
 	 */
@@ -179,10 +175,9 @@ public class UnipolyApp {
 		}
 	}
 
-
-
 	/***
 	 * Move Player direktly to a wished field
+	 * 
 	 * @param FieldIndex index field number
 	 * @throws FieldIndexException
 	 */
@@ -191,9 +186,9 @@ public class UnipolyApp {
 		currentField = board.getFieldAtIndex(FieldIndex);
 	}
 
-
 	/***
 	 * Player landed on a jump field and wishes to jump to a certain field
+	 * 
 	 * @param FieldIndex index field number
 	 * @throws FieldIndexException
 	 */
@@ -202,9 +197,9 @@ public class UnipolyApp {
 		movePlayerTo(FieldIndex);
 	}
 
-
 	/***
 	 * cheake field property options
+	 * 
 	 * @throws FieldIndexException
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
@@ -230,6 +225,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnGoToDetention method to get player on hold
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnGoToDetention() throws FieldIndexException {
@@ -259,6 +255,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnGoZnueniPause methode to hold a player for a while
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnGoZnueniPause() throws FieldIndexException {
@@ -273,7 +270,9 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * playerIsOnPropertyField is a method to check if the player is on property field
+	 * playerIsOnPropertyField is a method to check if the player is on property
+	 * field
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnPropertyField() throws FieldIndexException {
@@ -283,7 +282,8 @@ public class UnipolyApp {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
-					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName() + " gelandet und kauft das Modul.<br>";
+					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
+							+ " gelandet und kauft das Modul.<br>";
 					buyProperty();
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
@@ -306,6 +306,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnVisit method when the player visit a field
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnVisit() throws FieldIndexException {
@@ -321,6 +322,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnChanceField when the player Chanse a field
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnChanceField() throws FieldIndexException {
@@ -362,6 +364,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnJumpField method when the player on the Jump field
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnJumpField() throws FieldIndexException {
@@ -390,6 +393,7 @@ public class UnipolyApp {
 
 	/***
 	 * playerIsOnGoField method when the player on the OnGo field
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void playerIsOnGoField() throws FieldIndexException {
@@ -406,8 +410,8 @@ public class UnipolyApp {
 	}
 
 	/***
-	 *  checkIfOverStart method to increase the account of the player when
-	 *  he reach the start again
+	 * checkIfOverStart method to increase the account of the player when he reach
+	 * the start again
 	 */
 	private void checkIfOverStart() {
 		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
@@ -428,8 +432,9 @@ public class UnipolyApp {
 
 	/***
 	 * sellProperty method
+	 * 
 	 * @param FieldIndex field index number
-	 * @param player player name
+	 * @param player     player name
 	 * @throws FieldIndexException
 	 */
 	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
@@ -437,9 +442,9 @@ public class UnipolyApp {
 		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
 	}
 
-
 	/***
 	 * landedOnOwnedProperty method player landed on owned Land
+	 * 
 	 * @throws FieldIndexException
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
@@ -465,15 +470,15 @@ public class UnipolyApp {
 	// TODO: quiz answered
 	public void quizAnswer(boolean x) {
 		if (x) {
-			//TODO: Quiz got answered correctly
+			// TODO: Quiz got answered correctly
 		} else {
-			//TODO: Quiz got answered falsely
+			// TODO: Quiz got answered falsely
 		}
 	}
 
-
 	/***
 	 * payOffDebt method refer to the debtor
+	 * 
 	 * @param FieldIndexes field index number
 	 * @throws FieldIndexException
 	 */
@@ -484,32 +489,33 @@ public class UnipolyApp {
 		for (int i = 0; i < FieldIndexes.length; i++) {
 			totalCost += board.getProperties().get(FieldIndexes[i]).getPropertyCost();
 		}
-		if(buyer.getMoney() < totalCost) {
+		if (buyer.getMoney() < totalCost) {
 			buyer = bank;
 		}
 		for (int i = 0; i < FieldIndexes.length; i++) {
 			sellProperty(FieldIndexes[i], buyer);
 		}
-		if(currentPlayer.setandcheckDebt(debtor, currentPlayer.getDebt())){
-				GameOver();
+		if (currentPlayer.setandcheckDebt(debtor, currentPlayer.getDebt())) {
+			GameOver();
 		} else {
 			currentPlayer.setDebtor(null);
 			currentPlayer.setDebt(0);
 			phase = UnipolyPhase.SHOWANDSWITCH;
-			//Todo phase = UnipolyPhase.DEBTFREE;
+			// Todo phase = UnipolyPhase.DEBTFREE;
 		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
 		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
 		 * loser.setBankrupt(); GameOver(); } else { phase = UnipolyPhase.DEBTFREE; }
 		 */
-		//switchPlayer();
+		// switchPlayer();
 	}
 
 	/*------ end and start new turn -------------------------------------------------*/
 
 	/***
 	 * switchPlayer methode
+	 * 
 	 * @throws FieldIndexException
 	 */
 	public void switchPlayer() throws FieldIndexException {
@@ -539,17 +545,17 @@ public class UnipolyApp {
 		gameoverString = "<h1>GAME OVER</h1>";
 		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
-		for(Owner player: ranking){
-			gameoverString += "<p>"+ (ranking.indexOf(player) + 1) +".Place " + player.getName() + ", " + player.getWealth() + "</p>";
+		for (Owner player : ranking) {
+			gameoverString += "<p>" + (ranking.indexOf(player) + 1) + ".Place " + player.getName() + ", "
+					+ player.getWealth() + "</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}
 
-
 	/*------ Detention related funtions ---------------------------------------------------------------------*/
 
 	/***
-	 *  rolling Two Dice method
+	 * rolling Two Dice method
 	 */
 	public void rollTwoDice() {
 		phase = UnipolyPhase.ROLLING;

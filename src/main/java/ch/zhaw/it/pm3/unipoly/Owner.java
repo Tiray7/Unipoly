@@ -16,8 +16,9 @@ public abstract class Owner implements Comparable {
 
     /***
      * owner constructor
-     * @param index present owner index
-     * @param id present owner ID
+     * 
+     * @param index        present owner index
+     * @param id           present owner ID
      * @param initialMoney present owner intial money which is 200000
      */
     public Owner(int index, String id, int initialMoney) {
@@ -28,24 +29,24 @@ public abstract class Owner implements Comparable {
         setPropertyOwned();
     }
 
+    /*------ GET functions ------------------------------------------*/
     public int getIndex() { return index; }
     public boolean isBank() { return this.index == -1; }
     public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getDebt() { return Debt; }
-    public void setDebt(int amount){ Debt = amount; }
     public int getPropertyOwned() { return PropertyOwned; }
     public Owner getDebtor() { return Debtor; }
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
+    /*---------------------------------------------------------------*/
+    
+    public void setDebt(int amount){ this.Debt = amount; }
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
     public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
-    public void setDebtor(Owner debtor) {
-        this.Debtor = debtor;
-    }
+    public void setDebtor(Owner debtor) { this.Debtor = debtor; }
 
-
-    public int getWealth() { 
+    public int getWealth() {
         int ThisWealth = this.money;
         for (FieldProperty modul : this.ownedModuls.values()) {
             ThisWealth += modul.getCurrentRent();
@@ -58,10 +59,13 @@ public abstract class Owner implements Comparable {
     }
 
     // TODO: Call this function to check player owns ModulGroup
-    public void setModulGroupOwned(int ModulGroupOwned) { this.ModulGroupOwned = ModulGroupOwned; }
+    public void setModulGroupOwned(int ModulGroupOwned) {
+        this.ModulGroupOwned = ModulGroupOwned;
+    }
 
     /***
      * transfer money between players only with certain amount
+     * 
      * @param player which player is included with this transfer
      * @param amount what is the amount to transfer
      */
@@ -72,7 +76,8 @@ public abstract class Owner implements Comparable {
 
     /***
      * transfer properties between owners
-     * @param newOwner the new owner of the property
+     * 
+     * @param newOwner   the new owner of the property
      * @param fieldIndex field index, of the property that needs to be transferred
      */
     public void transferPropertyTo(Owner newOwner, int fieldIndex) {
@@ -83,7 +88,8 @@ public abstract class Owner implements Comparable {
 
     /***
      * buy a property from another owner
-     * @param owner is the current owner of the field
+     * 
+     * @param owner      is the current owner of the field
      * @param fieldIndex field index of the property to be sold
      */
     public void buyPropertyFrom(Owner owner, int fieldIndex) {
