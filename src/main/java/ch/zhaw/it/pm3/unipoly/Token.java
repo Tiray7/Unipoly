@@ -5,7 +5,8 @@ public class Token {
     private TokenType type;
     private int prevFieldIndex = 0;
     private int currFieldIndex = 0;
-     enum TokenType {
+
+    enum TokenType {
         ATOM,
         ONEPLUS,
         EINSTEIN,
@@ -38,6 +39,10 @@ public class Token {
 
     public int getCurrFieldIndex() {
         return currFieldIndex;
+    }
+
+    public void setCurrentFieldIndex(int fieldIndex) {
+        this.currFieldIndex = fieldIndex;
     }
 
     /***

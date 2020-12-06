@@ -60,6 +60,14 @@ public class UnipolyApp {
 	public String getdisplayMessage() { return displayMessage; }
 	public String getgameoverString() { return gameoverString; }
 
+	public void setCurrentPlayer(Player player) {
+		this.currentPlayer = player;
+	}
+
+	public void setCurrentField(Field currentField) {
+		this.currentField = currentField;
+	}
+
 	/*------ Function to configure the Game -------------------------------------------------*/
 	// Add a new Player to the Game
 	public void join(String name, Token.TokenType token) throws FieldIndexException {

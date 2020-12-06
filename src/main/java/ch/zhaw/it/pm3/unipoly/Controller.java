@@ -1,27 +1,33 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @SpringBootApplication
 @RestController
-@Configuration
 public class Controller {
 
 	private UnipolyApp unipoly;
-	private static final Logger controllerMcLogger = LogManager.getLogger(Controller.class);
+	private static final Logger unipolyLogger = LogManager.getLogger(Controller.class);
 
 
 	public static void main(String[] args) {
 		SpringApplication.run(Controller.class, args);
 	}
 
+	@Autowired
 	public Controller(UnipolyApp unipoly) {
 		this.unipoly = unipoly;
 	}
@@ -42,98 +48,144 @@ public class Controller {
 	// Operations
 	@RequestMapping(value = "/state", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp getState() {
-		return unipoly;
+	public ResponseEntity<UnipolyApp> getState() throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp join(@RequestParam String name, @RequestParam Token.TokenType token) throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> join(@RequestParam(value="name",required = false) String name,
+										   @RequestParam(value="token",required = false) Token.TokenType token) throws FieldIndexException, IOException {
 		unipoly.join(name, token);
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp start(@RequestParam UnipolyApp.Gamemode gamemode, @RequestParam int npcnum) throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> start(@RequestParam(value="gamemode", required = false) UnipolyApp.Gamemode gamemode,
+											@RequestParam(value="npcnum", required = false) Integer npcnum) throws FieldIndexException, IOException {
 		unipoly.start(gamemode, npcnum);
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/resetgame", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp resetGame() {
+	public ResponseEntity<UnipolyApp> resetGame() throws IOException {
 		unipoly = new UnipolyApp();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/rolldice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollDice(@RequestParam int firstDice) throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> rollDice(@RequestParam(value="firstDice",required = false) Integer firstDice) throws FieldIndexException, IOException {
 		unipoly.rollDice(firstDice);
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/rolltwodice", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp rollTwoDice() throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> rollTwoDice() throws IOException {
 		unipoly.rollTwoDice();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/endturn", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp endTurn() throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> endTurn() throws IOException, FieldIndexException {
 		unipoly.switchPlayer();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/checkfieldoptions", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp checkFieldOptions() throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> checkFieldOptions() throws FieldIndexException, IOException {
 		unipoly.checkFieldOptions();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp jumpPlayer(@RequestParam int FieldIndex) throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> jumpPlayer(@RequestParam(value="FieldIndex",required = false) Integer FieldIndex) throws FieldIndexException, IOException {
 		unipoly.jumpPlayer(FieldIndex);
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/userwantstobuy", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp userWantsToBuy() {
+	public ResponseEntity<UnipolyApp> userWantsToBuy() throws IOException {
 		unipoly.buyProperty();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp payDetentionRansom() throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> payDetentionRansom() throws IOException {
 		unipoly.payDetentionRansom();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/leavedetention", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp leaveDetention() throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> leaveDetention() throws IOException {
 		unipoly.leaveDetention();
-		return unipoly;
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp payOffDebt(@RequestParam int[] FieldIndexes) throws FieldIndexException {
+	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value="FieldIndexes",required = false) int[] FieldIndexes) throws FieldIndexException, JsonProcessingException {
 		unipoly.payOffDebt(FieldIndexes);
-		return unipoly;
-	}
 
-	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public UnipolyApp readCard() throws FieldIndexException {
-		unipoly.readCard();
-		return unipoly;
+		ObjectMapper objectMapper = new ObjectMapper();
+		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
+
+		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 }

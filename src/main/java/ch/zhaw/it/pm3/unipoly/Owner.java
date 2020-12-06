@@ -39,6 +39,9 @@ public abstract class Owner implements Comparable {
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
     public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
+    public void setDebtor(Owner debtor) {
+        this.Debtor = debtor;
+    }
 
     public int getWealth() { 
         int ThisWealth = this.money;
