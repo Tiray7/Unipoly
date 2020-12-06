@@ -15,7 +15,7 @@ public class FieldProperty extends Field{
     private int currentRent;
     private int ownerIndex;
     private static final int UNOWNED = -1;
-    private List<FieldProperty> moduleGroup;
+
 
     public FieldProperty(String name, Config.FieldLabel label, int propertyCost,
                          int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroup) {
@@ -32,10 +32,6 @@ public class FieldProperty extends Field{
         this.ownerIndex = UNOWNED;
     }
 
-    public void initializeModuleGroupe(List<FieldProperty> moduleGroupe){
-        this.moduleGroup = moduleGroupe;
-    }
-
     public String getName() { return name; }
     public int getPropertyCost() { return propertyCost; }
     public int getOwnerIndex() { return ownerIndex; }
@@ -46,7 +42,7 @@ public class FieldProperty extends Field{
     public int getRentLV4() { return rentLV4; }
     public int getRentLV5() { return rentLV5; }
     public int getModuleGroupIndex(){ return moduleGroupIndex; }
-    public List<FieldProperty> getModuleGroup() { return moduleGroup; }
+
 
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
@@ -69,36 +65,5 @@ public class FieldProperty extends Field{
             currentRent = rentLV5;
         }
     }
-
-    public void raiseRentAll(){
-       for (FieldProperty fieldOfSameModule : moduleGroup) {
-            fieldOfSameModule.raiseRent();
-        }
-    }
-
-    public void checkAndRaiseRent(){
-        int countOwnedModules = 0;
-        int countSameOwner = 0;
-        int NO_OWNER = -1;
-        for (FieldProperty fieldOfSameModule : moduleGroup) {
-            if(fieldOfSameModule.getOwnerIndex()!=NO_OWNER){
-                countOwnedModules++;
-            }
-            if(this.getOwnerIndex()==fieldOfSameModule.getOwnerIndex()){
-                countSameOwner++;
-            }
-        }
-
-        if(countOwnedModules==moduleGroup.size()){
-            raiseRentAll();
-            if(countSameOwner==moduleGroup.size())
-                raiseRentAll();
-        } else {
-            raiseRent();
-        }
-    }
-
-
-
 
 }

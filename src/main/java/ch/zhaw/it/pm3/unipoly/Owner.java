@@ -93,7 +93,6 @@ public abstract class Owner implements Comparable {
 
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
-        field.raiseRent();
         return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
         // Player has to pay Rent
         /*

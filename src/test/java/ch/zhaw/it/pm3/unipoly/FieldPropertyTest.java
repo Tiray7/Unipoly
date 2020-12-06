@@ -22,7 +22,7 @@ public class FieldPropertyTest {
         public void setUp() {
             board = new Board();
             bank = new Bank();
-            bank.setownedModuls(new HashMap<Integer, FieldProperty>(board.getProperties()));
+            bank.setownedModuls(new HashMap<>(board.getProperties()));
             players = new LinkedList<Player>();
                 players.add(new Player(0,"Jack", Token.TokenType.ATOM));
                 players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
@@ -30,11 +30,11 @@ public class FieldPropertyTest {
         }
 
         @Test
-        public void OnePlayerOwnsWholeModuleGroupTest() {
+        public void OnePlayerOwnsWholeModuleGroupTest() throws FieldIndexException {
             players.get(0).buyPropertyFrom(bank, 1);
             players.get(0).buyPropertyFrom(bank, 3);
 
-            board.getProperties().get(1).checkAndRaiseRent();
+            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
 
             assertEquals(board.getProperties().get(1).getRentLV3(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV3(), board.getProperties().get(3).getCurrentRent());
@@ -42,26 +42,26 @@ public class FieldPropertyTest {
             players.get(0).buyPropertyFrom(bank, 5);
             players.get(0).buyPropertyFrom(bank, 6);
             players.get(0).buyPropertyFrom(bank, 8);
-            board.getProperties().get(8).checkAndRaiseRent();
+            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(8));
             assertEquals(board.getProperties().get(5).getRentLV3(), board.getProperties().get(5).getCurrentRent());
             assertEquals(board.getProperties().get(6).getRentLV3(), board.getProperties().get(6).getCurrentRent());
             assertEquals(board.getProperties().get(8).getRentLV3(), board.getProperties().get(8).getCurrentRent());
 
         }
         @Test
-        public void WholeModuleGroupIsOwnedTest() {
+        public void WholeModuleGroupIsOwnedTest() throws FieldIndexException {
             players.get(0).buyPropertyFrom(bank, 1);
             players.get(1).buyPropertyFrom(bank, 3);
 
-            board.getProperties().get(1).checkAndRaiseRent();
+            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
             assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV2(), board.getProperties().get(3).getCurrentRent());
         }
         @Test
-        public void ModuleGroupPartiallyOwnedTest() {
+        public void ModuleGroupPartiallyOwnedTest() throws FieldIndexException {
             players.get(0).buyPropertyFrom(bank, 1);
 
-            board.getProperties().get(1).checkAndRaiseRent();
+            board.checkAndRaiseRent(board.getFieldPropertyAtIndex(1));
             assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
             assertEquals(board.getProperties().get(3).getRentLV1(), board.getProperties().get(3).getCurrentRent());
         }

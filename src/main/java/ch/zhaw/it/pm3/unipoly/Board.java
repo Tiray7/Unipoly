@@ -31,6 +31,11 @@ public class Board {
         return properties.get(index);
     }
 
+    public LinkedList<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
+        checkFieldIndex(index);
+        return moduleGroups.get(index);
+    }
+
     public Field getFieldAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return fields.get(index);
@@ -42,6 +47,10 @@ public class Board {
 
     public Map<Integer, FieldProperty> getProperties() {
         return properties;
+    }
+
+    public Map<Integer, LinkedList<FieldProperty>> getModuleGroups() {
+        return moduleGroups;
     }
 
     public String getPropertyNameAtIndex(int index) throws FieldIndexException {
@@ -87,5 +96,37 @@ public class Board {
         properties.forEach((integer, fieldProperty) -> {
             moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
         });
+    }
+
+
+
+    public void raiseRentAll(int moduleGroupIndex){
+        for (FieldProperty fieldOfSameModule : moduleGroups.get(moduleGroupIndex)) {
+            fieldOfSameModule.raiseRent();
+        }
+    }
+    public void checkAndRaiseRent(FieldProperty currentProperty){
+        int moduleGroupIndex = currentProperty.getModuleGroupIndex();
+        LinkedList<FieldProperty> currentModuleGroup = moduleGroups.get(moduleGroupIndex);
+
+        int countOwnedModules = 0;
+        int countSameOwner = 0;
+        int NO_OWNER = -1;
+        for (FieldProperty fieldOfSameModule : currentModuleGroup) {
+            if(fieldOfSameModule.getOwnerIndex()!=NO_OWNER){
+                countOwnedModules++;
+            }
+            if(currentProperty.getOwnerIndex()==fieldOfSameModule.getOwnerIndex()){
+                countSameOwner++;
+            }
+        }
+
+        if(countOwnedModules==currentModuleGroup.size()){
+            raiseRentAll(moduleGroupIndex);
+            if(countSameOwner==currentModuleGroup.size())
+                raiseRentAll(moduleGroupIndex);
+        } else {
+            currentProperty.raiseRent();
+        }
     }
 }

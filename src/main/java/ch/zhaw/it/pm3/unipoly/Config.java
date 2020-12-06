@@ -56,7 +56,7 @@ public class Config {
         assignment.put(34, new Field(FieldLabel.JUMP,"Spring auf ein anderes Feld"));
 
         assignment.put(1, new FieldProperty("Geschichte", FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0));
-        assignment.put(3, new FieldProperty("Geogreaphie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450,0));
+        assignment.put(3, new FieldProperty("Geographie", FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450,0));
         assignment.put(5, new FieldProperty("Theologie", FieldLabel.PROPERTY, 100, 30, 90, 270, 400, 550,1));
         assignment.put(6, new FieldProperty("Geisteswissenschaften", FieldLabel.PROPERTY, 100, 30, 90, 270, 400, 550,1));
         assignment.put(8, new FieldProperty("Psychologie", FieldLabel.PROPERTY, 120, 40, 100, 300, 450, 600,1));

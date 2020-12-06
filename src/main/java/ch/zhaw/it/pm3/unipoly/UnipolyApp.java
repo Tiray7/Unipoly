@@ -330,12 +330,12 @@ public class UnipolyApp {
 			displayMessage = "";
 			phase = UnipolyPhase.QUIZTIME;
 		}
-		((FieldProperty) currentField).checkAndRaiseRent();
+		board.checkAndRaiseRent((FieldProperty) currentField);
 	}
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() throws FieldIndexException {
-		((FieldProperty) currentField).checkAndRaiseRent();
+		board.checkAndRaiseRent((FieldProperty) currentField);
 		displayMessage = "ModulUpgrade!!";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
