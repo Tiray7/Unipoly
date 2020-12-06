@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Random;
 
 @Component
@@ -17,6 +18,7 @@ public class UnipolyApp {
 	private final Bank bank;
 	private final Board board;
 	private final ArrayList<ChanceCards> cards;
+	private final Hashtable<String, Question> questions;
 	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
@@ -44,6 +46,7 @@ public class UnipolyApp {
 		players = new ArrayList<>();
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);
+		questions = Config.getQuestionCards();
 	}
 
 	/*------ GET functions ------------------------------------------------------------------*/
@@ -192,6 +195,7 @@ public class UnipolyApp {
 
 	private void playerIsOnPropertyField() throws FieldIndexException {
 		FieldProperty currentField = (FieldProperty) this.currentField;
+		questions.get(currentField.getName());
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				// TODO: NPC Logic
