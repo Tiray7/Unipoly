@@ -371,7 +371,7 @@ public class UnipolyApp {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
-							+ " ist auf einem Jump Feld gelandet, will aber hier bleiben.";
+							+ " ist auf einem Springer Feld gelandet, will aber nicht springen.";
 					phase = UnipolyPhase.SHOWANDSWITCH;
 				} else {
 					phase = UnipolyPhase.JUMP;
@@ -478,23 +478,32 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void payOffDebt(int[] FieldIndexes) throws FieldIndexException {
-		if (currentPlayer.getDebtor().isBank()) {
-			for (int i = 0; i < FieldIndexes.length; i++) {
-				sellProperty(FieldIndexes[i], bank);
-			}
+		Owner buyer = currentPlayer.getDebtor();
+		Owner debtor = buyer;
+		int totalCost = 0;
+		for (int i = 0; i < FieldIndexes.length; i++) {
+			totalCost += board.getProperties().get(FieldIndexes[i]).getPropertyCost();
+		}
+		if(buyer.getMoney() < totalCost) {
+			buyer = bank;
+		}
+		for (int i = 0; i < FieldIndexes.length; i++) {
+			sellProperty(FieldIndexes[i], buyer);
+		}
+		if(currentPlayer.setandcheckDebt(debtor, currentPlayer.getDebt())){
+				GameOver();
 		} else {
-			for (int i = 0; i < FieldIndexes.length; i++) {
-				// TODO: transferFieldTo(Owner owner, int fieldIndex)
-				// TODO: Reset FieldLevel and Group Modul Levels
-				// Payoff Debt in PropertyValue
-			}
+			currentPlayer.setDebtor(null);
+			currentPlayer.setDebt(0);
+			phase = UnipolyPhase.SHOWANDSWITCH;
+			//Todo phase = UnipolyPhase.DEBTFREE;
 		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
 		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
 		 * loser.setBankrupt(); GameOver(); } else { phase = UnipolyPhase.DEBTFREE; }
 		 */
-		switchPlayer();
+		//switchPlayer();
 	}
 
 	/*------ end and start new turn -------------------------------------------------*/
