@@ -6,6 +6,21 @@ public class Token {
     private int prevFieldIndex = 0;
     private int currFieldIndex = 0;
 
+    enum TokenType {
+        ATOM,
+        ONEPLUS,
+        EINSTEIN,
+        CRADLE,
+        EQUATION,
+        HELIUM,
+        LAB,
+        LIGHTBULB,
+        BANK,
+        NPCI,
+        NPCII,
+        NPCIII
+    }
+
     /***
      * token constructor
      * @param type present token type
@@ -24,6 +39,10 @@ public class Token {
 
     public int getCurrFieldIndex() {
         return currFieldIndex;
+    }
+
+    public void setCurrentFieldIndex(int fieldIndex) {
+        this.currFieldIndex = fieldIndex;
     }
 
     /***

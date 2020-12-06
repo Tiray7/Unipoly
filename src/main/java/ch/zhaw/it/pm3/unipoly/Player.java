@@ -6,6 +6,7 @@ public class Player extends Owner {
     private boolean bankrupt = false;
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
+    private int ects = 0;
 
     /***
      * constructor Player
@@ -13,18 +14,17 @@ public class Player extends Owner {
      * @param name present player name
      * @param tokenType present what he has for token
      */
-    public Player(int index, String name, TokenType tokenType) {
+
+    public Player(int index, String name, Token.TokenType tokenType) {
         super(index, name, 1500);
         token = new Token(tokenType);
     }
 
-    public boolean getFreeCard() {
-        return FreeCard;
-    }
-
-    public Token getToken() {
-        return token;
-    }
+    public boolean getFreeCard() { return FreeCard; }
+    public Token getToken() { return token; }
+    public int getECTS() { return ects; }
+    public boolean isBankrupt() { return bankrupt; }
+    public int getleftTimeInDetention() { return leftTimeInDetention; }
 
     public void setToken(Token token) {
         this.token = token;
@@ -34,16 +34,16 @@ public class Player extends Owner {
         FreeCard = outDetention;
     }
 
-    public boolean isBankrupt() {
-        return bankrupt;
+    public void increaseECTS(int amount) {
+        this.ects += amount;
+    }
+
+    public boolean isBachelor(){ 
+        return ects >= 180;
     }
 
     public void setBankrupt(boolean isBankrupt) {
         this.bankrupt = isBankrupt;
-    }
-
-    public int getleftTimeInDetention() {
-        return leftTimeInDetention;
     }
 
     public void decreaseleftTimeInDetention() {
@@ -68,4 +68,5 @@ public class Player extends Owner {
         // TODO Auto-generated method stub
         return 0;
     }
+
 }
