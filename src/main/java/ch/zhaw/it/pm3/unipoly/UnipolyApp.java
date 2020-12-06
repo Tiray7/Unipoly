@@ -259,10 +259,13 @@ public class UnipolyApp {
 		switch (cards.get(0).getCardType()) {
 			case TODETENTION:
 				currentPlayer.goDetention();
+				break;
 			case PAYMONEY:
 				currentPlayer.transferMoneyTo(bank, cards.get(0).getAmount());
+				break;
 			case RECEIVEMONEY:
 				bank.transferMoneyTo(currentPlayer, cards.get(0).getAmount());
+				break;
 			case DETENTIONFREECARD:
 				currentPlayer.setFreeCard(true);
 		}
