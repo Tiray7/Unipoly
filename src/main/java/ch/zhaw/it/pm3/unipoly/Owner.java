@@ -34,11 +34,16 @@ public abstract class Owner implements Comparable {
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getDebt() { return Debt; }
+    public void setDebt(int amount){ Debt = amount; }
     public int getPropertyOwned() { return PropertyOwned; }
     public Owner getDebtor() { return Debtor; }
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
     public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
+    public void setDebtor(Owner debtor) {
+        this.Debtor = debtor;
+    }
+
 
     public int getWealth() { 
         int ThisWealth = this.money;
@@ -66,24 +71,24 @@ public abstract class Owner implements Comparable {
     }
 
     /***
-     * transfer field bewteen player
-     * @param owner present who will own the field
-     * @param fieldIndex field index , which field
+     * transfer properties between owners
+     * @param newOwner the new owner of the property
+     * @param fieldIndex field index, of the property that needs to be transferred
      */
-    public void transferFieldTo(Owner owner, int fieldIndex) {
-        this.ownedModuls.put(fieldIndex, owner.ownedModuls.get(fieldIndex));
+    public void transferPropertyTo(Owner newOwner, int fieldIndex) {
+        this.ownedModuls.put(fieldIndex, newOwner.ownedModuls.get(fieldIndex));
         this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
-        owner.ownedModuls.remove(fieldIndex);
+        newOwner.ownedModuls.remove(fieldIndex);
     }
 
     /***
-     * buying property from another player
-     * @param owner present the owner of the field
-     * @param FieldIndex fild index which field
+     * buy a property from another owner
+     * @param owner is the current owner of the field
+     * @param fieldIndex field index of the property to be sold
      */
-    public void buyPropertyFrom(Owner owner, int FieldIndex) {
-        transferMoneyTo(owner, owner.ownedModuls.get(FieldIndex).getPropertyCost());
-        transferFieldTo(owner, FieldIndex);
+    public void buyPropertyFrom(Owner owner, int fieldIndex) {
+        transferMoneyTo(owner, owner.ownedModuls.get(fieldIndex).getPropertyCost());
+        transferPropertyTo(owner, fieldIndex);
         setPropertyOwned();
     }
 
@@ -94,16 +99,6 @@ public abstract class Owner implements Comparable {
     // TODO: Player landed on an owned field
     public boolean payRent(Owner ownerOfField, FieldProperty field) {
         return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
-        // Player has to pay Rent
-        /*
-         * amount = field.currentRent Player owner = Owner of the field.
-         * 
-         * then first check with setandcheckDebt() if he is able to pay if True:
-         * Transfer the money if False: return false
-         * 
-         * if The Owner has whole modulgroup: increase rent of whole modulgroup else:
-         * increse rent of this field return true
-         */
     }
 
     // Calculate what the Player owes

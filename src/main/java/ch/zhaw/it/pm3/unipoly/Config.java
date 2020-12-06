@@ -1,9 +1,6 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class Config {
@@ -112,6 +109,33 @@ public class Config {
         assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCards.ChanceCardType.TODETENTION, 0));
         assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCards.ChanceCardType.DETENTIONFREECARD, 0));
 
+        return assignment;
+    }
+
+    public static Hashtable<String, Question> getQuestionCards() {
+        Hashtable<String, Question> assignment = new Hashtable<>();
+        assignment.put("Geschichte", new Question("Wann fing der Erste Weltkrieg an?", 1, "1914", "1897", "1935 "));
+        assignment.put("Geogreaphie", new Question("Welcher ist der grösste Kontinent?", 2, "Amerika", "Asien", "Australien "));
+        assignment.put("Theologie", new Question("Was bedeutet katholisch?", 3, "Heilig", "Auserwählt", "Allumfassend "));
+        assignment.put("Geisteswissenschaften", new Question("Was ist das Objekt der Geisteswissenschaften?", 1, "Der Mensch", "Der", " "));
+        assignment.put("Psychologie", new Question("Der russische Verhaltensforscher Iwan Pawlow entdeckte das Prinzip der Klassischen Konditionierung durch Experimenten an welchem Tier?", 2, "Maus", "Hund", "Katze "));
+        assignment.put("Biologie", new Question("Die Biologie ist dem altgriechischen Wortursprung βίος (bíos) nach die Lehre wovon? ", 3, "Welt", "Natur", "Leben "));
+        assignment.put("Physik", new Question("Welcher englische Forscher hätte der Legende nach den Fall eines Apfels vom Apfelbaum beobachtet, was ihn zur Formulierung seines Gravitationsgesetzes inspiriert hätte?", 1, "Isaac Newton", "Ernest Rutherford", "Michael Faraday "));
+        assignment.put("Chemie", new Question("Welches Element ist mit ungefähr 78 Prozent Volumsanteil der Hauptbestandteil unserer Atmosphäre?", 2, "Sauerstoff", "Stickstoff", "Wasserstoff "));
+        assignment.put("Umweltingenieurwissensschaften", new Question("Wie nennt man schmutzige Luft, die besonders in Großstädten durch Autoabgase auftritt?", 3, "Rauch", "Nebel", "Smog "));
+        assignment.put("Bauingenieurwesen", new Question("Welcher der genannten Steine ist kein Naturstein?", 1, "Kalksandstein", "Basalt", "Marmor "));
+        assignment.put("Architektur", new Question("Was gilt als ein typisches Kennzeichen romanischer Bauten?", 2, "Flachdächer", "Rundbögen", "Volutengiebel "));
+        assignment.put("Betriebswirtschaftslehre", new Question("Wie viele Bedürfnisse gibt es nach der sogenannten Maslow'sche Bedürfnispyramide?", 3, "3", "4", "5 "));
+        assignment.put("Volkswirtschaftslehre", new Question("Welches der folgenden Wirtschaftsgüter ist durch Konsumausschluss und fehlende Konsumrivalität charakterisiert?", 1, "Clubgut", "Allmendegut", "Öffentliches Gut "));
+        assignment.put("Wirtschaftsinformatik", new Question("Welche Software braucht ein Unternehmen für die Planung und -Kontrolle?", 2, "Screensaver", "Buchaltungssoftware", "Wireless-LAN "));
+        assignment.put("Elektrotechnik", new Question("Wie heißt der nach einem Österreicher benannte Effekt, der die Frequenzveränderung eines Signals bei sich verändernder Distanz zwischen Sender und Empfänger beschreibt? Ein typisches Beispiel ist ein vorbeifahrender Rettungswagen mit eingeschaltetem Folgetonhorn.", 3, "Spritzer-Effekt", "Hülsen-Effekt", "Doppler-Effekt "));
+        assignment.put("Maschienenbau", new Question("Was wandelt ein elektrischer Motor um?", 1, "Elektrische Energie in mechanische Energie", "Mechanische Energie in elektrische Energie", "Magnetische Energie in elektrische Energie "));
+        assignment.put("Informatik", new Question("Was ist Java?", 2, "Content Management System", "Objektorientierte Programmiersprache", "Shopsystem "));
+        assignment.put("Veterinärmedizin", new Question("Balaenoptera musculus gilt als das größte und schwerste Tier aller Zeiten – unter welchem Namen kennen wir diesen Riesen?", 3, "Megalodon", "Diplodocus", "Blauwal "));
+        assignment.put("Biomedizin", new Question("Wie viele Knochen besitzt der Mensch?", 1, "210", "175", "305 "));
+        assignment.put("Humanmedizin", new Question("Welche Krankheit wurde früher auch als Schwindsucht bezeichnet ? ", 2, "Malaria", "Tuberkulose", "Lepra "));
+        assignment.put("Aviatik", new Question("Welchen Wolkentyp mögen Segelflieger tendenziell am meisten?", 3, "Cumulonimbuswolken mit großer Höhe.", "Cirruswolken", "Dicke Cumuluswolken mit sichtbarem Abstand. "));
+        assignment.put("Rechtswissenschaften", new Question("Das öffentliches Recht umfasst …", 1, "Bundesverfassung, gerichtlicher Nachlassvertrag, Zivilprozessrecht, Völkerrecht", " Steuerrecht, aussergerichtlicher Nachalssvertrag, Strafgesetz, Krankenversicherungsgesetz KVG", " Kantonsverfassung, Planung und Baurecht, Sachenrecht Europäische Menschenrechtskonvention "));
         return assignment;
     }
 }

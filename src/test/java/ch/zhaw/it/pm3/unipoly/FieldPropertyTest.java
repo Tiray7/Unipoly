@@ -22,7 +22,7 @@ public class FieldPropertyTest {
             board = new Board();
             bank = new Bank();
             bank.setownedModuls(new HashMap<>(board.getProperties()));
-            players = new LinkedList<Player>();
+            players = new LinkedList<>();
                 players.add(new Player(0,"Jack", Token.TokenType.ATOM));
                 players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
 
@@ -66,12 +66,27 @@ public class FieldPropertyTest {
         }
 
         @Test
-        public void ECTSSystemTest() throws FieldIndexException {
-            assertEquals(5, board.getProperties().get(1).getECTS());
+        public void ECTSSystemTest() {
+            assertEquals(5, board.getProperties().get(1).getCurrentECTSLevel());
             board.getProperties().forEach((Integer, FieldProperty)->{
-                assertEquals(FieldProperty.getModuleGroupIndex()+5, FieldProperty.getECTS());
+                assertEquals(FieldProperty.getModuleGroupIndex()+5, FieldProperty.getCurrentECTSLevel());
                 FieldProperty.raiseRentAndECTS();
-                assertEquals(FieldProperty.getModuleGroupIndex()+7, FieldProperty.getECTS());
+                assertEquals(FieldProperty.getModuleGroupIndex()+7, FieldProperty.getCurrentECTSLevel());
             });
         }
+
+    @Test
+    public void ResetLevelTest() throws FieldIndexException {
+        players.get(0).buyPropertyFrom(bank, 1);
+        players.get(1).buyPropertyFrom(bank, 3);
+
+        board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
+        board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
+        board.resetLevelAll(0);
+        assertEquals(board.getProperties().get(1).getRentLV1(),board.getProperties().get(1).getCurrentRent());
+        assertEquals(5,board.getProperties().get(1).getCurrentECTSLevel());
+
+
+    }
+
 }
