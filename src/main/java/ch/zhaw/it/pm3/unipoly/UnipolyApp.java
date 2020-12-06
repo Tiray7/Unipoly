@@ -69,6 +69,14 @@ public class UnipolyApp {
 	public String getdisplayMessage() { return displayMessage; }
 	public String getgameoverString() { return gameoverString; }
 
+	public void setCurrentPlayer(Player player) {
+		this.currentPlayer = player;
+	}
+
+	public void setCurrentField(Field currentField) {
+		this.currentField = currentField;
+	}
+
 	/*------ Function to configure the Game -------------------------------------------------*/
 
 	/***
@@ -422,7 +430,7 @@ public class UnipolyApp {
 	 */
 	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
 		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		// TODO: Reset FieldLevel and Group Modul Levels
+		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
 	}
 
 

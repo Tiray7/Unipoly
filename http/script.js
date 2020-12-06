@@ -677,7 +677,7 @@ app.controller('Controller', function ($scope) {
 					txt += `Miete: ${fieldInfo.currentRent} CHF<br>`;
 				}
 				txt += `Kaufpreis: ${fieldInfo.propertyCost} CHF<br>`;
-				txt += `Credits: ${fieldInfo.ects} ECTS<br>`;
+				txt += `Credits: ${fieldInfo.currentECTSLevel} ECTS<br>`;
 				txt += `Miete LV1: ${fieldInfo.rentLV1} CHF<br>`;
 				txt += `Miete LV2: ${fieldInfo.rentLV2} CHF<br>`;
 				txt += `Miete LV3: ${fieldInfo.rentLV3} CHF<br>`;
@@ -730,10 +730,20 @@ app.controller('Controller', function ($scope) {
 
 	$scope.quizanswer = function (x) {
 		$quizpopup.hide();
-		if(x = 0) {
-			showalert('Das war die richtige Antwort!<br>Du erhältst {bla} ECTS', true);
+		const correctans = (x == 0);
+		if (correctans) {
+			showalert(`Das war die richtige Antwort!<br>Du erhältst ${fieldInfo.currentECTSLevel} ECTS`, true);
 		} else {
 			showalert('Das war die falsche Antwort!<br>DU erhältst keine ECTS', true);
 		}
+		$scope.getOp(`quizanswer?x=${correctans}`,
+			function (success) {
+				// Check if  success
+				if (success) {
+					console.log('success: quizanswer');
+				} else {
+					console.error('error: quizanswer');
+				}
+			});
 	}
 });
