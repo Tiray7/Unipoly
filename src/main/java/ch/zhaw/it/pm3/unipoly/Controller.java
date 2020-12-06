@@ -162,7 +162,7 @@ public class Controller {
 
 	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payDetentionRansom() throws IOException {
+	public ResponseEntity<UnipolyApp> payDetentionRansom() throws IOException, FieldIndexException {
 		unipoly.payDetentionRansom();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -173,7 +173,7 @@ public class Controller {
 
 	@RequestMapping(value = "/leavedetention", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> leaveDetention() throws IOException {
+	public ResponseEntity<UnipolyApp> leaveDetention() throws IOException, FieldIndexException {
 		unipoly.leaveDetention();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -184,9 +184,14 @@ public class Controller {
 
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payOffDebt(
-			@RequestParam(value = "FieldIndexes", required = false) int[] FieldIndexes)
+	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "FieldIndexes", required = false) String indexes)
 			throws FieldIndexException, JsonProcessingException {
+		String[] stringindexes = indexes.split(",");
+		int size = stringindexes.length;
+		Integer[] FieldIndexes = new Integer[size];
+		for (int i = 0; i < size; i++) {
+			FieldIndexes[i] = Integer.parseInt(stringindexes[i]);
+		}
 		unipoly.payOffDebt(FieldIndexes);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -197,7 +202,7 @@ public class Controller {
 
 	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException {
+	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException, FieldIndexException {
 		unipoly.readCard();
 
 		ObjectMapper objectMapper = new ObjectMapper();

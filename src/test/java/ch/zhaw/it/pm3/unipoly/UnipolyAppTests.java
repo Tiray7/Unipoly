@@ -133,14 +133,14 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getPayDetentionRansom() throws IOException {
+    public void getPayDetentionRansom() throws IOException, FieldIndexException {
         HttpStatus status = controller.payDetentionRansom().getStatusCode();
         String statusCode = status.toString();
         assertEquals(HttpStatus.ACCEPTED.toString(), statusCode);
     }
 
     @Test
-    public void getLeaveDetention() throws IOException {
+    public void getLeaveDetention() throws IOException, FieldIndexException {
         HttpStatus status = controller.leaveDetention().getStatusCode();
         String statusCode = status.toString();
         assertEquals(HttpStatus.ACCEPTED.toString(), statusCode);

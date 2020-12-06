@@ -8,7 +8,6 @@ public abstract class Owner implements Comparable {
     private final int index;
     private final String name;
     private int money;
-    private int ModulGroupOwned;
     private int PropertyOwned;
     private int Debt;
     private Owner Debtor;
@@ -56,11 +55,6 @@ public abstract class Owner implements Comparable {
 
     public int compareTo(Owner comparply) {
         return comparply.getWealth() - this.getWealth();
-    }
-
-    // TODO: Call this function to check player owns ModulGroup
-    public void setModulGroupOwned(int ModulGroupOwned) {
-        this.ModulGroupOwned = ModulGroupOwned;
     }
 
     /***

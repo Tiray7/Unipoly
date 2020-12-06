@@ -81,7 +81,7 @@ div.popup-p {
 
 #quiz_popup td {
   height: 3em;
-  width: 10em;
+  width: auto;
   border-radius: 10px;
   border: 1px solid #005ea0;
   padding: 1em;

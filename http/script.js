@@ -139,9 +139,10 @@ function showyesOrno(text) {
 }
 
 function showquiz($scope) {
-	var question = $scope.state.questions.get($scope.state.currentField.currFieldIndex);
-	txt = `Beantworte folgende Frage:\n${question.question}`;
-	$quizpopup.find('.popup-p').text(txt);
+	var question = $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex];
+	console.log(question);
+	txt = `Beantworte folgende Frage:<br>${question.question}`;
+	$quizpopup.find('.popup-p').html(txt);
 	$quizpopup.find('#quizanswer_1').html(`<h4>${question.option1}</h4>`);
 	$quizpopup.find('#quizanswer_2').html(`<h4>${question.option2}</h4>`);
 	$quizpopup.find('#quizanswer_3').html(`<h4>${question.option3}</h4>`);
@@ -577,7 +578,7 @@ app.controller('Controller', function ($scope) {
 		Object.entries($forselling).forEach(function (element) {
 			array.push(element[0]);
 		});
-		$scope.getOp(`payoffdebt?FieldIndexes=${array}`,
+		$scope.getOp(`payoffdebt?indexes=${array}`,
 			function (success) {
 				// Check if  success
 				if (success) {
@@ -702,8 +703,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Credits: ${player.ects} ECTS<br>`;
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
-		txt += `Module: ${player.propertyOwned}<br>`;
-		txt += `ModulGruppen: ${player.roadOwned}`;
+		txt += `Module: ${player.propertyOwned}`;
 		showalert(txt, false);
 	}
 
@@ -733,7 +733,7 @@ app.controller('Controller', function ($scope) {
 
 	$scope.quizanswer = function (x) {
 		$quizpopup.hide();
-		const correctans = (x == $scope.state.questions.get($scope.state.currentField.currFieldIndex).solution);
+		const correctans = (x == $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex].solution);
 		$scope.getOp(`quizanswer?x=${correctans}`,
 			function (success) {
 				// Check if  success
@@ -744,7 +744,7 @@ app.controller('Controller', function ($scope) {
 				}
 			});
 		if (correctans) {
-			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currFieldIndex.currentECTSLevel} ECTS`, true);
+			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currentECTSLevel} ECTS`, true);
 		} else {
 			showalert('Das war die falsche Antwort!<br>Du erhältst keine ECTS', true);
 		}
