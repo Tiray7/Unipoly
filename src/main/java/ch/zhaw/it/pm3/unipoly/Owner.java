@@ -34,6 +34,7 @@ public abstract class Owner implements Comparable {
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getDebt() { return Debt; }
+    public void setDebt(int amount){ Debt = amount; }
     public int getPropertyOwned() { return PropertyOwned; }
     public Owner getDebtor() { return Debtor; }
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
@@ -42,6 +43,7 @@ public abstract class Owner implements Comparable {
     public void setDebtor(Owner debtor) {
         this.Debtor = debtor;
     }
+
 
     public int getWealth() { 
         int ThisWealth = this.money;
