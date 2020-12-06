@@ -6,6 +6,7 @@ public class Player extends Owner {
     private boolean bankrupt = false;
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
+    private int ECTS = 0;
 
     /***
      * constructor Player
@@ -33,6 +34,14 @@ public class Player extends Owner {
 
     public void setFreeCard(boolean outDetention) {
         FreeCard = outDetention;
+    }
+
+    public int getECTS() {
+        return ECTS;
+    }
+
+    public void increaseECTS(int amount) {
+        this.ECTS += amount;
     }
 
     public boolean isBankrupt() {
@@ -69,4 +78,5 @@ public class Player extends Owner {
         // TODO Auto-generated method stub
         return 0;
     }
+
 }
