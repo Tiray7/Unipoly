@@ -466,9 +466,9 @@ public class UnipolyApp {
 	}
 
 	// TODO: quiz answered
-	public void quizAnswer(boolean x) {
-		if (x) {
-			//TODO: Quiz got answered correctly
+	public void quizAnswer(boolean questionResult) {
+		if (questionResult) {
+			currentPlayer.increaseECTS(((FieldProperty) currentField).getCurrentECTSLevel());
 		} else {
 			//TODO: Quiz got answered falsely
 		}
