@@ -139,11 +139,12 @@ function showyesOrno(text) {
 }
 
 function showquiz($scope) {
-	question = `Beantworte folgende Frage:\n`;
-	$quizpopup.find('.popup-p').text(question);
-	$quizpopup.find('#quizanswer_0').html(`<h4>Antwort 1</h4>`);
-	$quizpopup.find('#quizanswer_1').html(`<h4>Antwort 2</h4>`);
-	$quizpopup.find('#quizanswer_2').html(`<h4>Antwort 3</h4>`);
+	var question = $scope.state.questions.get($scope.state.currentField.currFieldIndex);
+	txt = `Beantworte folgende Frage:\n${question.question}`;
+	$quizpopup.find('.popup-p').text(txt);
+	$quizpopup.find('#quizanswer_1').html(`<h4>${question.option1}</h4>`);
+	$quizpopup.find('#quizanswer_2').html(`<h4>${question.option2}</h4>`);
+	$quizpopup.find('#quizanswer_3').html(`<h4>${question.option3}</h4>`);
 	$quizpopup.show();
 }
 
@@ -730,12 +731,7 @@ app.controller('Controller', function ($scope) {
 
 	$scope.quizanswer = function (x) {
 		$quizpopup.hide();
-		const correctans = (x == 0);
-		if (correctans) {
-			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currFieldIndex} ECTS`, true);
-		} else {
-			showalert('Das war die falsche Antwort!<br>Du erhältst keine ECTS', true);
-		}
+		const correctans = (x == $scope.state.questions.get($scope.state.currentField.currFieldIndex).solution);
 		$scope.getOp(`quizanswer?x=${correctans}`,
 			function (success) {
 				// Check if  success
@@ -745,5 +741,10 @@ app.controller('Controller', function ($scope) {
 					console.error('error: quizanswer');
 				}
 			});
+		if (correctans) {
+			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currFieldIndex.currentECTSLevel} ECTS`, true);
+		} else {
+			showalert('Das war die falsche Antwort!<br>Du erhältst keine ECTS', true);
+		}
 	}
 });

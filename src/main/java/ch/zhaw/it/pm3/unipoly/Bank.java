@@ -12,11 +12,9 @@ public class Bank extends Owner {
     private final int numberOfMoodle = 32;
 
 
-
     /***
      * initial  money is 2000000
      */
-
     public Bank() {
         super(-1, "Bank", 2000000);
     }
@@ -25,9 +23,7 @@ public class Bank extends Owner {
      *  get number of moodle
      * @return number of moodle
      */
-    public int getNumberOfMoodle(){
-        return numberOfMoodle;
-    }
+    public int getNumberOfMoodle(){ return numberOfMoodle; }
 
     /***
      * get free parking award
