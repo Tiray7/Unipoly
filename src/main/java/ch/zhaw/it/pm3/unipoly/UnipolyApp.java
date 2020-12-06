@@ -57,7 +57,7 @@ public class UnipolyApp {
 		questions = Config.getQuestionCards();
 	}
 
-	/*------ GET functions ------------------------------------------------------------------*/
+	/*------ GET and SET functions ------------------------------------------------------------------*/
 	public Field getcurrentField() { return currentField; }
 	public Bank getBank() { return bank; }
 	public Board getBoard() { return board; }
@@ -277,7 +277,6 @@ public class UnipolyApp {
 	 */
 	private void playerIsOnPropertyField() throws FieldIndexException {
 		FieldProperty currentField = (FieldProperty) this.currentField;
-		questions.get(currentField.getName());
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				// TODO: NPC Logic
@@ -429,7 +428,7 @@ public class UnipolyApp {
 	 */
 	public void buyProperty() {
 		currentPlayer.buyPropertyFrom(bank, currentPlayer.getToken().getCurrFieldIndex());
-		displayMessage += "Das Modul gehört nun " + currentPlayer.getName();
+		displayMessage += "Das Modul gehört nun <b>" + currentPlayer.getName() + "</b>";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
@@ -456,8 +455,6 @@ public class UnipolyApp {
 			displayMessage = "Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
 			phase = UnipolyPhase.INDEBT;
 		} else {
-			// TODO: Quizfunction
-			displayMessage = "";
 			phase = UnipolyPhase.QUIZTIME;
 		}
 		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
@@ -513,6 +510,10 @@ public class UnipolyApp {
 		// switchPlayer();
 	}
 
+	private void NPCinDebt() {
+		
+	}
+
 	/*------ end and start new turn -------------------------------------------------*/
 
 	/***
@@ -528,6 +529,27 @@ public class UnipolyApp {
 			currentPlayer = players.get(currentPlayer.getIndex() + 1);
 
 		if (currentPlayer.inDetention()) {
+			if (currentPlayer.isNPC()) {
+				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
+				if (currentPlayer.getleftTimeInDetention() > 0) {
+					if (currentPlayer.getMoney() > 200) {
+						displayMessage += currentPlayer.getName() + " besticht die Schuldirektorin.";
+						payDetentionRansom();
+					} else {
+						displayMessage += currentPlayer.getName() + " versucht über den Schulverweis zu verhandeln.";
+						rollTwoDice();
+						if (rolledPash) {
+							displayMessage += currentPlayer.getName() + " hat ein Pash gewürfelt und wird somit vom Nachsitzen entlassen.";
+							leaveDetention();
+							rollDice(new Random().nextInt(6) + 1);
+						}
+					}
+				} else {
+					displayMessage += currentPlayer.getName() + " hat schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!";
+					displayMessage += currentPlayer.getName() + " muss versuchen die Schuldirektorin zu bestechen.";
+					payDetentionRansom();
+				}
+			}
 			phase = UnipolyPhase.DETENTION;
 		} else {
 			phase = UnipolyPhase.WAITING;
@@ -577,8 +599,12 @@ public class UnipolyApp {
 	public void payDetentionRansom() {
 		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
-			displayMessage = "Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.";
-			phase = UnipolyPhase.INDEBT;
+			if (currentPlayer.isNPC()) { 
+				NPCinDebt();
+			} else {
+				displayMessage = "Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.";
+				phase = UnipolyPhase.INDEBT;
+			}
 		} else {
 			phase = UnipolyPhase.WAITING;
 			leaveDetention();
