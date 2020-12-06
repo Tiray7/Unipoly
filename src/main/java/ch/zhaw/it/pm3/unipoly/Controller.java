@@ -136,4 +136,11 @@ public class Controller {
 		unipoly.readCard();
 		return unipoly;
 	}
+
+	@RequestMapping(value = "/quizanswer", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp quizAnswer(@RequestParam boolean x) throws FieldIndexException {
+		unipoly.quizAnswer(x);
+		return unipoly;
+	}
 }

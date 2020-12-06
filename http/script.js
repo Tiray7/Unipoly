@@ -20,6 +20,7 @@ var $alertpopup;
 var $yesnopopup;
 var $selectpopup;
 var $gameoverpopup;
+var $quizpopup;
 var $numbernpccon;
 var $numbernpc = 0;
 var $diceinput;
@@ -57,6 +58,7 @@ $(document).ready(function () {
 	$selectpopup = $('#select_popup');
 	$sell_btn = $('#sell_btn');
 	$gameoverpopup = $('#gameover_popup');
+	$quizpopup = $('#quiz_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
 	$('.tablecon').find('td').addClass('leer');
@@ -134,6 +136,15 @@ function showGameOver(text) {
 function showyesOrno(text) {
 	$yesnopopup.find('.popup-p').text(text);
 	$yesnopopup.show();
+}
+
+function showquiz($scope) {
+	question = `Beantworte folgende Frage:<br>`;
+	$quizpopup.find('.popup-p').text(question);
+	$quizpopup.find('#quizanswer_0').html(`<h4>Antwort 1</h4>`);
+	$quizpopup.find('#quizanswer_1').html(`<h4>Antwort 2</h4>`);
+	$quizpopup.find('#quizanswer_2').html(`<h4>Antwort 3</h4>`);
+	$quizpopup.show();
 }
 
 function showSelection($scope) {
@@ -284,8 +295,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 
 		case 'QUIZTIME':
 			console.log('New Phase QUIZTIME');
-			txt = `Beantworte folgende Frage:`;
-			showalert(txt, true);
+			showquiz($scope);
 			break;
 
 		case 'GAMEOVER':
@@ -664,14 +674,15 @@ app.controller('Controller', function ($scope) {
 					txt += `Gehört: Niemandem<br>`;
 				} else {
 					txt += `Gehört: ${$scope.state.players[fieldInfo.ownerIndex].name}<br>`;
-					txt += `Miete: ${fieldInfo.currentRent}CHF<br>`;
+					txt += `Miete: ${fieldInfo.currentRent} CHF<br>`;
 				}
-				txt += `Kaufpreis: ${fieldInfo.propertyCost}CHF<br>`;
-				txt += `Miete LV1: ${fieldInfo.rentLV1}CHF<br>`;
-				txt += `Miete LV2: ${fieldInfo.rentLV2}CHF<br>`;
-				txt += `Miete LV3: ${fieldInfo.rentLV3}CHF<br>`;
-				txt += `Miete LV4: ${fieldInfo.rentLV4}CHF<br>`;
-				txt += `Miete LV5: ${fieldInfo.rentLV5}CHF<br>`;
+				txt += `Kaufpreis: ${fieldInfo.propertyCost} CHF<br>`;
+				txt += `Credits: ${fieldInfo.ects} ECTS<br>`;
+				txt += `Miete LV1: ${fieldInfo.rentLV1} CHF<br>`;
+				txt += `Miete LV2: ${fieldInfo.rentLV2} CHF<br>`;
+				txt += `Miete LV3: ${fieldInfo.rentLV3} CHF<br>`;
+				txt += `Miete LV4: ${fieldInfo.rentLV4} CHF<br>`;
+				txt += `Miete LV5: ${fieldInfo.rentLV5} CHF<br>`;
 			} else {
 				txt = `<h2>${fieldInfo.label.charAt(0) + fieldInfo.label.slice(1).toLowerCase()} Feld</h2>`;
 				txt += `${fieldInfo.explanation}`;
@@ -684,7 +695,8 @@ app.controller('Controller', function ($scope) {
 	$scope.showPlayerInfo = function (PlayerIndex) {
 		var player = $scope.state.players[PlayerIndex];
 		var txt = `<h2>${player.name}</h2>`;
-		txt += `Geld: ${player.money}<br>`;
+		txt += `Geld: ${player.money} CHF<br>`;
+		txt += `Credits: ${player.ects} ECTS<br>`;
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
 		txt += `Module: ${player.propertyOwned}<br>`;
@@ -713,6 +725,15 @@ app.controller('Controller', function ($scope) {
 			} else if ($aftershowtext == 'gameoverMessage') {
 				showGameOver($scope.state.gameoverString);
 			}
+		}
+	}
+
+	$scope.quizanswer = function (x) {
+		$quizpopup.hide();
+		if(x = 0) {
+			showalert('Das war die richtige Antwort!<br>Du erhältst {bla} ECTS', true);
+		} else {
+			showalert('Das war die falsche Antwort!<br>DU erhältst keine ECTS', true);
 		}
 	}
 });

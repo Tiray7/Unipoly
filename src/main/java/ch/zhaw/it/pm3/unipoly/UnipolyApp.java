@@ -450,7 +450,14 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	// TODO: payOfDebt(), Input is an array of fieldindexes the player wants to sell
+	// TODO: quiz answered
+	public void quizAnswer(boolean x) {
+		if (x) {
+			//TODO: Quiz got answered correctly
+		} else {
+			//TODO: Quiz got answered falsely
+		}
+	}
 
 
 	/***
