@@ -15,7 +15,18 @@ public class FieldProperty extends Field{
     private int ownerIndex;
     private static final int UNOWNED = -1;
 
-
+    /** Constructor for property field
+     *
+     * @param name of the property
+     * @param label of the field, in this case PROPERTY
+     * @param propertyCost is the cost of the property
+     * @param rentLV1 the rent that you start with after acquiring the property
+     * @param rentLV2 the rent after the property levels up once
+     * @param rentLV3 the rent after the property levels up twice
+     * @param rentLV4 the rent after the property levels up thrice
+     * @param rentLV5 the rent after the property is leveled up to the maximum
+     * @param moduleGroup is which the property belongs too
+     */
     public FieldProperty(String name, Config.FieldLabel label, int propertyCost,
                          int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroup) {
         super(label, "");
@@ -32,6 +43,7 @@ public class FieldProperty extends Field{
         this.currentECTSLevel = 5 + moduleGroup;
     }
 
+    /*------ GET functions ------------------------------------------*/
     public String getName() { return name; }
     public int getPropertyCost() { return propertyCost; }
     public int getOwnerIndex() { return ownerIndex; }
@@ -42,23 +54,22 @@ public class FieldProperty extends Field{
     public int getRentLV4() { return rentLV4; }
     public int getRentLV5() { return rentLV5; }
     public int getModuleGroupIndex(){ return moduleGroupIndex; }
-    public int getCurrentECTSLevel() {
-        return currentECTSLevel;
-    }
+    public int getCurrentECTSLevel() { return currentECTSLevel; }
+    /*---------------------------------------------------------------*/
 
     public void setOwnerIndex(int ownerIndex) {
         this.ownerIndex = ownerIndex;
     }
 
     public boolean isOwnerBank() {
-       return ownerIndex == -1;
+        return ownerIndex == -1;
     }
 
+    /**This method levels up the rent of the property when called.**/
     public void raiseRentAndECTS() {
         if (currentRent != rentLV5) {
             currentECTSLevel += 2;
         }
-
         if (currentRent == rentLV1) {
             currentRent = rentLV2;
         } else if (currentRent == rentLV2) {

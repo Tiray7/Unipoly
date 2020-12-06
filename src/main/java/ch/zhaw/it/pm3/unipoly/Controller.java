@@ -199,4 +199,11 @@ public class Controller {
 
 		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
+
+	@RequestMapping(value = "/quizanswer", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public UnipolyApp quizAnswer(@RequestParam boolean x) throws FieldIndexException {
+		unipoly.quizAnswer(x);
+		return unipoly;
+	}
 }
