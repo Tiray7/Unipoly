@@ -513,7 +513,7 @@ public class UnipolyApp {
 	/***
 	 * quizAnswer method, Player answered Question
 	 *
-	 * @throws questionResult boolean showing if player answered the question correctly 
+	 * @index questionResult boolean showing if player answered the question correctly
 	 */
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
@@ -648,14 +648,16 @@ public class UnipolyApp {
 		gameoverString = "<h1>GAME OVER</h1>";
 		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
-
+		int j = 0;
 		if (Bachelor != null) {
+			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "</p>";
 			ranking.remove(Bachelor);
+			j++;
 		}
 
 		for (int i = 0; i < ranking.size(); i++) {
 			Owner player = ranking.get(i);
-			gameoverString += "<p>" + (i + 1) + ".Place " + player.getName() + ", " + player.getWealth() + "CHF, " + ((Player) player).getECTS() + "ECTS</p>";
+			gameoverString += "<p>" + (i + 1 + j) + ".Place " + player.getName() + ", " + player.getWealth() + "CHF, " + ((Player) player).getECTS() + "ECTS</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}
