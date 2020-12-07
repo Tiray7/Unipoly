@@ -218,20 +218,28 @@ public class UnipolyApp {
 	public void checkFieldOptions() throws FieldIndexException {
 		switch (currentField.getLabel()) {
 			case PROPERTY:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
 				playerIsOnPropertyField();
 			case CHANCE:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnChanceField() gets executed");
 				playerIsOnChanceField();
 			case JUMP:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnJumpField() gets executed");
 				playerIsOnJumpField();
 			case GO:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoField() gets executed");
 				playerIsOnGoField();
 			case VISIT:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnVisit() gets executed");
 				playerIsOnVisit();
 			case DETENTION:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoToDetention() gets executed");
 				playerIsOnGoToDetention();
 			case RECESS:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
 			default:
+				unipolyMcLogger.log(Level.DEBUG, "Method checkIfOverStart() gets executed");
 				checkIfOverStart();
 		}
 	}
