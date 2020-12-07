@@ -51,13 +51,13 @@ public class PlayerTest {
     }
 
     /***
-     * test if the transfer accour from each player
+     * test if the transfer is done from each player
      */
     @Test
     public void testTransfer() {
         Player player2 = new Player(1,"Sam", Token.TokenType.CRADLE);
         assertEquals(player.getMoney(), 1500, 0);
-        // TODO: assertEquals(player.transferMoneyTo(player2, 100), 100, 0);
+        assertEquals(player.transferMoneyTo(player2,100),100,0);
         assertEquals(player.getMoney(), 1400, 0);
     }
 
