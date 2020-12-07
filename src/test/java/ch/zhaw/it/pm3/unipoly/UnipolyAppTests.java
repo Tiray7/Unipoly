@@ -75,7 +75,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getStart() throws IOException, FieldIndexException {
+    public void shouldStartNewGame() throws IOException, FieldIndexException {
         //setup
         int amountOfNPCs = 1;
         //work
@@ -87,7 +87,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getResetGame() throws IOException {
+    public void shouldResetGame() throws IOException {
         //setup
         controller.unipoly.setCurrentPlayer(player);
         //work
@@ -98,7 +98,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getRollDice() throws IOException, FieldIndexException {
+    public void shouldRollADice() throws IOException, FieldIndexException {
         //setup
         int min = 1;
         int max = 6;
@@ -113,7 +113,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getRollTwoDice() throws IOException {
+    public void shouldRollTwoDice() throws IOException {
         //setup
         int min = 1;
         int max = 6;
@@ -127,7 +127,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getEndTurn() throws IOException, FieldIndexException {
+    public void shouldEndATurn() throws IOException, FieldIndexException {
         //setup
         controller.unipoly.getPlayers().add(player);
         controller.unipoly.getPlayers().add(npc);
@@ -141,7 +141,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getCheckFieldOptions() throws IOException, FieldIndexException {
+    public void shouldCheckFieldOptions() throws IOException, FieldIndexException {
         //setup
         Field field = new Field(Config.FieldLabel.VISIT, "This is a test.");
         unipoly.setCurrentField(field);
@@ -154,7 +154,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getJumpPlayer() throws IOException, FieldIndexException {
+    public void shouldJumpAPlayerToDesiredField() throws IOException, FieldIndexException {
         //setup
         int fieldIndex = 1;
         Field currentField = new Field(Config.FieldLabel.GO, "go");
@@ -169,7 +169,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getUserWantsToBuy() throws IOException {
+    public void shouldBuyADesiredPropertyForTheCurrentPlayer() throws IOException {
         //setup
         int ownerIndex;
         int ownedFieldIndex = 1;
@@ -188,7 +188,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getPayDetentionRansom() throws IOException {
+    public void shouldPayRansomForCurrentPlayer() throws IOException {
         //setup
         int currentMoneyBefore;
         int currentMoneyAfter;
@@ -207,7 +207,7 @@ public class UnipolyAppTests {
     }
 
     @Test
-    public void getLeaveDetention() throws IOException {
+    public void shouldGetCurrentPlayerOutOfDetention() throws IOException {
         //setup
         int timeInDetentionBefore = 3;
         int outOfDetention = 0;

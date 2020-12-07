@@ -10,10 +10,9 @@ public class TokenTest {
 
     /***
      * setting the test for token class
-     * @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         t_token = new Token(Token.TokenType.LAB);
     }
 
