@@ -84,6 +84,21 @@ public class FieldProperty extends Field {
         }
     }
 
+    public void decreaseRentAndECTS() {
+        if (currentRent != rentLV1) {
+            currentECTSLevel -= 2;
+        }
+        if (currentRent == rentLV2) {
+            currentRent = rentLV1;
+        } else if (currentRent == rentLV3) {
+            currentRent = rentLV2;
+        } else if (currentRent == rentLV4) {
+            currentRent = rentLV3;
+        } else if (currentRent == rentLV5) {
+            currentRent = rentLV4;
+        }
+    }
+
     public void resetLevel() {
         currentECTSLevel = moduleGroupIndex + 5;
         currentRent = rentLV1;

@@ -8,8 +8,7 @@ public abstract class Owner implements Comparable {
     private final int index;
     private final String name;
     private int money;
-    private int ModulGroupOwned;
-    private int PropertyOwned;
+    private int ModulsOwned;
     private int Debt;
     private Owner Debtor;
     private Map<Integer, FieldProperty> ownedModuls;
@@ -26,7 +25,7 @@ public abstract class Owner implements Comparable {
         this.name = id;
         money = initialMoney;
         ownedModuls = new HashMap<Integer, FieldProperty>();
-        setPropertyOwned();
+        setModulsOwned();
     }
 
     /*------ GET functions ------------------------------------------*/
@@ -36,15 +35,15 @@ public abstract class Owner implements Comparable {
     public String getName() { return name; }
     public int getMoney() { return money; }
     public int getDebt() { return Debt; }
-    public int getPropertyOwned() { return PropertyOwned; }
+    public int getModulsOwned() { return ModulsOwned; }
     public Owner getDebtor() { return Debtor; }
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
     /*---------------------------------------------------------------*/
     
     public void setDebt(int amount){ this.Debt = amount; }
-    public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
-    public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
     public void setDebtor(Owner debtor) { this.Debtor = debtor; }
+    public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
+    public void setModulsOwned() { this.ModulsOwned = ownedModuls.size(); }
 
     public int getWealth() {
         int ThisWealth = this.money;
@@ -54,13 +53,20 @@ public abstract class Owner implements Comparable {
         return ThisWealth;
     }
 
-    public int compareTo(Owner comparply) {
-        return comparply.getWealth() - this.getWealth();
+    public boolean setandgetBankrupt() {
+        if (getWealth() < this.Debt) {
+            this.Debtor.ownedModuls.putAll(this.ownedModuls);
+            this.ownedModuls.clear();
+            this.Debt -= getWealth();
+            setModulsOwned();
+            this.Debtor.setModulsOwned();
+            return true;
+        }
+        return false;
     }
 
-    // TODO: Call this function to check player owns ModulGroup
-    public void setModulGroupOwned(int ModulGroupOwned) {
-        this.ModulGroupOwned = ModulGroupOwned;
+    public int compareTo(Owner comparply) {
+        return this.getWealth() - comparply.getWealth();
     }
 
     /***
@@ -82,9 +88,11 @@ public abstract class Owner implements Comparable {
      * @param fieldIndex field index, of the property that needs to be transferred
      */
     public void transferPropertyTo(Owner newOwner, int fieldIndex) {
-        this.ownedModuls.put(fieldIndex, newOwner.ownedModuls.get(fieldIndex));
-        this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
-        newOwner.ownedModuls.remove(fieldIndex);
+        this.ownedModuls.get(fieldIndex).setOwnerIndex(newOwner.getIndex());
+        newOwner.ownedModuls.put(fieldIndex, this.ownedModuls.get(fieldIndex));
+        this.ownedModuls.remove(fieldIndex);
+        setModulsOwned();
+        newOwner.setModulsOwned();
     }
 
     /***
@@ -95,17 +103,7 @@ public abstract class Owner implements Comparable {
      */
     public void buyPropertyFrom(Owner owner, int fieldIndex) {
         transferMoneyTo(owner, owner.ownedModuls.get(fieldIndex).getPropertyCost());
-        transferPropertyTo(owner, fieldIndex);
-        setPropertyOwned();
-    }
-
-    // TODO: Upgrade Property
-    public void upgradeProperty(int FieldIndex) {
-    }
-
-    // TODO: Player landed on an owned field
-    public boolean payRent(Owner ownerOfField, FieldProperty field) {
-        return this.setandcheckDebt(ownerOfField, field.getCurrentRent());
+        owner.transferPropertyTo(this, fieldIndex);
     }
 
     /***
@@ -114,15 +112,16 @@ public abstract class Owner implements Comparable {
      * @param amount is the amount of dept
      * @return
      */
-    // Calculate what the Player owes
     public boolean setandcheckDebt(Owner debtor, int amount) {
         if (this.money < amount) {
             transferMoneyTo(debtor, this.money);
-            Debt = amount - this.money;
-            Debtor = debtor;
+            this.Debt = amount - this.money;
+            this.Debtor = debtor;
             return true;
         } else {
             transferMoneyTo(debtor, amount);
+            this.Debt = 0;
+            this.Debtor = null;
             return false;
         }
     }

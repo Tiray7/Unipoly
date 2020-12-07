@@ -6,7 +6,6 @@ package ch.zhaw.it.pm3.unipoly;
  **/
 public class Field {
 
-    public Integer getLabel;
     private Config.FieldLabel label;
     private String explanation;
 
@@ -21,7 +20,7 @@ public class Field {
         this.explanation = explanation;
     }
 
-    public Config.FieldLabel getLabel() { return label; }
+    public Config.FieldLabel getLabel() { return this.label; }
     public String getExplanation() { return explanation; }
 
 }
