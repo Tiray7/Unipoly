@@ -61,7 +61,8 @@ $(document).ready(function () {
 	$quizpopup = $('#quiz_popup');
 
 	$('.space').prepend('<table class="tablecon"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>');
-	$('.tablecon').find('td').addClass('leer');
+	$('.tablecon td').addClass('leer');
+	$('.color-bar').prepend('<table><tr><td class="field_owner"></td><td class="field_lvl"></td></tr></table>');
 	$lastphase = 'NONE';
 	$checkendturn = false;
 	$sellingprice = 0;
@@ -84,15 +85,9 @@ function poll($scope) {
 	});
 }
 
-function resetHTML(list) {
-	// List all added Players
-	var prevind, type;
-	for (let i = 0; i < list.length; i++) {
-		type = list[i].token.type.toLowerCase();
-		prevind = $(`#pos${list[i].token.currFieldIndex}`).find("td." + type).first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass(`used ${type}`);
-	}
+function resetHTML() {
+	console.log("resetHTML()");
+	$('td.used').attr('class', 'leer');
 	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
@@ -110,15 +105,25 @@ function resetHTML(list) {
 // Move the PlayerToken
 function moveToken($scope) {
 	const type = $scope.state.currentPlayer.token.type.toLowerCase();
-	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td").hasClass(type)) {
-		console.log('moveToken');
-		const prevind = $(`#pos${$scope.state.currentPlayer.token.prevFieldIndex}`).find("td." + type).first();
-		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex}`).find("td.leer").first();
-		prevind.toggleClass('leer');
-		prevind.toggleClass(`used ${type}`);
-		currind.toggleClass('leer');
-		currind.toggleClass(`used ${type}`);
+	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon td`).hasClass(type)) {
+		console.log(`moveToken: ${$scope.state.currentPlayer.name} / ${type};`);
+		$(`.tablecon .${type}`).attr('class', 'leer');
+		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon .leer`).first();
+		currind.attr('class', `used ${type}`);
 	}
+}
+
+function update_fieldowner($scope) {
+	const unowned = Object.entries($scope.state.board.fields).filter(x => x[1].label == 'PROPERTY' & x[1].ownerBank);
+	const owned = Object.entries($scope.state.board.fields).filter(x => x[1].label == 'PROPERTY' & !x[1].ownerBank);
+	unowned.forEach(function (x) {
+		$(`#pos${x[0]} .field_owner`).attr('class', 'field_owner');
+		$(`#pos${x[0]} .field_lvl`).text('');
+	});
+	owned.forEach(function (x) {
+		$(`#pos${x[0]} .field_owner`).attr('class', `field_owner listtoken ${$scope.state.players[x[1].ownerIndex].token.type.toLowerCase()}`);
+		$(`#pos${x[0]} .field_lvl`).text(`${x[1].currentRent} CHF`);
+	});
 }
 
 function showalert(text, bool, txt = '') {
@@ -134,14 +139,15 @@ function showGameOver(text) {
 }
 
 function showyesOrno(text) {
-	$yesnopopup.find('.popup-p').text(text);
+	$yesnopopup.find('.popup-p').html(text);
 	$yesnopopup.show();
 }
 
 function showquiz($scope) {
-	var question = $scope.state.questions.get($scope.state.currentField.currFieldIndex);
-	txt = `Beantworte folgende Frage:\n${question.question}`;
-	$quizpopup.find('.popup-p').text(txt);
+	var question = $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex];
+	console.log(question);
+	txt = `Beantworte folgende Frage:<br>${question.question}`;
+	$quizpopup.find('.popup-p').html(txt);
 	$quizpopup.find('#quizanswer_1').html(`<h4>${question.option1}</h4>`);
 	$quizpopup.find('#quizanswer_2').html(`<h4>${question.option2}</h4>`);
 	$quizpopup.find('#quizanswer_3').html(`<h4>${question.option3}</h4>`);
@@ -154,16 +160,10 @@ function showSelection($scope) {
 	$selectpopup.find('.popup-p').text(txt);
 	txt = `Du schuldest dd noch ${$sellingprice}CHF.`;
 	$selectpopup.find('.popup-div').text(txt);
-	if (Object.entries($scope.state.currentPlayer.ownedModuls).length === 0) {
-		console.log('Game Over');
-	} else {
-		Object.entries($scope.state.currentPlayer.ownedModuls).forEach(function (modul) {
-			console.log(modul[0]);
-			console.log(modul[1]);
-			field = $(`#pos${modul[0]}`).find('.container');
-			field.toggleClass('mine');
-		});
-	}
+	Object.entries($scope.state.currentPlayer.ownedModuls).forEach(function (modul) {
+		field = $(`#pos${modul[0]} .container`);
+		field.toggleClass('mine');
+	});
 	$selectpopup.show();
 }
 
@@ -174,7 +174,7 @@ function handleDetention($scope, bool = false, areadyasked = false) {
 		txt = 'Du bist noch bei der Schuldirektorin. Sie möchte dich von der Uni verweisen...';
 		if (leftTimeInDetention > 0) {
 			if ($scope.state.currentPlayer.money >= 100) {
-				txt += `\nWillst du versuchen über deinen Schulverweis zu verhandeln, anstatt Sie zu bestechen (100 CHF)?\nDu hast noch ${leftTimeInDetention} Verhandlungsversuche.`;
+				txt += `<br>Willst du versuchen über deinen Schulverweis zu verhandeln, anstatt Sie zu bestechen (100 CHF)?<br>Du hast noch ${leftTimeInDetention} Verhandlungsversuche.`;
 				showyesOrno(txt);
 				return;
 			} else {
@@ -194,7 +194,7 @@ function handleDetention($scope, bool = false, areadyasked = false) {
 		txt += 'Würfle ein Pash um Sie zu überzeugen.';
 		showalert(txt, false);
 	} else {
-		txt += '<br>Du bestichst sie also.';
+		txt += 'Du bestichst sie also.';
 		showalert(txt, false, 'payDetentionRansom');
 	}
 }
@@ -206,18 +206,18 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 
 	switch (newphase) {
 		case 'SHOWANDSWITCH':
-			console.log('New Phase SHOWANDSWITCH');
+			console.log('Phase: SHOWANDSWITCH');
 			moveToken($scope);
 			showalert($scope.state.displayMessage, true);
 			break;
 
 		case 'SHOWCARD':
-			console.log('New Phase SHOWCARD');
+			console.log('Phase: SHOWCARD');
 			showalert($scope.state.displayMessage, false);
 			break;
 
 		case 'WAITING':
-			console.log('New Phase WAITING');
+			console.log('Phase: WAITING');
 			if ($lastphase == 'NONE') break;
 			txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
 			showalert(txt, false);
@@ -251,7 +251,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			break;
 
 		case 'BUY_PROPERTY':
-			console.log('New Phase BUY_PROPERTY');
+			console.log('Phase: BUY_PROPERTY');
 			if (areadyasked) {
 				if (bool) {
 					$scope.buyProperty();
@@ -259,14 +259,14 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 					$scope.endTurn();
 				}
 			} else {
-				txt = `Willst du das Modul "${$scope.state.currentField.name}" besuchen?\nKostet nur ${$scope.state.currentField.propertyCost}CHF!`;
+				txt = `Willst du das Modul "${$scope.state.currentField.name}" besuchen?<br>Die Einschreibegebühr beträgt nur ${$scope.state.currentField.propertyCost}CHF!`;
 				showyesOrno(txt);
 				return;
 			}
 			break;
 
 		case 'JUMP':
-			console.log('New Phase JUMP');
+			console.log('Phase: JUMP');
 			if (areadyasked) {
 				if (bool) {
 					txt = 'Klick auf das Feld auf das du springen willst!';
@@ -276,31 +276,32 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 					showalert(txt, true);
 				}
 			} else {
-				txt = "Willst du zu einem anderem Feld springen?\nKostet nur 100 CHF!";
+				txt = "Willst du zu einem anderem Feld springen?<br>Kostet nur 100 CHF!";
 				showyesOrno(txt);
 				return;
 			}
 			break;
 
 		case 'DETENTION':
-			console.log('New Phase DETENTION');
+			console.log('Phase: DETENTION');
 			handleDetention($scope, bool, areadyasked);
 			break;
 
 		case 'INDEBT':
-			console.log('New Phase INDEBT');
+			console.log('Phase: INDEBT');
+			$forselling = JSON.parse('{}');
 			txt = $scope.state.displayMessage;
 			txt += `<br>Du musst nun ${$scope.state.currentPlayer.debtor.name} zuerst deine Schulden zurück zahlen.<br>Der Schuldbetrag ist ${$scope.state.currentPlayer.debt}CHF.`;
 			showalert(txt, false, 'showselection');
 			break;
 
 		case 'QUIZTIME':
-			console.log('New Phase QUIZTIME');
+			console.log('Phase: QUIZTIME');
 			showquiz($scope);
 			break;
 
 		case 'GAMEOVER':
-			console.log('New Phase GAMEOVER');
+			console.log('Phase: GAMEOVER');
 			showalert($scope.state.displayMessage, false, 'gameoverMessage');
 			break;
 	}
@@ -329,6 +330,7 @@ function update($scope, json) {
 		phaseChange($scope);
 		$lastphase = $scope.state.phase;
 	}
+	update_fieldowner($scope);
 
 	$scope.$apply();
 }
@@ -339,11 +341,9 @@ app.controller('Controller', function ($scope) {
 	poll($scope);
 
 	$scope.getOp = function (path, callback) {
-		console.log(`getJSON: ${path}`);
 		//Load JSON-encoded data from the server using a GET HTTP request.
 		$.getJSON(path, function (json) {
 			update($scope, json);
-			console.log($scope);
 			if (callback != undefined) {
 				callback(true);
 			}
@@ -352,21 +352,6 @@ app.controller('Controller', function ($scope) {
 				callback(false);
 			}
 		});
-	}
-
-	$scope.postOp = function (path, data, callback) {
-		$.post(path, data, function (json) {
-			update($scope, json)
-
-			if (callback != undefined) {
-				callback(true);
-			}
-		}, 'json')
-			.fail(function () {
-				if (callback != undefined) {
-					callback(false);
-				}
-			});
 	}
 
 	// Player signed a Name now let him choose a Token
@@ -393,7 +378,6 @@ app.controller('Controller', function ($scope) {
 
 	// SinglePlayer is able to choose Number of NPCs
 	$scope.numbernpc = function (num) {
-		console.log(`${num} NPCs choosen`);
 		$numbernpc = num;
 		$numbernpccon.hide();
 		$joinwaiting.show();
@@ -444,7 +428,7 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if Gamemode choice got accepted
 				if (success) {
-					console.log('success: Start Game');
+					console.log(`success: Start Game, ${$gamemode} & ${$numbernpc} NPCs`);
 					$menu.hide();
 					$gameboard.show();
 
@@ -453,10 +437,8 @@ app.controller('Controller', function ($scope) {
 					const list = $scope.state.players;
 					for (let i = 0; i < list.length; i++) {
 						type = list[i].token.type.toLowerCase();
-						index = `#pos${list[i].token.currFieldIndex}`;
-						td = $(index).find("td.leer").first();
-						td.toggleClass('leer');
-						td.toggleClass(`used ${type}`);
+						td = $(`#pos${list[i].token.currFieldIndex} .tablecon .leer`).first();
+						td.attr('class', `used ${type}`);
 						txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
 						showalert(txt, false);
 					}
@@ -467,15 +449,17 @@ app.controller('Controller', function ($scope) {
 			});
 	}
 
-	$scope.resetGame = function () {
-		const list = $scope.state.players;
-		if (confirm("Are you sure you want to Reset the Game?")) {
+	$scope.resetGame = function (bool = false) {
+		if (!bool) {
+			bool = confirm("Are you sure you want to Reset the Game?");
+		}
+		if (bool) {
 			$scope.getOp('resetgame',
 				function (success) {
 					// Check if Game Reset was a succsess
 					if (success) {
 						console.log('success: resetGame');
-						resetHTML(list);
+						resetHTML();
 					} else {
 						console.error('error: resetGame');
 						alert('Error: Please try again!');
@@ -488,7 +472,6 @@ app.controller('Controller', function ($scope) {
 	$scope.checkField = function () {
 		$scope.getOp('checkfieldoptions',
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: checkfieldoptions');
 				} else {
@@ -500,7 +483,6 @@ app.controller('Controller', function ($scope) {
 	$scope.ToggleDiceInput = function () {
 		// If Player is in Detention he has to roll both Dices
 		if ($scope.state.phase == 'DETENTION') {
-			console.log('Player is in Detention, therefor rolls both dices.')
 			$scope.rollDice('rolltwodice');
 			// If Player landed on ChanceCards he cant roll dices
 		} else if ($scope.state.phase == 'SHOWCARD') {
@@ -510,7 +492,6 @@ app.controller('Controller', function ($scope) {
 			txt = 'Klick auf das Feld, auf das du springen willst!';
 			showalert(txt, false);
 		} else {
-			console.log('Player has to Input the first Dice.')
 			$diceinput.toggle();
 		}
 	}
@@ -521,7 +502,7 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if starting turn worked
 				if (success) {
-					console.log('success: rollDice');
+					console.log(`success: rollDice -> ${path}`);
 				} else {
 					console.error('error: rollDice');
 					alert('Error: Please try again!');
@@ -533,7 +514,6 @@ app.controller('Controller', function ($scope) {
 	$scope.jump = function (FieldIndex) {
 		$scope.getOp(`jumpplayer?FieldIndex=${FieldIndex}`,
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: jumpPlayer');
 					moveToken($scope);
@@ -546,12 +526,10 @@ app.controller('Controller', function ($scope) {
 
 	// End Turn / switchPlayer
 	$scope.endTurn = function () {
-		//End Turn
 		$scope.getOp('endturn',
 			function (success) {
-				// Check if  success
 				if (success) {
-					console.log('success: endTurn');
+					console.log(`success: endTurn -> now ${$scope.state.currentPlayer.name}`);
 				} else {
 					console.error('error: endTurn');
 				}
@@ -562,7 +540,6 @@ app.controller('Controller', function ($scope) {
 	$scope.buyProperty = function () {
 		$scope.getOp('userwantstobuy',
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: userwantstobuy');
 				} else {
@@ -577,19 +554,14 @@ app.controller('Controller', function ($scope) {
 		Object.entries($forselling).forEach(function (element) {
 			array.push(element[0]);
 		});
-		$scope.getOp(`payoffdebt?FieldIndexes=${array}`,
+		$scope.getOp(`payoffdebt?indexes=${array}`,
 			function (success) {
-				// Check if  success
 				if (success) {
-					$(`.mine`).forEach(function (element) {
-						element.removeClass('mine');
-					});
-					$(`.selling`).forEach(function (element) {
-						element.removeClass('selling');
-					});
+					console.log(`success: sellproperties -> [${array}]`);
+					$(`.mine`).removeClass('mine');
+					$(`.selling`).removeClass('selling');
 					$selectpopup.hide();
 					$scope.endTurn();
-					console.log('success: sellproperty');
 				} else {
 					console.error('error: sellproperty');
 				}
@@ -600,7 +572,6 @@ app.controller('Controller', function ($scope) {
 	$scope.payDetentionRansom = function () {
 		$scope.getOp('paydetentionransom',
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: paydetentionransom');
 				} else {
@@ -612,7 +583,6 @@ app.controller('Controller', function ($scope) {
 	$scope.leaveDetention = function () {
 		$scope.getOp('leavedetention',
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: leaveDetention');
 				} else {
@@ -628,7 +598,7 @@ app.controller('Controller', function ($scope) {
 		if ($scope.state.phase == 'SHOWCARD') {
 			$scope.getOp('readcard',
 				function (success) {
-					// Check if  success
+
 					if (success) {
 						console.log('success: readcard');
 					} else {
@@ -644,7 +614,7 @@ app.controller('Controller', function ($scope) {
 	// Player klicked on a Field
 	$scope.fieldaction = function (FieldIndex) {
 		var fieldInfo = $scope.state.board.fields[FieldIndex];
-		var currentfield = $(`#pos${FieldIndex}`).find('.container');
+		var currentfield = $(`#pos${FieldIndex} .container`);
 		if ($scope.state.phase == 'JUMP') {
 			$scope.jump(FieldIndex);
 		} else if ($scope.state.phase == 'INDEBT' && (currentfield.hasClass('mine') || currentfield.hasClass('selling'))) {
@@ -659,7 +629,6 @@ app.controller('Controller', function ($scope) {
 			currentfield.toggleClass('selling');
 			txt = `<p>Du schuldest ${$scope.state.currentPlayer.debtor.name} noch ${$sellingprice}CHF.</p>`;
 			txt += `<ul>`;
-			console.log($forselling);
 			Object.entries($forselling).forEach(function (element) {
 				txt += `<li>${element[1].name}: Verkaufspreis ${element[1].propertyCost}CHF</li>`;
 			});
@@ -702,8 +671,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Credits: ${player.ects} ECTS<br>`;
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
-		txt += `Module: ${player.propertyOwned}<br>`;
-		txt += `ModulGruppen: ${player.roadOwned}`;
+		txt += `Module: ${player.propertyOwned}`;
 		showalert(txt, false);
 	}
 
@@ -733,10 +701,9 @@ app.controller('Controller', function ($scope) {
 
 	$scope.quizanswer = function (x) {
 		$quizpopup.hide();
-		const correctans = (x == $scope.state.questions.get($scope.state.currentField.currFieldIndex).solution);
+		const correctans = (x == $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex].solution);
 		$scope.getOp(`quizanswer?x=${correctans}`,
 			function (success) {
-				// Check if  success
 				if (success) {
 					console.log('success: quizanswer');
 				} else {
@@ -744,7 +711,7 @@ app.controller('Controller', function ($scope) {
 				}
 			});
 		if (correctans) {
-			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currFieldIndex.currentECTSLevel} ECTS`, true);
+			showalert(`Das war die richtige Antwort!<br>Du erhältst ${$scope.state.currentField.currentECTSLevel} ECTS`, true);
 		} else {
 			showalert('Das war die falsche Antwort!<br>Du erhältst keine ECTS', true);
 		}
