@@ -218,8 +218,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		Config.FieldLabel currentLabel = currentField.getLabel();
-		switch (currentLabel) {
+		switch (currentField.getLabel()) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
 				playerIsOnPropertyField();
@@ -248,7 +247,6 @@ public class UnipolyApp {
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
 		}
-		//if((currentLabel != Config.FieldLabel.DETENTION) && (currentLabel != Config.FieldLabel.JUMP))
 			checkIfOverStart();
 	}
 
