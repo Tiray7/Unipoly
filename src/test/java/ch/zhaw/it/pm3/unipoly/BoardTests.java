@@ -43,13 +43,6 @@ public class BoardTests {
     }
 
     @Test
-    public void shouldRaiseRentOfProperty() {
-        assertEquals(10, board.getRentFromProperty(1));
-        board.raiseRentFromProperty(1);
-        assertEquals(30, board.getRentFromProperty(1));
-    }
-
-    @Test
     public void shouldReturnPropertyOwner() {
         assertEquals(-1, board.getPropertyOwner(1));
     }

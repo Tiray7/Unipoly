@@ -81,10 +81,6 @@ public class Board {
         return properties.get(index).getPropertyCost();
     }
 
-    public void raiseRentFromProperty(int index) {
-        properties.get(index).raiseRentAndECTS();
-    }
-
     public int getPropertyOwner(int index) {
         return properties.get(index).getOwnerIndex();
     }
@@ -123,38 +119,47 @@ public class Board {
         });
     }
 
-    public void raiseAll(int moduleGroupIndex) {
-        for (FieldProperty fieldOfSameModule : moduleGroups.get(moduleGroupIndex)) {
-            fieldOfSameModule.raiseRentAndECTS();
-        }
-    }
-
-    public void checkAndRaiseRentAndECTS(FieldProperty currentProperty) {
+    public boolean checkOwnsModulGroup(FieldProperty currentProperty) {
         int moduleGroupIndex = currentProperty.getModuleGroupIndex();
         LinkedList<FieldProperty> currentModuleGroup = moduleGroups.get(moduleGroupIndex);
-
-        int countOwnedModules = 0;
         int countSameOwner = 0;
-        int NO_OWNER = -1;
         for (FieldProperty fieldOfSameModule : currentModuleGroup) {
-            if (fieldOfSameModule.getOwnerIndex() != NO_OWNER) {
-                countOwnedModules++;
-            }
-            if (currentProperty.getOwnerIndex() == fieldOfSameModule.getOwnerIndex()) {
+            if (fieldOfSameModule.getOwnerIndex() == currentProperty.getOwnerIndex()) {
                 countSameOwner++;
             }
         }
+        if (countSameOwner == currentModuleGroup.size()) { 
+            return true;
+        }
+        return false;
+    }
 
-        if (countOwnedModules == currentModuleGroup.size()) {
-            raiseAll(moduleGroupIndex);
-            if (countSameOwner == currentModuleGroup.size())
-                raiseAll(moduleGroupIndex);
+    public void checkAndRaiseRentAndECTS(FieldProperty currentProperty) {
+        if (checkOwnsModulGroup(currentProperty)) {
+            raiseAll(currentProperty.getModuleGroupIndex());
         } else {
             currentProperty.raiseRentAndECTS();
         }
     }
 
-    public void resetLevelAll(int modulGroupIndex) {
-        moduleGroups.get(modulGroupIndex).forEach(FieldProperty::resetLevel);
+    public void checkAndDecreaseRentAndECTS(FieldProperty currentProperty) {
+        if (checkOwnsModulGroup(currentProperty)) {
+            decreaseAll(currentProperty.getModuleGroupIndex());
+        } else {
+            currentProperty.decreaseRentAndECTS();
+        }
     }
+
+    public void raiseAll(int moduleGroupIndex) {
+        moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::raiseRentAndECTS);
+    }
+
+    public void decreaseAll(int moduleGroupIndex) {
+        moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::decreaseRentAndECTS);
+    }
+
+    public void resetLevelAll(int moduleGroupIndex) {
+        moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::resetLevel);
+    }
+
 }

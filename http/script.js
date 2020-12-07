@@ -105,11 +105,10 @@ function resetHTML() {
 // Move the PlayerToken
 function moveToken($scope) {
 	const type = $scope.state.currentPlayer.token.type.toLowerCase();
-	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex} td`).hasClass(type)) {
+	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon td`).hasClass(type)) {
 		console.log(`moveToken: ${$scope.state.currentPlayer.name} / ${type};`);
-		const prevind = $(`#pos${$scope.state.currentPlayer.token.prevFieldIndex} .tablecon`).find("td." + type).first();
-		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon`).find("td.leer").first();
-		prevind.attr('class', 'leer');
+		$(`.tablecon .${type}`).attr('class', 'leer');
+		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon .leer`).first();
 		currind.attr('class', `used ${type}`);
 	}
 }
@@ -117,16 +116,14 @@ function moveToken($scope) {
 function update_fieldowner($scope) {
 	const unowned = Object.entries($scope.state.board.fields).filter(x => x[1].label == 'PROPERTY' & x[1].ownerBank);
 	const owned = Object.entries($scope.state.board.fields).filter(x => x[1].label == 'PROPERTY' & !x[1].ownerBank);
-	unowned.forEach(function(x) {
+	unowned.forEach(function (x) {
 		$(`#pos${x[0]} .field_owner`).attr('class', 'field_owner');
 		$(`#pos${x[0]} .field_lvl`).text('');
 	});
-	owned.forEach(function(x) {
+	owned.forEach(function (x) {
 		$(`#pos${x[0]} .field_owner`).attr('class', `field_owner listtoken ${$scope.state.players[x[1].ownerIndex].token.type.toLowerCase()}`);
 		$(`#pos${x[0]} .field_lvl`).text(`${x[1].currentRent} CHF`);
 	});
-	console.log(unowned);
-	console.log(owned);
 }
 
 function showalert(text, bool, txt = '') {
@@ -197,7 +194,7 @@ function handleDetention($scope, bool = false, areadyasked = false) {
 		txt += 'Würfle ein Pash um Sie zu überzeugen.';
 		showalert(txt, false);
 	} else {
-		txt += '<br>Du bestichst sie also.';
+		txt += 'Du bestichst sie also.';
 		showalert(txt, false, 'payDetentionRansom');
 	}
 }
@@ -292,6 +289,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 
 		case 'INDEBT':
 			console.log('Phase: INDEBT');
+			$forselling = JSON.parse('{}');
 			txt = $scope.state.displayMessage;
 			txt += `<br>Du musst nun ${$scope.state.currentPlayer.debtor.name} zuerst deine Schulden zurück zahlen.<br>Der Schuldbetrag ist ${$scope.state.currentPlayer.debt}CHF.`;
 			showalert(txt, false, 'showselection');

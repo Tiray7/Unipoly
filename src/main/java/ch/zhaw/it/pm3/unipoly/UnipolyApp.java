@@ -205,6 +205,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
+		checkIfOverStart();
 		switch (currentField.getLabel()) {
 			case PROPERTY:
 				playerIsOnPropertyField();
@@ -221,7 +222,7 @@ public class UnipolyApp {
 			case RECESS:
 				playerIsOnGoZnueniPause();
 			default:
-				checkIfOverStart();
+				break;
 		}
 	}
 
@@ -346,9 +347,10 @@ public class UnipolyApp {
 	public void readCard() throws FieldIndexException {
 		cards.get(0);
 		if (currentPlayer.isNPC()) {
-			displayMessage += "<br>" + currentPlayer.getName() + " zieht die Karte:<br>" + cards.get(0).getText();
+			displayMessage += "<br>" + currentPlayer.getName() + " zieht die Karte:<br><i>" + cards.get(0).getText()
+					+ "</i>";
 		} else {
-			displayMessage = cards.get(0).getText();
+			displayMessage = "<i>" + cards.get(0).getText() + "</i>";
 		}
 		switch (cards.get(0).getCardType()) {
 			case TODETENTION:
@@ -357,7 +359,13 @@ public class UnipolyApp {
 				break;
 			case PAYMONEY:
 				if (currentPlayer.setandcheckDebt(bank, cards.get(0).getAmount())) {
-					if (currentPlayer.getWealth() < currentPlayer.getDebt()) {
+					if (currentPlayer.setandgetBankrupt()) {
+						if (currentPlayer.isNPC()) {
+							displayMessage += "<br>" + currentPlayer.getName()
+									+ " kann kann sich das nicht leisten und ist nun Bankrot.";
+						} else {
+							displayMessage = "Du kannst dir das nicht leisten und bist nun Bankrot.";
+						}
 						GameOver();
 						return;
 					} else {
@@ -462,7 +470,8 @@ public class UnipolyApp {
 	 */
 	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
 		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
+		board.checkAndDecreaseRentAndECTS(board.getProperties().get(FieldIndex));
+		board.getProperties().get(FieldIndex).resetLevel();
 	}
 
 	/***
@@ -472,11 +481,19 @@ public class UnipolyApp {
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
 		FieldProperty currentProperty = ((FieldProperty) currentField);
-		if (currentPlayer.payRent(players.get(currentProperty.getOwnerIndex()), (FieldProperty) currentField)) {
-			if (currentPlayer.getWealth() < currentPlayer.getDebt()) {
+		if (currentPlayer.setandcheckDebt(players.get(currentProperty.getOwnerIndex()),
+				currentProperty.getCurrentRent())) {
+			if (currentPlayer.setandgetBankrupt()) {
+				if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " kann kann sich die Miete nicht leisten und ist nun Bankrot.";
+				} else {
+					displayMessage = "Du kannst dir die Miete nicht leisten und bist nun Bankrot.";
+
+				}
 				GameOver();
 			} else {
-				board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
+				board.checkAndRaiseRentAndECTS(currentProperty);
 				if (currentPlayer.isNPC()) {
 					NPCinDebt();
 				} else {
@@ -485,9 +502,11 @@ public class UnipolyApp {
 				}
 			}
 		} else {
-			board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
+			board.checkAndRaiseRentAndECTS(currentProperty);
 			phase = UnipolyPhase.QUIZTIME;
-			if (currentPlayer.isNPC()) { 
+			if (currentPlayer.isNPC()) {
+				displayMessage += "<br>" + currentPlayer.getName() + " muss " + currentProperty.getCurrentRent()
+						+ " CHF Miete zahlen.";
 				int bool = new Random().nextInt(1);
 				quizAnswer(bool == 0);
 			}
@@ -497,7 +516,7 @@ public class UnipolyApp {
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() throws FieldIndexException {
 		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
-		displayMessage = "ModulUpgrade!!";
+		displayMessage = "Modul Upgrade!!";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
@@ -505,15 +524,23 @@ public class UnipolyApp {
 		if (questionResult) {
 			currentPlayer.increaseECTS(((FieldProperty) currentField).getCurrentECTSLevel());
 			if (currentPlayer.isBachelor()) {
+				if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " hat insgesamt 180ECTS erworben und somit den Bachelor erhalten.";
+				} else {
+					displayMessage = "Du hast insgesamt 180ECTS erworben und somit den Bachelor erhalten.";
+				}
 				GameOver();
 			} else {
-				if (currentPlayer.isNPC()) { 
-					displayMessage += "<br>" + currentPlayer.getName() + " hat die Frage richitg beantwortet und hat nun insgesamt " + currentPlayer.getECTS() + " ECTS.";
+				if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " hat die Frage richitg beantwortet und hat nun insgesamt " + currentPlayer.getECTS()
+							+ " ECTS.";
 					phase = UnipolyPhase.SHOWANDSWITCH;
 				}
 			}
 		} else {
-			if (currentPlayer.isNPC()) { 
+			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " hat die Frage falsch beantwortet.";
 				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
@@ -527,45 +554,37 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void payOffDebt(Integer[] fieldIndexes) throws FieldIndexException {
-		Owner buyer = currentPlayer.getDebtor();
-		Owner debtor = buyer;
-		int totalCost = 0;
+		Owner Debtor = currentPlayer.getDebtor();
+		int propertyValue = 0;
 		for (int i = 0; i < fieldIndexes.length; i++) {
-			totalCost += board.getProperties().get(fieldIndexes[i]).getPropertyCost();
+			if (Debtor.isBank()) {
+				sellProperty(fieldIndexes[i], Debtor);
+			} else {
+				propertyValue = board.getProperties().get(fieldIndexes[i]).getPropertyCost();
+				currentPlayer.transferPropertyTo(Debtor, fieldIndexes[i]);
+				currentPlayer.setDebt(Math.max(0, currentPlayer.getDebt() - propertyValue));
+				board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndexes[i]));
+				board.getProperties().get(fieldIndexes[i]).resetLevel();
+			}
 		}
-		if (buyer.getMoney() < totalCost) {
-			buyer = bank;
-		}
-		for (int i = 0; i < fieldIndexes.length; i++) {
-			sellProperty(fieldIndexes[i], buyer);
-		}
-		if (currentPlayer.setandcheckDebt(debtor, currentPlayer.getDebt())) {
+		if (currentPlayer.setandcheckDebt(Debtor, currentPlayer.getDebt())) {
 			GameOver();
-		} else {
-			currentPlayer.setDebtor(null);
-			currentPlayer.setDebt(0);
-			phase = UnipolyPhase.WAITING;
 		}
-		/*
-		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
-		 * currentPlayer.getDebt())) { if(currentPlayer.setandgetPropertyOwned() == 0){
-		 * loser.setBankrupt(); GameOver(); } else { phase = UnipolyPhase.DEBTFREE; }
-		 */
-		// switchPlayer();
 	}
 
 	private void NPCinDebt() throws FieldIndexException {
 		int selling = 0;
 		List<Integer> currarr = new ArrayList<Integer>();
 		for (Map.Entry<Integer, FieldProperty> modul : currentPlayer.getownedModuls().entrySet()) {
-            if (selling < currentPlayer.getDebt()) {
+			if (selling < currentPlayer.getDebt()) {
 				selling += modul.getValue().getPropertyCost();
 				currarr.add(modul.getKey());
 			}
 		}
-		Integer[] FieldIndexes = currarr.toArray(new Integer[ currarr.size() ]);
+		Integer[] FieldIndexes = currarr.toArray(new Integer[currarr.size()]);
 		payOffDebt(FieldIndexes);
-		displayMessage += "<br>" + currentPlayer.getName() + " musste Module verkaufen um seine Schulden bezahlen zu können.";
+		displayMessage += "<br>" + currentPlayer.getName()
+				+ " musste Module verkaufen um seine Schulden bezahlen zu können.";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
@@ -585,27 +604,30 @@ public class UnipolyApp {
 
 		if (currentPlayer.inDetention()) {
 			if (currentPlayer.isNPC()) {
-				displayMessage = "<br>" + currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
+				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
 				if (currentPlayer.getleftTimeInDetention() > 0) {
 					if (currentPlayer.getMoney() > 200) {
 						displayMessage += "<br>" + currentPlayer.getName() + " besticht die Schuldirektorin.";
 						payDetentionRansom();
 					} else {
-						displayMessage += "<br>" + currentPlayer.getName() + " versucht über den Schulverweis zu verhandeln.";
+						displayMessage += "<br>" + currentPlayer.getName()
+								+ " versucht über den Schulverweis zu verhandeln.";
 						rollTwoDice();
 						if (rolledPash) {
 							displayMessage += "<br>" + currentPlayer.getName() + " hat ein Pash gewürfelt.";
 							leaveDetention();
 							rollDice(new Random().nextInt(6) + 1);
 						} else {
-							displayMessage += "<br>" + currentPlayer.getName() + " hat es nicht geschafft die Schuldirektorin zu überzeugen.";
+							displayMessage += "<br>" + currentPlayer.getName()
+									+ " hat es nicht geschafft die Schuldirektorin zu überzeugen.";
 							phase = UnipolyPhase.SHOWANDSWITCH;
 						}
 					}
 				} else {
 					displayMessage += "<br>" + currentPlayer.getName()
 							+ " hat schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!";
-					displayMessage += "<br>" + currentPlayer.getName() + " muss versuchen die Schuldirektorin zu bestechen.";
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " muss versuchen die Schuldirektorin zu bestechen.";
 					payDetentionRansom();
 				}
 			} else {
@@ -671,7 +693,13 @@ public class UnipolyApp {
 	public void payDetentionRansom() throws FieldIndexException {
 		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
-			if (currentPlayer.getWealth() < currentPlayer.getDebt()) {
+			if (currentPlayer.setandgetBankrupt()) {
+				if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " kann kann sich das Bestechungsgeld nicht leisten und ist nun Bankrot.";
+				} else {
+					displayMessage = "Du kannst dir das Bestechungsgeld nicht leisten und bist nun Bankrot.";
+				}
 				GameOver();
 			} else {
 				if (currentPlayer.isNPC()) {
