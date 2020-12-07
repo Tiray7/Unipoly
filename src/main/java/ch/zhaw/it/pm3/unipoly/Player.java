@@ -50,6 +50,10 @@ public class Player extends Owner {
         return leftTimeInDetention > 0;
     }
 
+    public void setLeftTimeInDetention(int leftTimeInDetention) {
+        this.leftTimeInDetention = leftTimeInDetention;
+    }
+
     public void goDetention() {
         token.moveTo(9);
         this.leftTimeInDetention = 3;
