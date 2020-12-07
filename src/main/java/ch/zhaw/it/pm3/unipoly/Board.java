@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * This class initialises the board with all the fields and allows the manipulation of rent and ECTS-points.
+ */
+
 @Repository
 public class Board {
     private final Map<Integer, Field> fields;
@@ -23,16 +27,24 @@ public class Board {
         fillModuleGroups();
     }
 
-    public Map<Integer, Field> getFields() { return fields; }
-    public Map<Integer, FieldProperty> getProperties() { return properties; }
-    public Map<Integer, LinkedList<FieldProperty>> getModuleGroups() { return moduleGroups; }
-    
+    public Map<Integer, Field> getFields() {
+        return fields;
+    }
+
+    public Map<Integer, FieldProperty> getProperties() {
+        return properties;
+    }
+
+    public Map<Integer, LinkedList<FieldProperty>> getModuleGroups() {
+        return moduleGroups;
+    }
+
     /***
-     * getFieldTypeAtIndex methode to find out the index label from teh index number
-     * 
-     * @param index field index
-     * @return index and label of the field
-     * @throws FieldIndexException
+     * This method returns the label of a normal field.
+     *
+     * @param index of the field
+     * @return label of the field
+     * @throws FieldIndexException if the index is out of bounds
      */
     public Config.FieldLabel getFieldTypeAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
@@ -40,27 +52,50 @@ public class Board {
     }
 
     /***
-     * getFieldPropertyAtIndex method to get which property in this field index
-     * 
-     * @param index field index
-     * @return property in this field index
-     * @throws FieldIndexException
+     * Returns the label of a property field.
+     *
+     * @param index of the field
+     * @return FieldProperty at the given index
+     * @throws FieldIndexException if the index is out of bounds
      */
     public FieldProperty getFieldPropertyAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return properties.get(index);
     }
 
+    /**
+     * Find the fields of the same modulegroup to which the given fieldIndex belongs to.
+     *
+     * @param index of the field in question
+     * @return list of fields from the same modulegroup
+     * @throws FieldIndexException if the index is out of range
+     */
     public LinkedList<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return moduleGroups.get(index);
     }
 
+    /**
+     * Find the index of a given FieldProperty.
+     *
+     * @param property in question
+     * @return the index belonging to the property
+     */
+    public Integer getIndexFromField(FieldProperty property) {
+        Integer index = null;
+        for (Map.Entry<Integer, FieldProperty> entry : properties.entrySet()) {
+            if (entry.getValue().equals(property)) {
+                index = entry.getKey();
+            }
+        }
+        return index;
+    }
+
     /***
-     * getFieldAtIndex methode to get what is the field on this index
-     * 
-     * @param index field index
-     * @return the field in the certain index
+     * getFieldAtIndex method to get the field on this index
+     *
+     * @param index of the field
+     * @return the field at the given index
      * @throws FieldIndexException
      */
     public Field getFieldAtIndex(int index) throws FieldIndexException {
@@ -86,10 +121,10 @@ public class Board {
     }
 
     /***
-     * checkFieldIndex method to check the index and find if its right
-     * 
-     * @param index field index
-     * @throws FieldIndexException
+     * This method checks if the given index is on the board. If not then an exception is thrown.
+     *
+     * @param index of field
+     * @throws FieldIndexException if the index is out of bounds of the board
      */
     private void checkFieldIndex(int index) throws FieldIndexException {
         if (index < Config.FIELD_MIN) {
@@ -100,16 +135,18 @@ public class Board {
     }
 
     /***
-     * fillPropertyMap method , void method to fill field property field
+     * This method fills the propertyMap with all properties and their indexes.
      */
     private void fillPropertyMap() {
-
         for (Map.Entry<Integer, Field> entry : fields.entrySet())
             if (entry.getValue().getLabel().equals(Config.FieldLabel.PROPERTY)) {
                 properties.put(entry.getKey(), (FieldProperty) entry.getValue());
             }
     }
 
+    /***
+     * This method fills the mouduleMap with the grouped properties.
+     */
     private void fillModuleGroups() {
         for (int i = 0; i <= 7; i++) {
             moduleGroups.put(i, new LinkedList<>());
@@ -119,7 +156,13 @@ public class Board {
         });
     }
 
-    public boolean checkOwnsModulGroup(FieldProperty currentProperty) {
+    /**
+     * Checks if a player owns the properties of a whole moduleGroup.
+     *
+     * @param currentProperty modulegroup in question
+     * @return whether he owns the modulegroup or not
+     */
+    public boolean checkOwnsModuleGroup(FieldProperty currentProperty) {
         int moduleGroupIndex = currentProperty.getModuleGroupIndex();
         LinkedList<FieldProperty> currentModuleGroup = moduleGroups.get(moduleGroupIndex);
         int countSameOwner = 0;
@@ -128,36 +171,61 @@ public class Board {
                 countSameOwner++;
             }
         }
-        if (countSameOwner == currentModuleGroup.size()) { 
+        if (countSameOwner == currentModuleGroup.size()) {
             return true;
         }
         return false;
     }
 
+    /**
+     * Raise the rent and the reward of ECTS-points of a modulegroup.
+     *
+     * @param currentProperty modulegroup in question
+     */
     public void checkAndRaiseRentAndECTS(FieldProperty currentProperty) {
-        if (checkOwnsModulGroup(currentProperty)) {
+        if (checkOwnsModuleGroup(currentProperty)) {
             raiseAll(currentProperty.getModuleGroupIndex());
         } else {
             currentProperty.raiseRentAndECTS();
         }
     }
 
+    /**
+     * Decrease the rent and the reward of ECTS-points of a modulegroup.
+     *
+     * @param currentProperty modulegroup in question
+     */
     public void checkAndDecreaseRentAndECTS(FieldProperty currentProperty) {
-        if (checkOwnsModulGroup(currentProperty)) {
+        if (checkOwnsModuleGroup(currentProperty)) {
             decreaseAll(currentProperty.getModuleGroupIndex());
         } else {
             currentProperty.decreaseRentAndECTS();
         }
     }
 
+    /**
+     * Raise the rent of a modulegroup.
+     *
+     * @param moduleGroupIndex in question
+     */
     public void raiseAll(int moduleGroupIndex) {
         moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::raiseRentAndECTS);
     }
 
+    /**
+     * Decrease the rent of a modulegroup.
+     *
+     * @param moduleGroupIndex in question
+     */
     public void decreaseAll(int moduleGroupIndex) {
         moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::decreaseRentAndECTS);
     }
 
+    /**
+     * Reset the rent of a modulegroup.
+     *
+     * @param moduleGroupIndex in question
+     */
     public void resetLevelAll(int moduleGroupIndex) {
         moduleGroups.get(moduleGroupIndex).forEach(FieldProperty::resetLevel);
     }

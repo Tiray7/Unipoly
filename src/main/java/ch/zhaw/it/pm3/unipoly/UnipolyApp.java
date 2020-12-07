@@ -5,13 +5,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Random;
-import java.util.HashMap;
+import java.util.*;
+
+import static ch.zhaw.it.pm3.unipoly.Config.COST_FOR_JUMP;
+import static ch.zhaw.it.pm3.unipoly.Config.RANSOM;
 
 /**
  * Represents the Unipoly application - handles the main part of the game logic
@@ -92,7 +89,7 @@ public class UnipolyApp {
 
 	/***
 	 * Joins a new Player to the Unipoly application-context
-	 * 
+	 *
 	 * @param name  name of the {@link Player}
 	 * @param token {@link Token.TokenType}
 	 * @throws FieldIndexException gets thrown if the field the player gets drawn to is invalid
@@ -124,7 +121,7 @@ public class UnipolyApp {
 
 	/***
 	 * Initializing a new {@link Player}
-	 * 
+	 *
 	 * @param name  {@link Player} name
 	 * @param token {@link Token.TokenType}
 	 */
@@ -137,7 +134,7 @@ public class UnipolyApp {
 
 	/***
 	 * Starts a new Game - initialize NPC's if needed and sets {@link Player} currentPlayer
-	 * 
+	 *
 	 * @param mode   which {@link Gamemode} - single or multi
 	 * @param npcnum if singleplayer we have to create "npcnum" x NPC players
 	 */
@@ -158,7 +155,7 @@ public class UnipolyApp {
 
 	/***
 	 * Sets the  {@link UnipolyPhase}, {@link #firstDice}  and {@link #secondDice} (obtained with {@link Random})
-	 * 
+	 *
 	 * @param firstDice parameter from frontend choosen by user
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -173,7 +170,7 @@ public class UnipolyApp {
 
 	/***
 	 * Move {@link Player} relative by an amount
-	 * 
+	 *
 	 * @param rolledValue amount to move by
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 1 - 36
 	 */
@@ -190,7 +187,7 @@ public class UnipolyApp {
 
 	/***
 	 * Move Player directly to a chosen field
-	 * 
+	 *
 	 * @param fieldIndex has to be an integer between 1 and 36 or else
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -202,7 +199,7 @@ public class UnipolyApp {
 
 	/***
 	 * Player landed on a jump field and wishes to jump to a certain field
-	 * 
+	 *
 	 * @param fieldIndex has to be an integer between 1 and 36 or else
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -214,7 +211,7 @@ public class UnipolyApp {
 
 	/***
 	 * Checks field property options according to the {@link #currentPlayer's} position
-	 * 
+	 *
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
@@ -294,18 +291,20 @@ public class UnipolyApp {
 
 	/***
 	 * Logic to check if a {@link Field} is available for a player to buy.
-	 * 
+	 *
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	private void playerIsOnPropertyField() throws FieldIndexException {
 		FieldProperty currentField = (FieldProperty) this.currentField;
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
-				// TODO: NPC Logic
-				if (currentPlayer.isNPC()) {
+				if (currentPlayer.isNPC() && NPCChecksMoney(currentField.getPropertyCost())) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet und kauft das Modul.<br>";
 					buyProperty();
+				} else if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
+							+ " gelandet, aber will das Modul nicht kaufen.<br>";
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
 				}
@@ -408,10 +407,10 @@ public class UnipolyApp {
 	}
 
 	private void playerIsOnJumpField() {
-		final int COST_FOR_JUMP = 100;
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
-				// TODO: NPC Logic
-				if (currentPlayer.isNPC()) {
+				if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
+					NPCJumps();
+				} else if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
 							+ " ist auf einem Springer Feld gelandet, will aber nicht springen.";
 					phase = UnipolyPhase.SHOWANDSWITCH;
@@ -535,8 +534,8 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * payOffDebt method refers to the debtor
-	 * 
+	 * payOffDebt method refer to the debtor
+	 *
 	 * @param fieldIndexes field index number
 	 * @throws FieldIndexException
 	 */
@@ -575,11 +574,9 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-
-
 	/***
 	 * switchPlayer methode
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void switchPlayer() throws FieldIndexException {
@@ -593,7 +590,7 @@ public class UnipolyApp {
 			if (currentPlayer.isNPC()) {
 				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
 				if (currentPlayer.getleftTimeInDetention() > 0) {
-					if (currentPlayer.getMoney() > 200) {
+					if (NPCChecksMoney(RANSOM)) {
 						displayMessage += "<br>" + currentPlayer.getName() + " besticht die Schuldirektorin.";
 						payDetentionRansom();
 					} else {
@@ -676,9 +673,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
-		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
-
 			if (currentPlayer.setandgetBankrupt()) {
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
@@ -712,5 +707,41 @@ public class UnipolyApp {
 			displayMessage += "<br>" + currentPlayer.getName() + " wird vom Nachsitzen entlassen.";
 			rollDice(new Random().nextInt(6) + 1);
 		}
+	}
+
+	/**
+	 * The NPC checks if he owns twice the amount of money which is required to pay.
+	 *
+	 * @param cost to check
+	 * @return if he has twice the money required or not
+	 */
+	private boolean NPCChecksMoney(int cost) {
+		boolean willBuy = false;
+		if (currentPlayer.getMoney() > (2 * cost)) {
+			willBuy = true;
+		}
+		return willBuy;
+	}
+
+	/**
+	 * The NPC checks if there is a field free of a modulegroup he partly owns. If not he will jump to the GO field.
+	 */
+	private int NPCJumps() {
+		Map<Integer, FieldProperty> mapProperties = board.getProperties();
+		Map<Integer, LinkedList<FieldProperty>> mapModuleGroups = board.getModuleGroups();
+		int jumpIndex = 0; // 0 is the index of the GO field
+		for (Map.Entry<Integer, FieldProperty> entry : mapProperties.entrySet()) {
+			if (entry.getValue().getOwnerIndex() == currentPlayer.getIndex() && jumpIndex == 0) {
+				LinkedList<FieldProperty> fields = mapModuleGroups.get(entry.getValue().getModuleGroupIndex());
+				int num = 0;
+				while (fields.size() > num && jumpIndex == 0) {
+					if (fields.get(num).getOwnerIndex() == FieldProperty.UNOWNED) {
+						jumpIndex = board.getIndexFromField(fields.get(num));
+					}
+					num++;
+				}
+			}
+		}
+		return jumpIndex;
 	}
 }
