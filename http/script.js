@@ -573,12 +573,8 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if  success
 				if (success) {
-					$(`.mine`).forEach(function (element) {
-						element.removeClass('mine');
-					});
-					$(`.selling`).forEach(function (element) {
-						element.removeClass('selling');
-					});
+					$(`.mine`).removeClass('mine');
+					$(`.selling`).removeClass('selling');
 					$selectpopup.hide();
 					$scope.endTurn();
 					console.log('success: sellproperty');

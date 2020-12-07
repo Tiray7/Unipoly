@@ -184,7 +184,7 @@ public class Controller {
 
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "FieldIndexes", required = false) String indexes)
+	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "indexes", required = false) String indexes)
 			throws FieldIndexException, JsonProcessingException {
 		String[] stringindexes = indexes.split(",");
 		int size = stringindexes.length;
