@@ -317,9 +317,9 @@ function update($scope, json) {
 		for (let i = 0; i < list.length; i++) {
 			tr = `<td class="listtoken ${list[i].token.type.toLowerCase()}"></td>`;
 			if (list[i].name == currplayer.name) {
-				tr += `<td><b>${list[i].name}: ${list[i].money}</b></td>`;
+				tr += `<td><b>${list[i].name}: ${list[i].money}CHF, ${list[i].ects}ECTS</b></td>`;
 			} else {
-				tr += `<td>${list[i].name}: ${list[i].money}</td>`;
+				tr += `<td>${list[i].name}: ${list[i].money}CHF, ${list[i].ects}ECTS</td>`;
 			}
 			$playerlist.eq(i).html(tr);
 		}
