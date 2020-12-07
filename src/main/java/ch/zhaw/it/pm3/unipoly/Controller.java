@@ -277,7 +277,7 @@ public class Controller {
 	 */
 	@RequestMapping(value = "/paydetentionransom", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payDetentionRansom() throws IOException {
+	public ResponseEntity<UnipolyApp> payDetentionRansom() throws IOException, FieldIndexException {
 		unipoly.payDetentionRansom();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -295,7 +295,7 @@ public class Controller {
 	 */
 	@RequestMapping(value = "/leavedetention", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> leaveDetention() throws IOException {
+	public ResponseEntity<UnipolyApp> leaveDetention() throws IOException, FieldIndexException {
 		unipoly.leaveDetention();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -318,7 +318,6 @@ public class Controller {
 			@RequestParam(value = "FieldIndexes", required = false) int[] FieldIndexes)
 			throws JsonProcessingException {
 		unipoly.payOffDebt(FieldIndexes);
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
 
@@ -334,7 +333,7 @@ public class Controller {
 	 */
 	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException {
+	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException, FieldIndexException {
 		unipoly.readCard();
 
 		ObjectMapper objectMapper = new ObjectMapper();

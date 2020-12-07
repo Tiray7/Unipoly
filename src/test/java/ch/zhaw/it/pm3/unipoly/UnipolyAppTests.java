@@ -199,16 +199,7 @@ public class UnipolyAppTests {
 
     @Order(13)
     @Test
-    public void shouldPayRansomForCurrentPlayer() throws IOException {
-        //setup
-        int currentMoneyBefore;
-        int currentMoneyAfter;
-        int expectedBefore = 1500;
-        int expectedAfter = 1400;
-        controller.unipoly.setCurrentPlayer(player);
-        currentMoneyBefore = controller.unipoly.getCurrentPlayer().getMoney();
-        assertEquals(expectedBefore, currentMoneyBefore);
-        //work
+    public void getPayDetentionRansom() throws IOException, FieldIndexException {
         HttpStatus status = controller.payDetentionRansom().getStatusCode();
         currentMoneyAfter = controller.unipoly.getCurrentPlayer().getMoney();
         //assert
@@ -219,13 +210,7 @@ public class UnipolyAppTests {
 
     @Order(14)
     @Test
-    public void shouldGetCurrentPlayerOutOfDetention() throws IOException {
-        //setup
-        int timeInDetentionBefore = 3;
-        int outOfDetention = 0;
-        controller.unipoly.setCurrentPlayer(player);
-        controller.unipoly.getCurrentPlayer().setLeftTimeInDetention(timeInDetentionBefore);
-        //work
+    public void getLeaveDetention() throws IOException, FieldIndexException {
         HttpStatus status = controller.leaveDetention().getStatusCode();
         //assert
         assertEquals(outOfDetention, controller.unipoly.getCurrentPlayer().getleftTimeInDetention());

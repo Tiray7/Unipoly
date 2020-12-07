@@ -3,7 +3,6 @@ package ch.zhaw.it.pm3.unipoly;
 public class Player extends Owner {
 
     private Token token;
-    private boolean bankrupt = false;
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
     private int ects = 0;
@@ -24,7 +23,6 @@ public class Player extends Owner {
     public boolean getFreeCard() { return FreeCard; }
     public Token getToken() { return token; }
     public int getECTS() { return ects; }
-    public boolean isBankrupt() { return bankrupt; }
     public int getleftTimeInDetention() { return leftTimeInDetention; }
     /*---------------------------------------------------------------*/
     
@@ -42,10 +40,6 @@ public class Player extends Owner {
 
     public boolean isBachelor(){ 
         return ects >= 180;
-    }
-
-    public void setBankrupt(boolean isBankrupt) {
-        this.bankrupt = isBankrupt;
     }
 
     public void decreaseleftTimeInDetention() {
@@ -71,7 +65,7 @@ public class Player extends Owner {
 
     @Override
     public int compareTo(Object o) {
-        // TODO Auto-generated method stub
+
         return 0;
     }
 

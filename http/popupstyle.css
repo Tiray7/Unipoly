@@ -58,9 +58,17 @@ div.popup-p {
   border-spacing: 15px;
 }
 
-#yesno_popup td,  #sell_btn {
+#yesno_popup td {
   height: 4.3em;
   width: 4.3em;
+  border-radius: 10px;
+  border: 1px solid #005ea0;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#sell_btn {
+  width: -moz-fit-content;
+  padding: 1.5em;
   border-radius: 10px;
   border: 1px solid #005ea0;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -81,7 +89,7 @@ div.popup-p {
 
 #quiz_popup td {
   height: 3em;
-  width: 10em;
+  width: auto;
   border-radius: 10px;
   border: 1px solid #005ea0;
   padding: 1em;
