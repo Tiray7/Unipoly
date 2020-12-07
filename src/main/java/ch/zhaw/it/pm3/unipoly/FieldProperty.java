@@ -26,10 +26,10 @@ public class FieldProperty extends Field {
      * @param rentLV3      the rent after the property levels up twice
      * @param rentLV4      the rent after the property levels up thrice
      * @param rentLV5      the rent after the property is leveled up to the maximum
-     * @param moduleGroup  is which the property belongs too
+     * @param moduleGroupIndex  is which the property belongs too
      */
     public FieldProperty(String name, Config.FieldLabel label, int propertyCost, int rentLV1, int rentLV2, int rentLV3,
-            int rentLV4, int rentLV5, int moduleGroup) {
+            int rentLV4, int rentLV5, int moduleGroupIndex) {
         super(label, "");
         this.name = name;
         this.propertyCost = propertyCost;
@@ -38,10 +38,10 @@ public class FieldProperty extends Field {
         this.rentLV3 = rentLV3;
         this.rentLV4 = rentLV4;
         this.rentLV5 = rentLV5;
-        this.moduleGroupIndex = moduleGroup;
+        this.moduleGroupIndex = moduleGroupIndex;
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
-        this.currentECTSLevel = 5 + moduleGroup;
+        this.currentECTSLevel = 10 + 2*moduleGroupIndex;
     }
 
     /*------ GET functions ------------------------------------------*/
@@ -62,6 +62,10 @@ public class FieldProperty extends Field {
         this.ownerIndex = ownerIndex;
     }
 
+    public void setCurrentRent(int currentRent) {
+        this.currentRent = currentRent;
+    }
+
     public boolean isOwnerBank() {
         return ownerIndex == -1;
     }
@@ -69,7 +73,7 @@ public class FieldProperty extends Field {
     /** This method levels up the rent of the property when called. **/
     public void raiseRentAndECTS() {
         if (currentRent != rentLV5) {
-            currentECTSLevel += 2;
+            currentECTSLevel += 4;
         }
         if (currentRent == rentLV1) {
             currentRent = rentLV2;
@@ -86,7 +90,7 @@ public class FieldProperty extends Field {
 
     public void decreaseRentAndECTS() {
         if (currentRent != rentLV1) {
-            currentECTSLevel -= 2;
+            currentECTSLevel -= -4;
         }
         if (currentRent == rentLV2) {
             currentRent = rentLV1;
@@ -100,7 +104,7 @@ public class FieldProperty extends Field {
     }
 
     public void resetLevel() {
-        currentECTSLevel = moduleGroupIndex + 5;
+        currentECTSLevel = 10 + 2*moduleGroupIndex;
         currentRent = rentLV1;
     }
 

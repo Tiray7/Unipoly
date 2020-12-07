@@ -308,16 +308,16 @@ public class Controller {
 	 * Processes the requested method in the {@link UnipolyApp} application, then logs
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
-	 * @param FieldIndexes is the index of the field to pay debt for
+	 * @param fieldIndices is the index of the field to pay debt for
 	 * @return response containing the unipoly as json in the body
 	 * @throws JsonProcessingException if something goes wrong while processing the unipoly to json
 	 */
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> payOffDebt(
-			@RequestParam(value = "FieldIndexes", required = false) Integer[] FieldIndexes)
+			@RequestParam(value = "fieldIndices", required = false) Integer[] fieldIndices)
 			throws JsonProcessingException, FieldIndexException {
-		unipoly.payOffDebt(FieldIndexes);
+		unipoly.payOffDebt(fieldIndices);
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
 
