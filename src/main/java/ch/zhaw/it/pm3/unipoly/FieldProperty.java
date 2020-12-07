@@ -13,7 +13,7 @@ public class FieldProperty extends Field {
     private int currentECTSLevel;
     private int currentRent;
     private int ownerIndex;
-    private static final int UNOWNED = -1;
+    public static final int UNOWNED = -1;
 
     /**
      * Constructor for property field

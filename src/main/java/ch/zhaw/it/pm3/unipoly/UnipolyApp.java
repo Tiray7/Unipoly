@@ -5,13 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Random;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Represents the Unipoly application - handles the main part of the game logic
@@ -412,8 +406,9 @@ public class UnipolyApp {
 		final int COST_FOR_JUMP = 100;
 		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
-				// TODO: NPC Logic
-				if (currentPlayer.isNPC()) {
+				if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
+					NPCJumps();
+				} else if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
 							+ " ist auf einem Springer Feld gelandet, will aber nicht springen.";
 					phase = UnipolyPhase.SHOWANDSWITCH;
@@ -724,5 +719,24 @@ public class UnipolyApp {
 			willBuy = true;
 		}
 		return willBuy;
+	}
+
+	private int NPCJumps() {
+		Map<Integer, FieldProperty> mapProperties = board.getProperties();
+		Map<Integer, LinkedList<FieldProperty>> mapModuleGroups = board.getModuleGroups();
+		int jumpIndex = 0;
+		for (Map.Entry<Integer, FieldProperty> entry : mapProperties.entrySet()) {
+			if (entry.getValue().getOwnerIndex() == currentPlayer.getIndex() && jumpIndex == 0) {
+				LinkedList<FieldProperty> fields = mapModuleGroups.get(entry.getValue().getModuleGroupIndex());
+				int num = 0;
+				while (fields.size() > num && jumpIndex == 0) {
+					if (fields.get(num).getOwnerIndex() == FieldProperty.UNOWNED) {
+						jumpIndex = board.getIndexFromField(fields.get(num));
+					}
+					num++;
+				}
+			}
+		}
+		return jumpIndex;
 	}
 }
