@@ -311,6 +311,7 @@ public class UnipolyApp {
 				} else if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet, aber will das Modul nicht kaufen.<br>";
+					phase = UnipolyPhase.SHOWANDSWITCH;
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
 				}
