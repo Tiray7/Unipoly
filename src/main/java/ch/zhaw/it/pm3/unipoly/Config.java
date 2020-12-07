@@ -14,6 +14,8 @@ public class Config {
      */
     public static final int FIELD_MIN = 0;
     public static final int FIELD_MAX = 35;
+    public static final int RANSOM = 100;
+    public static final int COST_FOR_JUMP = 100;
 
     /***
      * FieldLabel enum to define labels
