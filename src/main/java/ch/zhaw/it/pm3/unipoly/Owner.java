@@ -3,7 +3,7 @@ package ch.zhaw.it.pm3.unipoly;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Owner implements Comparable {
+public abstract class Owner implements Comparable<Owner> {
 
     private final int index;
     private final String name;
@@ -65,8 +65,8 @@ public abstract class Owner implements Comparable {
         return false;
     }
 
-    public int compareTo(Owner comparply) {
-        return this.getWealth() - comparply.getWealth();
+    public int compareTo(Owner comparable) {
+        return comparable.getWealth() - this.getWealth();
     }
 
     /***

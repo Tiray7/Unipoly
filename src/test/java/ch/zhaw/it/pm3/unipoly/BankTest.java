@@ -27,21 +27,4 @@ public class BankTest {
         assert(bank.getName().equals("Bank"));
     }
 
-    /***
-     * test free parking method
-     */
-    @Test
-    public void testGetFreeParking() {
-        assert(bank.getFreeParking() == 100);
-    }
-
-    /***
-     * test free parking award
-     */
-    @Test
-    public void testAwardFreeParking() {
-        bank.awardFreeParking(player);
-        assertEquals(1600, player.getMoney(), 0);
-    }
-
 }

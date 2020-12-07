@@ -177,6 +177,7 @@ public class UnipolyApp {
 	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
 		currentField = board.getFieldAtIndex(currentPlayer.getToken().getCurrFieldIndex());
+		checkIfOverStart();
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName() + " hat eine " + firstDice + " und " + secondDice
 					+ " gewürfelt.";
@@ -221,7 +222,6 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		checkIfOverStart();
 		switch (currentField.getLabel()) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
@@ -311,6 +311,7 @@ public class UnipolyApp {
 				} else if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet, aber will das Modul nicht kaufen.<br>";
+					phase = UnipolyPhase.SHOWANDSWITCH;
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
 				}
@@ -506,14 +507,19 @@ public class UnipolyApp {
 	}
 
 	private void landedOnMyProperty() {
-		displayMessage = "Modul Upgrade!!";
 		phase = UnipolyPhase.QUIZTIME;
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName() + " muss " + ((FieldProperty) currentField).getCurrentRent()
+					+ " CHF Miete zahlen.";
+			int bool = new Random().nextInt(1);
+			quizAnswer(bool == 0);
+		}
 	}
 
 	/***
 	 * quizAnswer method, Player answered Question
 	 *
-	 * @throws questionResult boolean showing if player answered the question correctly 
+	 * @index questionResult boolean showing if player answered the question correctly
 	 */
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
@@ -646,16 +652,18 @@ public class UnipolyApp {
 		}
 
 		gameoverString = "<h1>GAME OVER</h1>";
-		ArrayList<Owner> ranking = new ArrayList<>(players);
+		ArrayList<Owner> ranking = new ArrayList<Owner>(players);
 		Collections.sort(ranking);
-
+		int j = 0;
 		if (Bachelor != null) {
+			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "CHF, " + Bachelor.getECTS() + "ECTS</p>";
 			ranking.remove(Bachelor);
+			j++;
 		}
 
 		for (int i = 0; i < ranking.size(); i++) {
 			Owner player = ranking.get(i);
-			gameoverString += "<p>" + (i + 1) + ".Place " + player.getName() + ", " + player.getWealth() + "CHF, " + ((Player) player).getECTS() + "ECTS</p>";
+			gameoverString += "<p>" + (i + 1 + j) + ".Place " + player.getName() + ", " + player.getWealth() + "CHF, " + ((Player) player).getECTS() + "ECTS</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}

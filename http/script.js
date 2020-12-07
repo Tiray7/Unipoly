@@ -88,6 +88,7 @@ function poll($scope) {
 function resetHTML() {
 	console.log("resetHTML()");
 	$('td.used').attr('class', 'leer');
+	$playerlist.find('td').attr('class', '');
 	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
@@ -671,7 +672,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Credits: ${player.ects} ECTS<br>`;
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
-		txt += `Module: ${player.propertyOwned}`;
+		txt += `Module: ${player.ModulsOwned}`;
 		showalert(txt, false);
 	}
 

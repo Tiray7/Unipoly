@@ -63,10 +63,4 @@ public class Player extends Owner {
         this.leftTimeInDetention = 0;
     }
 
-    @Override
-    public int compareTo(Object o) {
-
-        return 0;
-    }
-
 }
