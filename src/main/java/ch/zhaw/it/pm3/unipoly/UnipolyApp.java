@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static ch.zhaw.it.pm3.unipoly.Config.COST_FOR_JUMP;
+import static ch.zhaw.it.pm3.unipoly.Config.RANSOM;
+
 /**
  * Represents the Unipoly application - handles the main part of the game logic
  * and connects all the pieces together.
@@ -297,6 +300,9 @@ public class UnipolyApp {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet und kauft das Modul.<br>";
 					buyProperty();
+				} else if (currentPlayer.isNPC()) {
+					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
+							+ " gelandet, aber will das Modul nicht kaufen.<br>";
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
 				}
@@ -403,7 +409,6 @@ public class UnipolyApp {
 	}
 
 	private void playerIsOnJumpField() {
-		final int COST_FOR_JUMP = 100;
 		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 				if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
@@ -592,7 +597,7 @@ public class UnipolyApp {
 			if (currentPlayer.isNPC()) {
 				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
 				if (currentPlayer.getleftTimeInDetention() > 0) {
-					if (currentPlayer.getMoney() > 200) {
+					if (NPCChecksMoney(RANSOM)) {
 						displayMessage += "<br>" + currentPlayer.getName() + " besticht die Schuldirektorin.";
 						payDetentionRansom();
 					} else {
@@ -675,9 +680,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
-		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
-
 			if (currentPlayer.setandgetBankrupt()) {
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
