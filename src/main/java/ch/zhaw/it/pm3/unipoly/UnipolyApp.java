@@ -656,7 +656,7 @@ public class UnipolyApp {
 		Collections.sort(ranking);
 		int j = 0;
 		if (Bachelor != null) {
-			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "</p>";
+			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "CHF, " + Bachelor.getECTS() + "ECTS</p>";
 			ranking.remove(Bachelor);
 			j++;
 		}
