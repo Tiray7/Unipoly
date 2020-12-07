@@ -33,7 +33,7 @@ public class Token {
      * @param fieldIndex present which field
      */
     public void moveTo(int fieldIndex) {
-        prevFieldIndex = currFieldIndex;
+        prevFieldIndex = 0;
         this.currFieldIndex = fieldIndex;
     }
 

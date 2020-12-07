@@ -218,8 +218,8 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		checkIfOverStart();
-		switch (currentField.getLabel()) {
+		Config.FieldLabel currentLabel = currentField.getLabel();
+		switch (currentLabel) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
 				playerIsOnPropertyField();
@@ -247,9 +247,9 @@ public class UnipolyApp {
 			case RECESS:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
-			default:
-				checkIfOverStart();
 		}
+		//if((currentLabel != Config.FieldLabel.DETENTION) && (currentLabel != Config.FieldLabel.JUMP))
+			checkIfOverStart();
 	}
 
 	/***
@@ -492,7 +492,6 @@ public class UnipolyApp {
 				}
 			}
 		} else {
-			board.checkAndRaiseRentAndECTS(currentProperty);
 			phase = UnipolyPhase.QUIZTIME;
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " muss " + currentProperty.getCurrentRent()
@@ -505,9 +504,8 @@ public class UnipolyApp {
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() {
-		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 		displayMessage = "Modul Upgrade!!";
-		phase = UnipolyPhase.SHOWANDSWITCH;
+		phase = UnipolyPhase.QUIZTIME;
 	}
 
 	public void quizAnswer(boolean questionResult) {
@@ -535,6 +533,7 @@ public class UnipolyApp {
 				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
 		}
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 	}
 
 	/***
