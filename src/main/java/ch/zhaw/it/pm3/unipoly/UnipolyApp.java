@@ -299,7 +299,6 @@ public class UnipolyApp {
 		FieldProperty currentField = (FieldProperty) this.currentField;
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
-				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet und kauft das Modul.<br>";
@@ -343,7 +342,7 @@ public class UnipolyApp {
 	 * Sets {@link #displayMessage} and {@link UnipolyPhase} accordingly
 	 *
 	 */
-	private void playerIsOnChanceField() {
+	private void playerIsOnChanceField() throws FieldIndexException {
 		if (currentField.getLabel() == Config.FieldLabel.CHANCE) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
@@ -580,10 +579,6 @@ public class UnipolyApp {
 		displayMessage += "<br>" + currentPlayer.getName()
 				+ " musste Module verkaufen um seine Schulden bezahlen zu können.";
 		phase = UnipolyPhase.SHOWANDSWITCH;
-	}
-
-	private void NPCinDebt() {
-		
 	}
 
 	/***
