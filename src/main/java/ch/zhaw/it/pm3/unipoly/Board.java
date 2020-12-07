@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class Board {
@@ -56,9 +57,19 @@ public class Board {
         return moduleGroups.get(index);
     }
 
+    public Integer getIndexFromField(FieldProperty property) {
+        Integer index = null;
+        for (Map.Entry<Integer, FieldProperty> entry : properties.entrySet()) {
+            if (entry.getValue().equals(property)) {
+                index = entry.getKey();
+            }
+        }
+        return index;
+    }
+
     /***
      * getFieldAtIndex methode to get what is the field on this index
-     * 
+     *
      * @param index field index
      * @return the field in the certain index
      * @throws FieldIndexException
