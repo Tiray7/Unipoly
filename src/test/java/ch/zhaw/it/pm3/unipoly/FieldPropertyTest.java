@@ -14,18 +14,14 @@ public class FieldPropertyTest {
     List<Player> players;
     Bank bank;
 
-    /***
-     * setting test up before start testing
-     */
     @Before
     public void setUp() {
         board = new Board();
         bank = new Bank();
         bank.setownedModuls(new HashMap<>(board.getProperties()));
         players = new LinkedList<>();
-            players.add(new Player(0,"Jack", Token.TokenType.ATOM));
-            players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
-
+        players.add(new Player(0,"Jack", Token.TokenType.ATOM));
+        players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
     }
 
     @Test
@@ -45,8 +41,8 @@ public class FieldPropertyTest {
         assertEquals(board.getProperties().get(5).getRentLV3(), board.getProperties().get(5).getCurrentRent());
         assertEquals(board.getProperties().get(6).getRentLV3(), board.getProperties().get(6).getCurrentRent());
         assertEquals(board.getProperties().get(8).getRentLV3(), board.getProperties().get(8).getCurrentRent());
-
     }
+
     @Test
     public void wholeModuleGroupIsOwnedTest() throws FieldIndexException {
         players.get(0).buyPropertyFrom(bank, 1);
@@ -56,6 +52,7 @@ public class FieldPropertyTest {
         assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
         assertEquals(board.getProperties().get(3).getRentLV2(), board.getProperties().get(3).getCurrentRent());
     }
+
     @Test
     public void moduleGroupPartiallyOwnedTest() throws FieldIndexException {
         players.get(0).buyPropertyFrom(bank, 1);
