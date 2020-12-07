@@ -31,6 +31,6 @@ git clone https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4.git
 The project structure is made with Gradle, so you can run ```./gradlew run``` or ```./gradlew test``` / ```gradle run``` or ```gradle test```
 
 ## Test coverage
-![Coverage of whole project](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/blob/master/docs/TestCoverageClasses_07.12.2020.PNG)
+![Coverage of whole project](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/blob/master/docs/TestCoverageProject_07.12.2020.PNG)
 
-![Coverage of classes](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/blob/master/docs/TestCoverageProject_07.12.2020.PNG)
+![Coverage of classes](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/blob/master/docs/TestCoverageClasses_07.12.2020.PNG)
