@@ -90,7 +90,7 @@ public class UnipolyApp {
 
 	/***
 	 * Joins a new Player to the Unipoly application-context
-	 * 
+	 *
 	 * @param name  name of the {@link Player}
 	 * @param token {@link Token.TokenType}
 	 * @throws FieldIndexException gets thrown if the field the player gets drawn to is invalid
@@ -122,7 +122,7 @@ public class UnipolyApp {
 
 	/***
 	 * Initializing a new {@link Player}
-	 * 
+	 *
 	 * @param name  {@link Player} name
 	 * @param token {@link Token.TokenType}
 	 */
@@ -135,7 +135,7 @@ public class UnipolyApp {
 
 	/***
 	 * Starts a new Game - initialize NPC's if needed and sets {@link Player} currentPlayer
-	 * 
+	 *
 	 * @param mode   which {@link Gamemode} - single or multi
 	 * @param npcnum if singleplayer we have to create "npcnum" x NPC players
 	 */
@@ -156,7 +156,7 @@ public class UnipolyApp {
 
 	/***
 	 * Sets the  {@link UnipolyPhase}, {@link #firstDice}  and {@link #secondDice} (obtained with {@link Random})
-	 * 
+	 *
 	 * @param firstDice parameter from frontend choosen by user
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -171,7 +171,7 @@ public class UnipolyApp {
 
 	/***
 	 * Move {@link Player} relative by an amount
-	 * 
+	 *
 	 * @param rolledValue amount to move by
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 1 - 36
 	 */
@@ -188,7 +188,7 @@ public class UnipolyApp {
 
 	/***
 	 * Move Player directly to a chosen field
-	 * 
+	 *
 	 * @param fieldIndex has to be an integer between 1 and 36 or else
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -200,7 +200,7 @@ public class UnipolyApp {
 
 	/***
 	 * Player landed on a jump field and wishes to jump to a certain field
-	 * 
+	 *
 	 * @param fieldIndex has to be an integer between 1 and 36 or else
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
@@ -212,7 +212,7 @@ public class UnipolyApp {
 
 	/***
 	 * Checks field property options according to the {@link #currentPlayer's} position
-	 * 
+	 *
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
@@ -292,14 +292,14 @@ public class UnipolyApp {
 
 	/***
 	 * Logic to check if a {@link Field} is available for a player to buy.
-	 * 
+	 *
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	private void playerIsOnPropertyField() throws FieldIndexException {
 		FieldProperty currentField = (FieldProperty) this.currentField;
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
-				if (currentPlayer.isNPC()) {
+				if (currentPlayer.isNPC() && NPCChecksMoney(currentField.getPropertyCost())) {
 					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
 							+ " gelandet und kauft das Modul.<br>";
 					buyProperty();
@@ -356,7 +356,7 @@ public class UnipolyApp {
 
 	/***
 	 * redCard method to find what to make if the playe get this card
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void readCard() throws FieldIndexException {
@@ -469,7 +469,7 @@ public class UnipolyApp {
 
 	/***
 	 * landedOnOwnedProperty method player landed on owned Land
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
@@ -542,7 +542,7 @@ public class UnipolyApp {
 
 	/***
 	 * payOffDebt method refer to the debtor
-	 * 
+	 *
 	 * @param fieldIndexes field index number
 	 * @throws FieldIndexException
 	 */
@@ -583,7 +583,7 @@ public class UnipolyApp {
 
 	/***
 	 * switchPlayer methode
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void switchPlayer() throws FieldIndexException {
@@ -676,7 +676,7 @@ public class UnipolyApp {
 
 	/***
 	 * payoff the the Detention
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
@@ -706,7 +706,7 @@ public class UnipolyApp {
 
 	/***
 	 * leaving the Detention "on hold"
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void leaveDetention() throws FieldIndexException {
@@ -716,5 +716,13 @@ public class UnipolyApp {
 			displayMessage += "<br>" + currentPlayer.getName() + " wird vom Nachsitzen entlassen.";
 			rollDice(new Random().nextInt(6) + 1);
 		}
+	}
+
+	private boolean NPCChecksMoney(int cost) {
+		boolean willBuy = false;
+		if (currentPlayer.getMoney() > (2 * cost)) {
+			willBuy = true;
+		}
+		return willBuy;
 	}
 }
