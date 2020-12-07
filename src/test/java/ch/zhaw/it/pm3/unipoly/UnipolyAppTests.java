@@ -2,6 +2,7 @@ package ch.zhaw.it.pm3.unipoly;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,36 +33,37 @@ public class UnipolyAppTests {
     private UnipolyApp unipoly;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         player = new Player(0, "timRhomberg", Token.TokenType.ATOM);
         npc = new Player(1, "franzFerdinand", Token.TokenType.NPCI);
         joinedPlayer = new Player(2, "zahnfleischblutermurphy", Token.TokenType.ONEPLUS);
     }
 
-    /**
-     * Systemtests
-     */
+    @Order(1)
     @Test
     public void contextLoads() {
         assertThat(controller).isNotNull();
     }
 
+    @Order(2)
     @Test
     public void getIndexHtml() {
         String filename = controller.get().getFilename();
         assertEquals("index.html", filename);
     }
 
+    @Order(3)
     @Test
     public void getState() throws IOException {
         HttpStatus status = controller.getState().getStatusCode();
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(4)
     @Test
     public void shouldJoinPlayer() throws IOException, FieldIndexException {
         //setup
-        int playerJoined = 2;
+        int playerJoined = 1;
         String name = "zahnfleischblutermurphy";
         ArrayList<Player> players;
         //work
@@ -74,6 +76,7 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(5)
     @Test
     public void shouldStartNewGame() throws IOException, FieldIndexException {
         //setup
@@ -82,10 +85,11 @@ public class UnipolyAppTests {
         HttpStatus status = controller.start(UnipolyApp.Gamemode.SINGLE, amountOfNPCs).getStatusCode();
         Player player = controller.unipoly.getCurrentPlayer();
         //assert
-        assertEquals("timRhomberg", player.getName());
+        assertEquals("NPC1", player.getName());
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(6)
     @Test
     public void shouldResetGame() throws IOException {
         //setup
@@ -97,6 +101,7 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(7)
     @Test
     public void shouldRollADice() throws IOException, FieldIndexException {
         //setup
@@ -112,6 +117,7 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(8)
     @Test
     public void shouldRollTwoDice() throws IOException {
         //setup
@@ -121,11 +127,12 @@ public class UnipolyAppTests {
         //work
         HttpStatus status = controller.rollTwoDice().getStatusCode();
         //assert
-        assertThat(unipoly.getFirstDice()).isBetween(min, max);
-        assertThat(unipoly.getSecondDice()).isBetween(min, max);
+        assertThat(controller.unipoly.getFirstDice()).isBetween(min, max);
+        assertThat(controller.unipoly.getSecondDice()).isBetween(min, max);
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(9)
     @Test
     public void shouldEndATurn() throws IOException, FieldIndexException {
         //setup
@@ -136,15 +143,16 @@ public class UnipolyAppTests {
         //work
         HttpStatus status = controller.endTurn().getStatusCode();
         //assert
-        assertEquals("franzFerdinand", controller.unipoly.getCurrentPlayer().getName());
+        assertEquals("zahnfleischblutermurphy", controller.unipoly.getCurrentPlayer().getName());
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(10)
     @Test
     public void shouldCheckFieldOptions() throws IOException, FieldIndexException {
         //setup
         Field field = new Field(Config.FieldLabel.VISIT, "This is a test.");
-        unipoly.setCurrentField(field);
+        controller.unipoly.setCurrentField(field);
         controller.unipoly.setCurrentPlayer(player);
         //work
         HttpStatus status = controller.checkFieldOptions().getStatusCode();
@@ -153,6 +161,7 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(11)
     @Test
     public void shouldJumpAPlayerToDesiredField() throws IOException, FieldIndexException {
         //setup
@@ -168,25 +177,27 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(12)
     @Test
     public void shouldBuyADesiredPropertyForTheCurrentPlayer() throws IOException {
         //setup
         int ownerIndex;
         int ownedFieldIndex = 1;
-        Map<Integer, FieldProperty> ownedModules;
+        Map<Integer, FieldProperty> ownedModulesForTesting;
         Field field = new Field(Config.FieldLabel.PROPERTY, "This is a test.");
         controller.unipoly.setCurrentField(field);
         controller.unipoly.setCurrentPlayer(player);
         controller.unipoly.getCurrentPlayer().getToken().setCurrentFieldIndex(ownedFieldIndex);
         //work
         HttpStatus status = controller.userWantsToBuy().getStatusCode();
-        ownedModules = unipoly.getCurrentPlayer().getownedModuls();
+        ownedModulesForTesting = controller.unipoly.getCurrentPlayer().getownedModuls();
         //assert
         ownerIndex = controller.unipoly.getCurrentPlayer().getIndex();
-        assertEquals(ownerIndex, ownedModules.get(ownedFieldIndex).getOwnerIndex());
+        assertEquals(ownerIndex, ownedModulesForTesting.get(1).getOwnerIndex());
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(13)
     @Test
     public void shouldPayRansomForCurrentPlayer() throws IOException {
         //setup
@@ -206,6 +217,7 @@ public class UnipolyAppTests {
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
+    @Order(14)
     @Test
     public void shouldGetCurrentPlayerOutOfDetention() throws IOException {
         //setup

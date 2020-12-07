@@ -238,7 +238,7 @@ public class UnipolyApp {
 
 	/***
 	 * Checks if the currentField is the detention field. If so the player gets to choose if he
-	 * wants to take his/her getFreeCard (if there is one in his/her posession). After the evaluation the
+	 * wants to take his/her getFreeCard (if there is one in his/her possession). After the evaluation the
 	 * shown message gets set accordingly.
 	 *
 	 */
