@@ -177,6 +177,7 @@ public class UnipolyApp {
 	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
 		currentField = board.getFieldAtIndex(currentPlayer.getToken().getCurrFieldIndex());
+		checkIfOverStart();
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName() + " hat eine " + firstDice + " und " + secondDice
 					+ " gewürfelt.";
@@ -221,7 +222,6 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		checkIfOverStart();
 		switch (currentField.getLabel()) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
