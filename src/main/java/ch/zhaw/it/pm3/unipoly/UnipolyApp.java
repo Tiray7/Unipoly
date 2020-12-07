@@ -507,8 +507,13 @@ public class UnipolyApp {
 	}
 
 	private void landedOnMyProperty() {
-		displayMessage = "Modul Upgrade!!";
 		phase = UnipolyPhase.QUIZTIME;
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName() + " muss " + ((FieldProperty) currentField).getCurrentRent()
+					+ " CHF Miete zahlen.";
+			int bool = new Random().nextInt(1);
+			quizAnswer(bool == 0);
+		}
 	}
 
 	/***
