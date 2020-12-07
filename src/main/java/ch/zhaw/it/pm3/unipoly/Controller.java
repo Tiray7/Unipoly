@@ -315,8 +315,8 @@ public class Controller {
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> payOffDebt(
-			@RequestParam(value = "FieldIndexes", required = false) int[] FieldIndexes)
-			throws JsonProcessingException {
+			@RequestParam(value = "FieldIndexes", required = false) Integer[] FieldIndexes)
+			throws JsonProcessingException, FieldIndexException {
 		unipoly.payOffDebt(FieldIndexes);
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
