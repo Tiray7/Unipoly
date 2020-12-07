@@ -66,7 +66,7 @@ public abstract class Owner implements Comparable {
     }
 
     public int compareTo(Owner comparply) {
-        return this.getWealth() - comparply.getWealth();
+        return comparply.getWealth() - this.getWealth();
     }
 
     /***

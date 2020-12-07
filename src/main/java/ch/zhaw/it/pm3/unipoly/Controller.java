@@ -314,13 +314,17 @@ public class Controller {
 	 */
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> payOffDebt(
-			@RequestParam(value = "fieldIndices", required = false) Integer[] fieldIndices)
-			throws JsonProcessingException, FieldIndexException {
-		unipoly.payOffDebt(fieldIndices);
+	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "indexes", required = false) String indexes)
+			throws FieldIndexException, JsonProcessingException {
+		String[] stringindexes = indexes.split(",");
+		int size = stringindexes.length;
+		Integer[] FieldIndexes = new Integer[size];
+		for (int i = 0; i < size; i++) {
+			FieldIndexes[i] = Integer.parseInt(stringindexes[i]);
+		}
+		unipoly.payOffDebt(FieldIndexes);
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
-
 		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
 	}
 

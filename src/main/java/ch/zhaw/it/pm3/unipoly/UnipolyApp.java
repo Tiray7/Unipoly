@@ -647,7 +647,7 @@ public class UnipolyApp {
 		}
 
 		gameoverString = "<h1>GAME OVER</h1>";
-		ArrayList<Owner> ranking = new ArrayList<>(players);
+		ArrayList<Owner> ranking = new ArrayList<Owner>(players);
 		Collections.sort(ranking);
 		int j = 0;
 		if (Bachelor != null) {
