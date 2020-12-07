@@ -10,9 +10,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class FieldPropertyTest {
-    Board board;
-    List<Player> players;
-    Bank bank;
+    private Board board;
+    private List<Player> players;
+    private Bank bank;
+    private FieldProperty propertyOne;
+    private FieldProperty propertyTwo;
+
 
     @Before
     public void setUp() {
@@ -22,35 +25,48 @@ public class FieldPropertyTest {
         players = new LinkedList<>();
         players.add(new Player(0,"Jack", Token.TokenType.ATOM));
         players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
+        propertyOne = new FieldProperty("Geschichte", Config.FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0);
+        propertyTwo =  new FieldProperty("Geographie", Config.FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450, 0);
     }
 
     @Test
-    public void onePlayerOwnsWholeModuleGroupTest() throws FieldIndexException {
-        players.get(0).buyPropertyFrom(bank, 1);
-        players.get(0).buyPropertyFrom(bank, 3);
+    public void shouldRaiseRentAndETCS() throws FieldIndexException {
+        int expectedRentLevel1 = 10;
+        int expectedRentLevel2 = 30;
+        int expectedRentLevel3 = 90;
+        int expectedRentLevel4 = 160;
+        int expectedRentLevel5 = 250;
 
-        board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
-
-        assertEquals(board.getProperties().get(1).getRentLV3(), board.getProperties().get(1).getCurrentRent());
-        assertEquals(board.getProperties().get(3).getRentLV3(), board.getProperties().get(3).getCurrentRent());
-
-        players.get(0).buyPropertyFrom(bank, 5);
-        players.get(0).buyPropertyFrom(bank, 6);
-        players.get(0).buyPropertyFrom(bank, 8);
-        board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(8));
-        assertEquals(board.getProperties().get(5).getRentLV3(), board.getProperties().get(5).getCurrentRent());
-        assertEquals(board.getProperties().get(6).getRentLV3(), board.getProperties().get(6).getCurrentRent());
-        assertEquals(board.getProperties().get(8).getRentLV3(), board.getProperties().get(8).getCurrentRent());
+        assertEquals(expectedRentLevel1, propertyOne.getCurrentRent());
+        propertyOne.raiseRentAndECTS();
+        assertEquals(expectedRentLevel2, propertyOne.getCurrentRent());
+        propertyOne.raiseRentAndECTS();
+        assertEquals(expectedRentLevel3, propertyOne.getCurrentRent());
+        propertyOne.raiseRentAndECTS();
+        assertEquals(expectedRentLevel4, propertyOne.getCurrentRent());
+        propertyOne.raiseRentAndECTS();
+        assertEquals(expectedRentLevel5, propertyOne.getCurrentRent());
     }
 
     @Test
-    public void wholeModuleGroupIsOwnedTest() throws FieldIndexException {
-        players.get(0).buyPropertyFrom(bank, 1);
-        players.get(1).buyPropertyFrom(bank, 3);
+    public void shouldDecreaseRentAndECTS() throws FieldIndexException {
+        int expectedRentLevel1 = 20;
+        int expectedRentLevel2 = 60;
+        int expectedRentLevel3 = 180;
+        int expectedRentLevel4 = 320;
+        int expectedRentLevel5 = 450;
 
-        board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
-        assertEquals(board.getProperties().get(1).getRentLV2(), board.getProperties().get(1).getCurrentRent());
-        assertEquals(board.getProperties().get(3).getRentLV2(), board.getProperties().get(3).getCurrentRent());
+        propertyTwo.setCurrentRent(expectedRentLevel5);
+
+        assertEquals(expectedRentLevel5, propertyTwo.getCurrentRent());
+        propertyTwo.decreaseRentAndECTS();
+        assertEquals(expectedRentLevel4, propertyTwo.getCurrentRent());
+        propertyTwo.decreaseRentAndECTS();
+        assertEquals(expectedRentLevel3, propertyTwo.getCurrentRent());
+        propertyTwo.decreaseRentAndECTS();
+        assertEquals(expectedRentLevel2, propertyTwo.getCurrentRent());
+        propertyTwo.decreaseRentAndECTS();
+        assertEquals(expectedRentLevel1, propertyTwo.getCurrentRent());
     }
 
     @Test

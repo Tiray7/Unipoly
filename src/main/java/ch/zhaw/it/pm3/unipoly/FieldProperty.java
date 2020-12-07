@@ -62,6 +62,10 @@ public class FieldProperty extends Field {
         this.ownerIndex = ownerIndex;
     }
 
+    public void setCurrentRent(int currentRent) {
+        this.currentRent = currentRent;
+    }
+
     public boolean isOwnerBank() {
         return ownerIndex == -1;
     }

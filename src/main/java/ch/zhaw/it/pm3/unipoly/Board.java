@@ -128,10 +128,7 @@ public class Board {
                 countSameOwner++;
             }
         }
-        if (countSameOwner == currentModuleGroup.size()) { 
-            return true;
-        }
-        return false;
+        return countSameOwner == currentModuleGroup.size();
     }
 
     public void checkAndRaiseRentAndECTS(FieldProperty currentProperty) {
