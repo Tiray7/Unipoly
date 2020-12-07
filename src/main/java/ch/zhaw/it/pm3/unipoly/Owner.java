@@ -3,104 +3,126 @@ package ch.zhaw.it.pm3.unipoly;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Owner {
+public abstract class Owner implements Comparable<Owner> {
 
     private final int index;
     private final String name;
     private int money;
-    private int RoadOwned;
-    private int PropertyOwned;
+    private int ModulsOwned;
     private int Debt;
     private Owner Debtor;
     private Map<Integer, FieldProperty> ownedModuls;
 
+    /***
+     * owner constructor
+     * 
+     * @param index        present owner index
+     * @param id           present owner ID
+     * @param initialMoney present owner intial money which is 200000
+     */
     public Owner(int index, String id, int initialMoney) {
         this.index = index;
         this.name = id;
         money = initialMoney;
         ownedModuls = new HashMap<Integer, FieldProperty>();
-        setPropertyOwned();
+        setModulsOwned();
     }
 
+    /*------ GET functions ------------------------------------------*/
     public int getIndex() { return index; }
     public boolean isBank() { return this.index == -1; }
+    public boolean isNPC() { return this.name.contains("NPC"); }
     public String getName() { return name; }
     public int getMoney() { return money; }
-    public int getRoadOwned() { return RoadOwned; }
     public int getDebt() { return Debt; }
-    public int getPropertyOwned() { return PropertyOwned; }
+    public int getModulsOwned() { return ModulsOwned; }
     public Owner getDebtor() { return Debtor; }
     public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
+    /*---------------------------------------------------------------*/
+    
+    public void setDebt(int amount){ this.Debt = amount; }
+    public void setDebtor(Owner debtor) { this.Debtor = debtor; }
     public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
-    public void setPropertyOwned() { this.PropertyOwned = ownedModuls.size(); }
+    public void setModulsOwned() { this.ModulsOwned = ownedModuls.size(); }
 
-    // TODO: Call this function to check player own the road
-    // or maybe a function in fields
-    public void setRoadOwned(int roadOwned) { this.RoadOwned = roadOwned; }
+    public int getWealth() {
+        int ThisWealth = this.money;
+        for (FieldProperty modul : this.ownedModuls.values()) {
+            ThisWealth += modul.getCurrentRent();
+        }
+        return ThisWealth;
+    }
 
+    public boolean setandgetBankrupt() {
+        if (getWealth() < this.Debt) {
+            this.Debtor.ownedModuls.putAll(this.ownedModuls);
+            this.ownedModuls.clear();
+            this.Debt -= getWealth();
+            setModulsOwned();
+            this.Debtor.setModulsOwned();
+            return true;
+        }
+        return false;
+    }
 
-    // Player has to pay a certain amount to another Player/Bank
-    public void transferMoneyTo(Owner player, int amount) {
+    public int compareTo(Owner comparable) {
+        return comparable.getWealth() - this.getWealth();
+    }
+
+    /***
+     * transfer money between players only with certain amount
+     *  @param player which player is included with this transfer
+     * @param amount what is the amount to transfer
+     * @return
+     */
+    public double transferMoneyTo(Owner player, int amount) {
         player.money += amount;
         this.money -= amount;
+        return this.money;
     }
 
-    // transfer a field
-    public void transferFieldTo(Owner owner, int fieldIndex) {
-        this.ownedModuls.put(fieldIndex, owner.ownedModuls.get(fieldIndex));
-        this.ownedModuls.get(fieldIndex).setOwnerIndex(this.index);
-        owner.ownedModuls.remove(fieldIndex); 
+    /***
+     * transfer properties between owners
+     * 
+     * @param newOwner   the new owner of the property
+     * @param fieldIndex field index, of the property that needs to be transferred
+     */
+    public void transferPropertyTo(Owner newOwner, int fieldIndex) {
+        this.ownedModuls.get(fieldIndex).setOwnerIndex(newOwner.getIndex());
+        newOwner.ownedModuls.put(fieldIndex, this.ownedModuls.get(fieldIndex));
+        this.ownedModuls.remove(fieldIndex);
+        setModulsOwned();
+        newOwner.setModulsOwned();
     }
 
-    public void buyPropertyFrom(Owner owner, int FieldIndex) {
-        transferMoneyTo(owner, owner.ownedModuls.get(FieldIndex).getPropertyCost());
-        transferFieldTo(owner, FieldIndex);
-        setPropertyOwned();
+    /***
+     * buy a property from another owner
+     * 
+     * @param owner      is the current owner of the field
+     * @param fieldIndex field index of the property to be sold
+     */
+    public void buyPropertyFrom(Owner owner, int fieldIndex) {
+        transferMoneyTo(owner, owner.ownedModuls.get(fieldIndex).getPropertyCost());
+        owner.transferPropertyTo(this, fieldIndex);
     }
 
-    // TODO: Upgrade Property
-    public void upgradeProperty(int FieldIndex) {
-    }
-
-    // TODO: Player landed on an owned field
-    public boolean payRent(Owner ownerOfField, FieldProperty field) {
-        this.transferMoneyTo(ownerOfField, field.getCurrentRent());
-        field.raiseRent();
-        // Player has to pay Rent
-        /*
-        amount = field.currentRent
-        Player owner = Owner of the field.
-        
-        then first check with setandcheckDebt() if he is able to pay
-        if True:
-                Transfer the money
-        if False:
-                return false
-
-        if The Owner has whole modulgroup:
-                increase rent of whole modulgroup
-            else:
-                increse rent of this field
-            return true
-        */
-        return true;
-    }
-
-
-
-    // TODO: Calculate what the Player owes
+    /***
+     *  setandcheckDebt methode Calculate what the Player owes
+     * @param debtor is the dept
+     * @param amount is the amount of dept
+     * @return
+     */
     public boolean setandcheckDebt(Owner debtor, int amount) {
-/*
-        if (this.getMoney()<amount) {
-            Pay what you have to Debtor
-            set Debt
-            set Debtor
+        if (this.money < amount) {
+            transferMoneyTo(debtor, this.money);
+            this.Debt = amount - this.money;
+            this.Debtor = debtor;
             return true;
         } else {
             transferMoneyTo(debtor, amount);
+            this.Debt = 0;
+            this.Debtor = null;
             return false;
         }
-*/
-        return false;
     }
 }

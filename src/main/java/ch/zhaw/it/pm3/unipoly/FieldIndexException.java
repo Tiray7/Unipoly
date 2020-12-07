@@ -8,5 +8,4 @@ public class FieldIndexException extends Exception {
     public FieldIndexException(String message) {
         super("Field index is out of bounds.");
     }
-
 }

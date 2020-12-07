@@ -3,23 +3,29 @@ package ch.zhaw.it.pm3.unipoly;
 public class Player extends Owner {
 
     private Token token;
-    private boolean bankrupt = false;
     private boolean FreeCard = false;
     private int leftTimeInDetention = 0;
+    private int ects = 0;
 
-    public Player(int index, String name, TokenType tokenType) {
+    /***
+     * constructor Player
+     * @param index is the player index
+     * @param name is the player name
+     * @param tokenType is the token type
+     */
+
+    public Player(int index, String name, Token.TokenType tokenType) {
         super(index, name, 1500);
         token = new Token(tokenType);
     }
 
-    public boolean getFreeCard() {
-        return FreeCard;
-    }
-
-    public Token getToken() {
-        return token;
-    }
-
+    /*------ GET functions ------------------------------------------*/
+    public boolean getFreeCard() { return FreeCard; }
+    public Token getToken() { return token; }
+    public int getECTS() { return ects; }
+    public int getleftTimeInDetention() { return leftTimeInDetention; }
+    /*---------------------------------------------------------------*/
+    
     public void setToken(Token token) {
         this.token = token;
     }
@@ -28,16 +34,12 @@ public class Player extends Owner {
         FreeCard = outDetention;
     }
 
-    public boolean getBankrupt() {
-        return bankrupt;
+    public void increaseECTS(int amount) {
+        this.ects += amount;
     }
 
-    public void setBankrupt(boolean isBankrupt) {
-        this.bankrupt = isBankrupt;
-    }
-
-    public int getleftTimeInDetention() {
-        return leftTimeInDetention;
+    public boolean isBachelor(){ 
+        return ects >= 180;
     }
 
     public void decreaseleftTimeInDetention() {
@@ -48,6 +50,10 @@ public class Player extends Owner {
         return leftTimeInDetention > 0;
     }
 
+    public void setLeftTimeInDetention(int leftTimeInDetention) {
+        this.leftTimeInDetention = leftTimeInDetention;
+    }
+
     public void goDetention() {
         token.moveTo(9);
         this.leftTimeInDetention = 3;
@@ -56,4 +62,5 @@ public class Player extends Owner {
     public void outDetention() {
         this.leftTimeInDetention = 0;
     }
+
 }

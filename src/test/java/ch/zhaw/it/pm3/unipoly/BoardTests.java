@@ -11,7 +11,6 @@ public class BoardTests {
     @Before
     public void setUp() {
         board = new Board();
-        board.fillPropertyMap();
     }
 
     @Test
@@ -44,13 +43,6 @@ public class BoardTests {
     }
 
     @Test
-    public void shouldRaiseRentOfProperty() {
-        assertEquals(10, board.getRentFromProperty(1));
-        board.raiseRentFromProperty(1);
-        assertEquals(30, board.getRentFromProperty(1));
-    }
-
-    @Test
     public void shouldReturnPropertyOwner() {
         assertEquals(-1, board.getPropertyOwner(1));
     }
@@ -58,5 +50,18 @@ public class BoardTests {
     @Test
     public void shouldThrowFieldIndexException() {
         assertThrows(FieldIndexException.class, () -> board.getPropertyNameAtIndex(67));
+    }
+
+    @Test
+    public void fillModuleGroupMaps(){
+        board.getProperties().forEach((fieldIndex, fieldProperty) -> {
+            try {
+                board.getModuleGroupAtIndex(fieldProperty.getModuleGroupIndex()).forEach(fieldPropertyOfSameModule -> {
+                    assertEquals(fieldProperty.getModuleGroupIndex(), fieldPropertyOfSameModule.getModuleGroupIndex());
+                });
+            } catch (FieldIndexException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

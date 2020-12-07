@@ -21,18 +21,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body ng-app="monopolyApp" ng-controller="Controller" class="noselect">
+<body ng-app="monopolyApp" ng-controller="Controller" class="noselect" ng-init="resetGame(true)">
   <header class="site-header">
     <img class="logo" src="unipolybannerwhite.png" />
+    <div class="description">A project by Kunsang Kündetsang, Lüönd Chiara, Mihajlovic David, Rentsch Jari, Shakir Omar</div>
     <div id="new-btn" href="#" class="box-btn" ng-click="resetGame()">
       <div class="btn btn-two">
         <span>Start New Game</span>
       </div>
     </div>
-    <!--
-  <h1 class="title">Unipoly</h1>
-  <h2 class="description">Software Projekt - Ein Monopoly Spiel</h2>
-  -->
   </header>
   <div id="board">
 
@@ -93,7 +90,7 @@
                     <div class="einstein token-menu grow"></div>
                   </td>
                   <td ng-click='join("CRADLE")'>
-                    <div class="cradle token-menu grow" ></div>
+                    <div class="cradle token-menu grow"></div>
                   </td>
                 </tr>
                 <tr>
@@ -123,13 +120,44 @@
       </div>
     </div>
 
+    <div id="gameover_popup" href="#" class="popup_background" hidden>
+      <div class="popup-con">
+        <div class="popup-end"></div>
+        <div id="new-btn" href="#" class="end-btn" ng-click="resetGame()">
+          <div class="btn btn-two">
+            <span>Start New Game</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="yesno_popup" href="#" class="popup_background" hidden>
       <div class="popup-con">
         <h3 class="popup-p"></h3>
         <table>
           <tr>
-            <td class="grow" ng-click='yesOrno(true)'><h4>Yes</h4></td>
-            <td class="grow" ng-click='yesOrno(false)'><h4>No</h4></td>
+            <td class="grow" ng-click='yesOrno(true)'>
+              <h4>Yes</h4>
+            </td>
+            <td class="grow" ng-click='yesOrno(false)'>
+              <h4>No</h4>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="quiz_popup" href="#" class="popup_background" hidden>
+      <div class="popup-con">
+        <h3 class="popup-p"></h3>
+        <table>
+          <tr>
+            <td class="grow" id="quizanswer_1" ng-click='quizanswer(1)'>
+            </td>
+            <td class="grow" id="quizanswer_2" ng-click='quizanswer(2)'>
+            </td>
+            <td class="grow" id="quizanswer_3" ng-click='quizanswer(3)'>
+            </td>
           </tr>
         </table>
       </div>
@@ -156,6 +184,15 @@
     <div id="gameboard" href="#" class="table" hidden>
       <div id="boardgrid" class="board">
         <div class="center">
+          <div id="select_popup" hidden>
+            <div class="popup-con">
+              <h3 class="popup-p"></h3>
+              <div class="popup-div"></div>
+              <div id="sell_btn" class="grow" ng-click='sellProperty()' hidden>
+                <h4>Verkaufen</h4>
+              </div>
+            </div>
+          </div>
           <div class="dice-con grow" ng-click="ToggleDiceInput()">
             <h2>Roll The Dices</h2>
             <img class="dice" src="twodices.png" />
@@ -189,12 +226,13 @@
         <div class="row horizontal-row bottom-row">
           <div id="pos8" class="space property" ng-click="fieldaction(8)">
             <div class="container">
-              <div class="color-bar light-blue"></div>
+              <div class="color-bar light-blue">
+              </div>
               <div class="name">Psychologie</div>
               <div class="price">Einschreibe- gebühr CHF 120</div>
             </div>
           </div>
-          <div id=" pos7" class="space jumper" ng-click="fieldaction(7)">
+          <div id="pos7" class="space jumper" ng-click="fieldaction(7)">
             <div class="container">
               <div class="name">Springer</div>
               <i class="drawing fa fa-jumper"></i>
@@ -396,63 +434,63 @@
         </div>
 
         <div class="row vertical-row right-row">
-          <div id=" pos28" class="space property" ng-click="fieldaction(28)">
+          <div id="pos28" class="space property" ng-click="fieldaction(28)">
             <div class="container">
               <div class="color-bar green"></div>
               <div class="name long-name">Veterinär- medizin</div>
               <div class="price">Einschreibe- gebühr CHF 300</div>
             </div>
           </div>
-          <div id=" pos29" class="space chance" ng-click="fieldaction(29)">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
+          <div id="pos29" class="space chance" ng-click="fieldaction(29)">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
           </div>
-        </div>
-        <div id="pos30" class="space property" ng-click="fieldaction(30)">
-          <div class="container">
-            <div class="color-bar green"></div>
-            <div class="name long-name">Biomedizin</div>
-            <div class="price">Einschreibe- gebühr CHF 300</div>
+          <div id="pos30" class="space property" ng-click="fieldaction(30)">
+            <div class="container">
+              <div class="color-bar green"></div>
+              <div class="name long-name">Biomedizin</div>
+              <div class="price">Einschreibe- gebühr CHF 300</div>
+            </div>
           </div>
-        </div>
-        <div id="pos31" class="space property" ng-click="fieldaction(31)">
-          <div class="container">
-            <div class="color-bar green"></div>
-            <div class="name long-name">Humanmedizin</div>
-            <div class="price">Einschreibe- gebühr CHF 320</div>
+          <div id="pos31" class="space property" ng-click="fieldaction(31)">
+            <div class="container">
+              <div class="color-bar green"></div>
+              <div class="name long-name">Humanmedizin</div>
+              <div class="price">Einschreibe- gebühr CHF 320</div>
+            </div>
           </div>
-        </div>
-        <div id="pos32" class="space chance" ng-click="fieldaction(32)">
-          <div class="container">
-            <div class="name">Chance</div>
-            <i class="drawing fa fa-question"></i>
+          <div id="pos32" class="space chance" ng-click="fieldaction(32)">
+            <div class="container">
+              <div class="name">Chance</div>
+              <i class="drawing fa fa-question"></i>
+            </div>
           </div>
-        </div>
-        <div id="pos33" class="space property" ng-click="fieldaction(33)">
-          <div class="container">
-            <div class="color-bar dark-blue"></div>
-            <div class="name">Aviatik</div>
-            <div class="price">Einschreibe- gebühr CHF 350</div>
+          <div id="pos33" class="space property" ng-click="fieldaction(33)">
+            <div class="container">
+              <div class="color-bar dark-blue"></div>
+              <div class="name">Aviatik</div>
+              <div class="price">Einschreibe- gebühr CHF 350</div>
+            </div>
           </div>
-        </div>
-        <div id="pos34" class="space jumper" ng-click="fieldaction(34)">
-          <div class="container">
-            <div class="name">Springer</div>
-            <i class="drawing fa fa-jumper"></i>
-            <div class="price">Preis 100$</div>
+          <div id="pos34" class="space jumper" ng-click="fieldaction(34)">
+            <div class="container">
+              <div class="name">Springer</div>
+              <i class="drawing fa fa-jumper"></i>
+              <div class="price">Preis 100$</div>
+            </div>
           </div>
-        </div>
-        <div id="pos35" class="space property" ng-click="fieldaction(35)">
-          <div class="container">
-            <div class="color-bar dark-blue"></div>
-            <div class="name long-name">Rechtswissen- schaften</div>
-            <div class="price">Einschreibe- gebühr CHF 400</div>
+          <div id="pos35" class="space property" ng-click="fieldaction(35)">
+            <div class="container">
+              <div class="color-bar dark-blue"></div>
+              <div class="name long-name">Rechtswissen- schaften</div>
+              <div class="price">Einschreibe- gebühr CHF 400</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
   </div>
   <script src="script.js"></script>

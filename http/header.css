@@ -24,10 +24,8 @@
 }
 
 .description {
-    color: #fcfcfc;
-    margin-top: -0.2em;
-    font-family: 'Ubuntu', Tahoma, Arial;
-    font-size: 0.875rem;
+    display: inline-block;
+    color: white;
 }
 
 .box-btn {

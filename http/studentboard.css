@@ -58,6 +58,7 @@
   grid-template-rows: repeat(5, 1fr);
   justify-items: center;
   align-items: center;
+  position: relative;
 }
 
 .board-title {
@@ -76,10 +77,10 @@
 #playerlist td {
   font-family: "raleway", Helvetica, sans-serif;
   font-variant: normal;
-  font-size: 20px;
+  font-size: 17px;
 }
 
-#playerlist .listtoken {
+.listtoken {
   box-sizing: border-box;
   width: 25px;
   height: 25px;
@@ -238,8 +239,15 @@
 }
 
 .property .color-bar {
-  height: 25px;
+  min-height: 22px;
   border-bottom: 2px solid #080808;
+  justify-content: center;
+  display: flex;
+  padding-top: 1px;
+}
+.property .color-bar .listtoken {
+  width: 15px;
+  height: 15px;
 }
 .property .name {
   padding-bottom: 50px;
