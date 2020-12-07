@@ -534,23 +534,22 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * payOffDebt method refer to the debtor
-	 *
-	 * @param fieldIndexes field index number
-	 * @throws FieldIndexException
+	 * payOffDebt method refers to the debtor
+	 * 
+	 * @param fieldIndices field index number
 	 */
-	public void payOffDebt(Integer[] fieldIndexes) throws FieldIndexException {
+	public void payOffDebt(Integer[] fieldIndices) {
 		Owner Debtor = currentPlayer.getDebtor();
 		int propertyValue = 0;
-		for (int i = 0; i < fieldIndexes.length; i++) {
+		for (int i = 0; i < fieldIndices.length; i++) {
 			if (Debtor.isBank()) {
-				sellProperty(fieldIndexes[i], Debtor);
+				sellProperty(fieldIndices[i], Debtor);
 			} else {
-				propertyValue = board.getProperties().get(fieldIndexes[i]).getPropertyCost();
-				currentPlayer.transferPropertyTo(Debtor, fieldIndexes[i]);
+				propertyValue = board.getProperties().get(fieldIndices[i]).getPropertyCost();
+				currentPlayer.transferPropertyTo(Debtor, fieldIndices[i]);
 				currentPlayer.setDebt(Math.max(0, currentPlayer.getDebt() - propertyValue));
-				board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndexes[i]));
-				board.getProperties().get(fieldIndexes[i]).resetLevel();
+				board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndices[i]));
+				board.getProperties().get(fieldIndices[i]).resetLevel();
 			}
 		}
 		if (currentPlayer.setandcheckDebt(Debtor, currentPlayer.getDebt())) {
