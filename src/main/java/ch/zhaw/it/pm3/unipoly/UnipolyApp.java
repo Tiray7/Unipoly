@@ -221,6 +221,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
+		checkIfOverStart();
 		switch (currentField.getLabel()) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
@@ -250,7 +251,6 @@ public class UnipolyApp {
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
 		}
-			checkIfOverStart();
 	}
 
 	/***
@@ -656,7 +656,7 @@ public class UnipolyApp {
 
 		for (int i = 0; i < ranking.size(); i++) {
 			Owner player = ranking.get(i);
-			gameoverString += "<p>" + (i + 1) + ".Place " + player.getName() + ", " + player.getWealth() + "</p>";
+			gameoverString += "<p>" + (i + 1) + ".Place " + player.getName() + ", " + player.getWealth() + "CHF, " + ((Player) player).getECTS() + "ECTS</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}
