@@ -79,16 +79,6 @@ public class FieldPropertyTest {
     }
 
     @Test
-    public void testECTS() {
-        assertEquals(5, board.getProperties().get(1).getCurrentECTSLevel());
-        board.getProperties().forEach((Integer, FieldProperty)->{
-            assertEquals(FieldProperty.getModuleGroupIndex()+5, FieldProperty.getCurrentECTSLevel());
-            FieldProperty.raiseRentAndECTS();
-            assertEquals(FieldProperty.getModuleGroupIndex()+7, FieldProperty.getCurrentECTSLevel());
-        });
-    }
-
-    @Test
     public void resetLevelTest() throws FieldIndexException {
     players.get(0).buyPropertyFrom(bank, 1);
     players.get(1).buyPropertyFrom(bank, 3);
@@ -97,6 +87,6 @@ public class FieldPropertyTest {
     board.checkAndRaiseRentAndECTS(board.getFieldPropertyAtIndex(1));
     board.resetLevelAll(0);
     assertEquals(board.getProperties().get(1).getRentLV1(),board.getProperties().get(1).getCurrentRent());
-    assertEquals(5, board.getProperties().get(1).getCurrentECTSLevel());
+    assertEquals(10, board.getProperties().get(1).getCurrentECTSLevel());
     }
 }
