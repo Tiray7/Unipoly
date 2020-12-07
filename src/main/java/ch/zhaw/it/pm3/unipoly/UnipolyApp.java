@@ -713,6 +713,12 @@ public class UnipolyApp {
 		}
 	}
 
+	/**
+	 * The NPC checks if he owns twice the amount of money which is required to pay.
+	 *
+	 * @param cost to check
+	 * @return if he has twice the money required or not
+	 */
 	private boolean NPCChecksMoney(int cost) {
 		boolean willBuy = false;
 		if (currentPlayer.getMoney() > (2 * cost)) {
@@ -721,10 +727,13 @@ public class UnipolyApp {
 		return willBuy;
 	}
 
+	/**
+	 * The NPC checks if there is a field free of a modulegroup he partly owns. If not he will jump to the GO field.
+	 */
 	private int NPCJumps() {
 		Map<Integer, FieldProperty> mapProperties = board.getProperties();
 		Map<Integer, LinkedList<FieldProperty>> mapModuleGroups = board.getModuleGroups();
-		int jumpIndex = 0;
+		int jumpIndex = 0; // 0 is the index of the GO field
 		for (Map.Entry<Integer, FieldProperty> entry : mapProperties.entrySet()) {
 			if (entry.getValue().getOwnerIndex() == currentPlayer.getIndex() && jumpIndex == 0) {
 				LinkedList<FieldProperty> fields = mapModuleGroups.get(entry.getValue().getModuleGroupIndex());
