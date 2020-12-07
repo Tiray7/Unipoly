@@ -19,7 +19,7 @@ import java.io.IOException;
 @RestController
 public class Controller {
 
-	private UnipolyApp unipoly;
+	protected UnipolyApp unipoly;
 	private static final Logger unipolyLogger = LogManager.getLogger(Controller.class);
 
 	public static void main(String[] args) {
@@ -208,7 +208,7 @@ public class Controller {
 
 	@RequestMapping(value = "/quizanswer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public UnipolyApp quizAnswer(@RequestParam boolean x) throws FieldIndexException {
+	public UnipolyApp quizAnswer(@RequestParam boolean x) {
 		unipoly.quizAnswer(x);
 		return unipoly;
 	}

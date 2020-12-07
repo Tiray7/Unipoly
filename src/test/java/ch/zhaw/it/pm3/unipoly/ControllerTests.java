@@ -1,13 +1,10 @@
-
-
-/*
 package ch.zhaw.it.pm3.unipoly;
 
-import ch.zhaw.it.pm3.unipoly.Controller;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,10 +27,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 @AutoConfigureMockMvc
 class ControllerTests {
 
+	private static final Logger unipolyMcLogger = LogManager.getLogger(UnipolyApp.class);
+
 	@Autowired
 	private MockMvc mvc;
 
-	@InjectMocks
+	@Autowired
 	private Controller controller;
 
 	@Before
@@ -43,40 +42,237 @@ class ControllerTests {
 	}
 
 	@Test
-	public void shouldReturnUnipolyState() throws Exception {
-		MockHttpServletResponse response = mvc.perform(
-				get("/state")
-						.accept(MediaType.ALL))
-				.andExpect(status().isAccepted())
-				.andReturn().getResponse();
+	public void getState() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/state")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "State returned.");
+		}
 
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
 	}
 
 	@Test
-	public void shouldJoinPlayerAndReturnUnipolyState() throws Exception {
-		MockHttpServletResponse response = mvc.perform(
-				get("/join")
-						.accept(MediaType.ALL))
-				.andExpect(status().isAccepted())
-				.andReturn().getResponse();
+	public void getJoin() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/join")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "join() method reached.");
+		}
 
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
 	}
 
 	@Test
-	public void shouldResetGameAndReturnNewUnipolyInstance() throws Exception {
+	public void getStart() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/start")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "start() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getResetGame() throws Exception {
 		MockHttpServletResponse response = mvc.perform(
 				get("/resetgame")
 						.accept(MediaType.ALL))
 				.andExpect(status().isAccepted())
 				.andReturn().getResponse();
 
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(HttpStatus.ACCEPTED.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getRollDice() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/rolldice")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "rollDice() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getRollTwoDice() {
+		try {
+			mvc.perform(
+					get("/rolltwodice")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "rollTwoDice() method reached.");
+		}
+	}
+
+	@Test
+	public void getEndTurn() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/endturn")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "endTurn() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getCheckFieldOptions() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/checkfieldOptions")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "checkFieldOptions() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getJumpPlayer() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/jumpplayer")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "jumpplayer() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getUserWantToBuy() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/userwantstobuy")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "buyProperty() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getPayDetentionRandom() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/paydetentionransom")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "payDetentionRansom() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getLeaveDetention() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/leavedetention")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "leaveDetention() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getPayoffDebt() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/payoffdebt")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "payOffDebt() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getReadCard() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/readcard")
+							.accept(MediaType.ALL))
+					.andExpect(status().isAccepted())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "readCard() method reached.");
+		}
+
+		assertThat(HttpStatus.OK.value()).isEqualTo(response.getStatus());
+	}
+
+	@Test
+	public void getQuizAnswer() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		try {
+			response = mvc.perform(
+					get("/quizanswer")
+							.accept(MediaType.ALL))
+					.andExpect(status().is4xxClientError())
+					.andReturn().getResponse();
+		} catch (Exception e) {
+			unipolyMcLogger.log(Level.DEBUG, "quizAnswer() method reached.");
+		}
+
+		assertThat(HttpStatus.BAD_REQUEST.value()).isEqualTo(response.getStatus());
 	}
 }
-*/
-
 
 
 

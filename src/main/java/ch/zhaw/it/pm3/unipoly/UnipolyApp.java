@@ -27,7 +27,7 @@ public class UnipolyApp {
 	private String displayMessage = "";
 	private String gameoverString = "";
 
-	private static final Logger unipolyMcLogger = LogManager.getLogger(Controller.class);
+	private static final Logger unipolyMcLogger = LogManager.getLogger(UnipolyApp.class);
 
 	/**
 	 * gamemode enum to find which mode to play , single player or mutliPlayer
@@ -132,7 +132,7 @@ public class UnipolyApp {
 	 */
 	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
 
-		if (Gamemode.SINGLE == mode) {
+		if (Gamemode.SINGLE == mode) { //TODO sollte das nicht equals sein? == eigentlich nur für ints n Konsorten
 			if (npcnum >= 1)
 				initializePlayer("NPC1", Token.TokenType.NPCI);
 			if (npcnum >= 2)
