@@ -16,7 +16,7 @@ import java.util.HashMap;
 /**
  * Represents the Unipoly application - handles the main part of the game logic
  * and connects all the pieces together.
- * Has the {@link Component} tag for simple initialization into the spring application context.
+ * Has the {@link Component} tag for simple initialization into the spring web application context.
  */
 @Component
 public class UnipolyApp {
@@ -66,7 +66,9 @@ public class UnipolyApp {
 		unipolyMcLogger.log(Level.DEBUG, "UnipolyApp initialized.");
 	}
 
-	/*------ GET and SET functions ------------------------------------------------------------------*/
+	/**
+	 * "Unused" getters are needed for the javascript-frontend and or testing-purposes
+	 */
 	public Field getcurrentField() { return currentField; }
 	public Bank getBank() { return bank; }
 	public Board getBoard() { return board; }
@@ -216,32 +218,36 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		checkIfOverStart();
 		switch (currentField.getLabel()) {
 			case PROPERTY:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
 				playerIsOnPropertyField();
+				break;
 			case CHANCE:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnChanceField() gets executed");
 				playerIsOnChanceField();
+				break;
 			case JUMP:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnJumpField() gets executed");
 				playerIsOnJumpField();
+				break;
 			case GO:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoField() gets executed");
 				playerIsOnGoField();
+				break;
 			case VISIT:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnVisit() gets executed");
 				playerIsOnVisit();
+				break;
 			case DETENTION:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoToDetention() gets executed");
 				playerIsOnGoToDetention();
+				break;
 			case RECESS:
 				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
-			default:
-				break;
 		}
+			checkIfOverStart();
 	}
 
 	/***
@@ -251,7 +257,6 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnGoToDetention() {
-		if (currentField.getLabel() == Config.FieldLabel.DETENTION) {
 			if (currentPlayer.getFreeCard()) {
 				currentPlayer.setFreeCard(false);
 				if (currentPlayer.isNPC()) {
@@ -272,7 +277,6 @@ public class UnipolyApp {
 				}
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -280,14 +284,12 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnGoZnueniPause() {
-		if (currentField.getLabel() == Config.FieldLabel.RECESS) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist in die Znüni Pause.";
 			} else {
 				displayMessage = "Znüni Zeit. Ruh dich etwas aus:<br>Trink einen Kaffee und iss ein Sandwich!";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -328,14 +330,12 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnVisit() {
-		if (currentField.getLabel() == Config.FieldLabel.VISIT) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf dem 'Nur zu Besuch' Feld gelandet.";
 			} else {
 				displayMessage = "Zum Glück nur zu Besuch im Rektorat.";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -343,8 +343,7 @@ public class UnipolyApp {
 	 * Sets {@link #displayMessage} and {@link UnipolyPhase} accordingly
 	 *
 	 */
-	private void playerIsOnChanceField() {
-		if (currentField.getLabel() == Config.FieldLabel.CHANCE) {
+	private void playerIsOnChanceField() throws FieldIndexException {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
 				readCard();
@@ -352,13 +351,12 @@ public class UnipolyApp {
 				displayMessage = "Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!";
 				phase = UnipolyPhase.SHOWCARD;
 			}
-		}
 	}
 
 	/***
-	 * redCard method to find what to make if the playe get this card
-	 * 
-	 * @throws FieldIndexException
+	 * If player is a NPC card gets drawn and shown.
+	 * If player is human card gets drawn after clicking in the frontend.
+	 * After that sets {@link #displayMessage} and {@link UnipolyPhase} accordingly.
 	 */
 	public void readCard() throws FieldIndexException {
 		cards.get(0);
@@ -411,7 +409,6 @@ public class UnipolyApp {
 
 	private void playerIsOnJumpField() {
 		final int COST_FOR_JUMP = 100;
-		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
@@ -430,11 +427,9 @@ public class UnipolyApp {
 				}
 				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
-		}
 	}
 
 	private void playerIsOnGoField() throws FieldIndexException {
-		if (currentField.getLabel() == Config.FieldLabel.GO) {
 			bank.transferMoneyTo(currentPlayer, 400);
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName()
@@ -443,7 +438,6 @@ public class UnipolyApp {
 				displayMessage = "Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	private void checkIfOverStart() {
@@ -470,7 +464,7 @@ public class UnipolyApp {
 
 	/***
 	 * landedOnOwnedProperty method player landed on owned Land
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
@@ -496,7 +490,6 @@ public class UnipolyApp {
 				}
 			}
 		} else {
-			board.checkAndRaiseRentAndECTS(currentProperty);
 			phase = UnipolyPhase.QUIZTIME;
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " muss " + currentProperty.getCurrentRent()
@@ -509,9 +502,8 @@ public class UnipolyApp {
 
 	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() {
-		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 		displayMessage = "Modul Upgrade!!";
-		phase = UnipolyPhase.SHOWANDSWITCH;
+		phase = UnipolyPhase.QUIZTIME;
 	}
 
 	public void quizAnswer(boolean questionResult) {
@@ -539,10 +531,11 @@ public class UnipolyApp {
 				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
 		}
+		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 	}
 
 	/***
-	 * payOffDebt method refer to the debtor
+	 * payOffDebt method refers to the debtor
 	 * 
 	 * @param fieldIndexes field index number
 	 * @throws FieldIndexException
@@ -582,9 +575,7 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	private void NPCinDebt() {
-		
-	}
+
 
 	/***
 	 * switchPlayer methode
@@ -681,7 +672,7 @@ public class UnipolyApp {
 
 	/***
 	 * payoff the the Detention
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
@@ -711,7 +702,7 @@ public class UnipolyApp {
 
 	/***
 	 * leaving the Detention "on hold"
-	 * 
+	 *
 	 * @throws FieldIndexException
 	 */
 	public void leaveDetention() throws FieldIndexException {
