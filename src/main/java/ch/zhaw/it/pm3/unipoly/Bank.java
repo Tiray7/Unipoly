@@ -9,9 +9,5 @@ public class Bank extends Owner {
         super(-1, "Bank", 2000000);
     }
 
-    @Override
-    public int compareTo(Object o) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+
 }
