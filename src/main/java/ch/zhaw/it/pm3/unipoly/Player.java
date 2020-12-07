@@ -65,8 +65,6 @@ public class Player extends Owner {
 
     @Override
     public int compareTo(Object o) {
-
         return 0;
     }
-
 }
