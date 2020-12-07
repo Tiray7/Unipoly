@@ -67,7 +67,7 @@ public class Player extends Owner {
 
     @Override
     public int compareTo(Object o) {
-        // TODO Auto-generated method stub
+
         return 0;
     }
 
