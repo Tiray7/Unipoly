@@ -587,6 +587,8 @@ app.controller('Controller', function ($scope) {
 					$(`.selling`).forEach(function (element) {
 						element.removeClass('selling');
 					});
+					$selectpopup.hide();
+					$scope.endTurn();
 					console.log('success: sellproperty');
 				} else {
 					console.error('error: sellproperty');

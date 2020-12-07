@@ -1,5 +1,6 @@
 package ch.zhaw.it.pm3.unipoly;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,11 @@ import java.util.Hashtable;
 import java.util.Random;
 import java.util.HashMap;
 
+/**
+ * Represents the Unipoly application - handles the main part of the game logic
+ * and connects all the pieces together.
+ * Has the {@link Component} tag for simple initialization into the spring application context.
+ */
 @Component
 public class UnipolyApp {
 
@@ -27,10 +33,10 @@ public class UnipolyApp {
 	private String displayMessage = "";
 	private String gameoverString = "";
 
-	private static final Logger unipolyMcLogger = LogManager.getLogger(Controller.class);
+	private static final Logger unipolyMcLogger = LogManager.getLogger(UnipolyApp.class);
 
 	/**
-	 * gamemode enum to find which mode to play , single player or mutliPlayer
+	 * gamemode enum to find which mode to play , singleplayer or multiPlayer
 	 */
 	enum Gamemode {
 		SINGLE, MULTI
@@ -40,13 +46,13 @@ public class UnipolyApp {
 	 * UnipolyPhase to define which phase in the game is
 	 */
 	enum UnipolyPhase {
-		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION, SHOWCARD, QUIZTIME, JUMP, INDEBT, GAMEOVER, ERROR
+		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION,
+		SHOWCARD, QUIZTIME, JUMP, INDEBT, GAMEOVER, ERROR
 	}
 
 	/***
 	 * UnipolyApp class constructor
 	 */
-
 	public UnipolyApp() {
 		board = new Board();
 		bank = new Bank();
@@ -55,9 +61,12 @@ public class UnipolyApp {
 		cards = Config.getChanceCards();
 		Collections.shuffle(cards);
 		questions = Config.getQuestionCards();
+		unipolyMcLogger.log(Level.DEBUG, "UnipolyApp initialized.");
 	}
 
-	/*------ GET functions ------------------------------------------------------------------*/
+	/**
+	 * "Unused" getters are needed for the javascript-frontend and or testing-purposes
+	 */
 	public Field getcurrentField() { return currentField; }
 	public Bank getBank() { return bank; }
 	public Board getBoard() { return board; }
@@ -79,59 +88,58 @@ public class UnipolyApp {
 		this.currentField = currentField;
 	}
 
-	/*------ Function to configure the Game -------------------------------------------------*/
-
 	/***
-	 * Join Add a new Player to the Game
+	 * Joins a new Player to the Unipoly application-context
 	 * 
-	 * @param name  name of player
-	 * @param token token type
-	 * @throws FieldIndexException
+	 * @param name  name of the {@link Player}
+	 * @param token {@link Token.TokenType}
+	 * @throws FieldIndexException gets thrown if the field the player gets drawn to is invalid
 	 */
 	public void join(String name, Token.TokenType token) throws FieldIndexException {
-		checkIfPlayernameAlreadyExists(name, token);
+		checkIfPlayerNameAlreadyExists(name, token);
 		initializePlayer(name, token);
+		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " joined!");
 	}
 
 	/***
-	 * check If Player name Already Exists methode
-	 * 
-	 * @param name  player name
-	 * @param token token type
+	 * Checks if a player name already exists and
+	 * @throws IllegalArgumentException if either the name or the token aren't available anymore
+	 *  @param name  {@link Player} name
+	 * @param token {@link Token.TokenType}
 	 */
-	private void checkIfPlayernameAlreadyExists(String name, Token.TokenType token) {
+	private void checkIfPlayerNameAlreadyExists(String name, Token.TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
+				unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " already exists --> IllegalArgumentException thrown");
 				throw new IllegalArgumentException("Player name already exists.");
 			}
 			if (player.getToken().getType() == token) {
+				unipolyMcLogger.log(Level.DEBUG, "Token: " + token.name() + " already exists --> IllegalArgumentException thrown");
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
 	}
 
 	/***
-	 * Initializing a new Player
+	 * Initializing a new {@link Player}
 	 * 
-	 * @param name  player name
-	 * @param token token type
-	 * @throws FieldIndexException
+	 * @param name  {@link Player} name
+	 * @param token {@link Token.TokenType}
 	 */
-	private void initializePlayer(String name, Token.TokenType token) throws FieldIndexException {
+	private void initializePlayer(String name, Token.TokenType token) {
 		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
 		players.add(player);
+		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " initialized!");
 	}
 
 	/***
-	 * Start a new Game
+	 * Starts a new Game - initialize NPC's if needed and sets {@link Player} currentPlayer
 	 * 
-	 * @param mode   which mode of the game , single or multi
-	 * @param npcnum If SinglePlayer we have to create "npcnum" NPC Players
-	 * @throws FieldIndexException
+	 * @param mode   which {@link Gamemode} - single or multi
+	 * @param npcnum if singleplayer we have to create "npcnum" x NPC players
 	 */
-	public void start(Gamemode mode, int npcnum) throws FieldIndexException {
-
+	public void start(Gamemode mode, int npcnum) {
 		if (Gamemode.SINGLE == mode) {
 			if (npcnum >= 1)
 				initializePlayer("NPC1", Token.TokenType.NPCI);
@@ -143,13 +151,14 @@ public class UnipolyApp {
 		// First Player which gets to play
 		currentPlayer = players.get(0);
 		phase = UnipolyPhase.WAITING;
+		unipolyMcLogger.log(Level.DEBUG, "Game started with current player: " + currentPlayer.getName());
 	}
 
 	/***
-	 * rolling Dices and move player
+	 * Sets the  {@link UnipolyPhase}, {@link #firstDice}  and {@link #secondDice} (obtained with {@link Random})
 	 * 
-	 * @param firstDice first dice
-	 * @throws FieldIndexException
+	 * @param firstDice parameter from frontend choosen by user
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void rollDice(int firstDice) throws FieldIndexException {
 		phase = UnipolyPhase.ROLLING;
@@ -157,13 +166,14 @@ public class UnipolyApp {
 		secondDice = new Random().nextInt(6) + 1;
 		// After Rolling the second dice, move the Player accordingly
 		movePlayerBy(this.firstDice + secondDice);
+		unipolyMcLogger.log(Level.DEBUG, "Dice rolled by: " + currentPlayer.getName());
 	}
 
 	/***
-	 * Move Player relative by an amount
+	 * Move {@link Player} relative by an amount
 	 * 
 	 * @param rolledValue amount to move by
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 1 - 36
 	 */
 	private void movePlayerBy(int rolledValue) throws FieldIndexException {
 		currentPlayer.getToken().moveBy(rolledValue);
@@ -173,92 +183,103 @@ public class UnipolyApp {
 					+ " gewürfelt.";
 			checkFieldOptions();
 		}
+		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " moved by: " + rolledValue);
 	}
 
 	/***
-	 * Move Player direktly to a wished field
+	 * Move Player directly to a chosen field
 	 * 
-	 * @param FieldIndex index field number
-	 * @throws FieldIndexException
+	 * @param fieldIndex has to be an integer between 1 and 36 or else
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
-	private void movePlayerTo(int FieldIndex) throws FieldIndexException {
-		currentPlayer.getToken().moveTo(FieldIndex);
-		currentField = board.getFieldAtIndex(FieldIndex);
+	private void movePlayerTo(int fieldIndex) throws FieldIndexException {
+		currentPlayer.getToken().moveTo(fieldIndex);
+		currentField = board.getFieldAtIndex(fieldIndex);
+		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " moved to: " + fieldIndex);
 	}
 
 	/***
 	 * Player landed on a jump field and wishes to jump to a certain field
 	 * 
-	 * @param FieldIndex index field number
-	 * @throws FieldIndexException
+	 * @param fieldIndex has to be an integer between 1 and 36 or else
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
-	public void jumpPlayer(int FieldIndex) throws FieldIndexException {
+	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
 		currentPlayer.transferMoneyTo(bank, 100);
-		movePlayerTo(FieldIndex);
+		movePlayerTo(fieldIndex);
+		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " jumped to: " + fieldIndex);
 	}
 
 	/***
-	 * cheake field property options
+	 * Checks field property options according to the {@link #currentPlayer's} position
 	 * 
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
 		switch (currentField.getLabel()) {
 			case PROPERTY:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnPropertyField() gets executed");
 				playerIsOnPropertyField();
 			case CHANCE:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnChanceField() gets executed");
 				playerIsOnChanceField();
 			case JUMP:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnJumpField() gets executed");
 				playerIsOnJumpField();
 			case GO:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoField() gets executed");
 				playerIsOnGoField();
 			case VISIT:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnVisit() gets executed");
 				playerIsOnVisit();
 			case DETENTION:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoToDetention() gets executed");
 				playerIsOnGoToDetention();
 			case RECESS:
+				unipolyMcLogger.log(Level.DEBUG, "Method playerIsOnGoZnueniPause() gets executed");
 				playerIsOnGoZnueniPause();
 			default:
+				unipolyMcLogger.log(Level.DEBUG, "Method checkIfOverStart() gets executed");
 				checkIfOverStart();
 		}
 	}
 
 	/***
-	 * playerIsOnGoToDetention method to get player on hold
-	 * 
-	 * @throws FieldIndexException
+	 * Checks if the currentField is the detention field. If so the player gets to choose if he
+	 * wants to take his/her getFreeCard (if there is one in his/her possession). After the evaluation the
+	 * shown message gets set accordingly.
+	 *
 	 */
-	private void playerIsOnGoToDetention() throws FieldIndexException {
+	private void playerIsOnGoToDetention() {
 		if (currentField.getLabel() == Config.FieldLabel.DETENTION) {
 			if (currentPlayer.getFreeCard()) {
 				currentPlayer.setFreeCard(false);
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
-							+ " wurde beim plagieren erwischt und musste deshalb zur Schuldirektorin!<br>Irgendwie konnte "
+							+ " wurde beim plagieren erwischt und muss deshalb zur Schuldirektorin!<br>Irgendwie konnte "
 							+ currentPlayer.getName() + " sich aus der Situation rausreden.";
 				} else {
-					displayMessage = "Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!<br>Du warnst sie das wenn sie dich von der Schule schmeist, du ihr Geheimnis rumerzählst.<br>Sie lässt dich sofort gehen.";
+					displayMessage = "Du wurdest beim Plagieren erwischt und musst deshalb zur Schuldirektorin!<br>Du warnst sie, dass wenn sie dich von der Schule wirft, " +
+							"du ihr Geheimnis rumerzählst.<br>Sie lässt dich sofort gehen.";
 				}
-				phase = UnipolyPhase.SHOWANDSWITCH;
 			} else {
 				currentPlayer.goDetention();
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()
-							+ " wurde beim plagieren erwischt und musste deshalb zur Schuldirektorin!";
+							+ " wurde beim Plagieren erwischt und musste deshalb zur Schuldirektorin!";
 				} else {
-					displayMessage = "Du wurdest beim plagieren erwischt und musst deshalb zur Schuldirektorin!";
+					displayMessage = "Du wurdest beim Plagieren erwischt und musst deshalb zur Schuldirektorin!";
 				}
-				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
+			phase = UnipolyPhase.SHOWANDSWITCH;
 		}
 	}
 
 	/***
-	 * playerIsOnGoZnueniPause methode to hold a player for a while
-	 * 
-	 * @throws FieldIndexException
+	 * Holds a {@link Player} for a round
+	 *
 	 */
-	private void playerIsOnGoZnueniPause() throws FieldIndexException {
+	private void playerIsOnGoZnueniPause() {
 		if (currentField.getLabel() == Config.FieldLabel.RECESS) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist in die Znüni Pause.";
@@ -270,14 +291,12 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * playerIsOnPropertyField is a method to check if the player is on property
-	 * field
+	 * Logic to check if a {@link Field} is available for a player to buy.
 	 * 
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	private void playerIsOnPropertyField() throws FieldIndexException {
 		FieldProperty currentField = (FieldProperty) this.currentField;
-		questions.get(currentField.getName());
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
 				// TODO: NPC Logic
@@ -305,11 +324,10 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * playerIsOnVisit method when the player visit a field
-	 * 
-	 * @throws FieldIndexException
+	 * Logic to check if a player is on the VISIT field
+	 *
 	 */
-	private void playerIsOnVisit() throws FieldIndexException {
+	private void playerIsOnVisit() {
 		if (currentField.getLabel() == Config.FieldLabel.VISIT) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf dem 'Nur zu Besuch' Feld gelandet.";
@@ -321,11 +339,11 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * playerIsOnChanceField when the player Chanse a field
-	 * 
-	 * @throws FieldIndexException
+	 * Checks if a {@link Player} is on a CHANCE field.
+	 * Sets {@link #displayMessage} and {@link UnipolyPhase} accordingly
+	 *
 	 */
-	private void playerIsOnChanceField() throws FieldIndexException {
+	private void playerIsOnChanceField() {
 		if (currentField.getLabel() == Config.FieldLabel.CHANCE) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
@@ -338,7 +356,9 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * redCard method to find what to make if the playe get this card
+	 * If player is a NPC card gets drawn and shown.
+	 * If player is human card gets drawn after clicking in the frontend.
+	 * After that sets {@link #displayMessage} and {@link UnipolyPhase} accordingly.
 	 */
 	public void readCard() {
 		cards.get(0);
@@ -365,12 +385,7 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	/***
-	 * playerIsOnJumpField method when the player on the Jump field
-	 * 
-	 * @throws FieldIndexException
-	 */
-	private void playerIsOnJumpField() throws FieldIndexException {
+	private void playerIsOnJumpField() {
 		final int COST_FOR_JUMP = 100;
 		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
@@ -394,11 +409,6 @@ public class UnipolyApp {
 		}
 	}
 
-	/***
-	 * playerIsOnGoField method when the player on the OnGo field
-	 * 
-	 * @throws FieldIndexException
-	 */
 	private void playerIsOnGoField() throws FieldIndexException {
 		if (currentField.getLabel() == Config.FieldLabel.GO) {
 			bank.transferMoneyTo(currentPlayer, 400);
@@ -412,59 +422,45 @@ public class UnipolyApp {
 		}
 	}
 
-	/***
-	 * checkIfOverStart method to increase the account of the player when he reach
-	 * the start again
-	 */
 	private void checkIfOverStart() {
 		if (currentPlayer.getToken().getPrevFieldIndex() > currentPlayer.getToken().getCurrFieldIndex()) {
 			bank.transferMoneyTo(currentPlayer, 200);
 		}
 	}
 
-	/*------ Property Marketplace -------------------------------------------------*/
-
 	/***
-	 * buyProperty method
+	 * Buys a property for current player via the {@link Player} class.
+	 * Sets the {@link #displayMessage} and the {@link UnipolyPhase}
 	 */
 	public void buyProperty() {
 		currentPlayer.buyPropertyFrom(bank, currentPlayer.getToken().getCurrFieldIndex());
-		displayMessage += "Das Modul gehört nun " + currentPlayer.getName();
+		displayMessage += "Das Modul gehört nun <b>" + currentPlayer.getName() + "</b>";
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	/***
-	 * sellProperty method
-	 * 
-	 * @param FieldIndex field index number
-	 * @param player     player name
-	 * @throws FieldIndexException
-	 */
-	private void sellProperty(int FieldIndex, Owner player) throws FieldIndexException {
+	private void sellProperty(int FieldIndex, Owner player) {
 		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		board.resetLevelAll(board.getProperties().get(FieldIndex).getModuleGroupIndex());
+		board.getProperties().get(FieldIndex).resetLevel();
 	}
 
-	/***
-	 * landedOnOwnedProperty method player landed on owned Land
-	 * 
-	 * @throws FieldIndexException
-	 */
-	private void landedOnOwnedProperty() throws FieldIndexException {
-		if (currentPlayer.payRent(players.get(((FieldProperty) currentField).getOwnerIndex()),
+	private void landedOnOwnedProperty() {
+		FieldProperty currentProperty = ((FieldProperty) currentField);
+		if (currentPlayer.payRent(players.get(currentProperty.getOwnerIndex()),
 				(FieldProperty) currentField)) {
-			displayMessage = "Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
-			phase = UnipolyPhase.INDEBT;
+			if(currentPlayer.getWealth() < currentProperty.getCurrentRent()){
+				GameOver();
+			} else {
+				displayMessage = "Du kannst dir die Miete nicht leisten, Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
+				phase = UnipolyPhase.INDEBT;
+			}
 		} else {
-			// TODO: Quizfunction
-			displayMessage = "";
 			phase = UnipolyPhase.QUIZTIME;
 		}
 		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 	}
 
 	// TODO: Player landed on his own Modul
-	private void landedOnMyProperty() throws FieldIndexException {
+	private void landedOnMyProperty() {
 		board.checkAndRaiseRentAndECTS((FieldProperty) currentField);
 		displayMessage = "ModulUpgrade!!";
 		phase = UnipolyPhase.SHOWANDSWITCH;
@@ -473,6 +469,9 @@ public class UnipolyApp {
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
 			currentPlayer.increaseECTS(((FieldProperty) currentField).getCurrentECTSLevel());
+			if(currentPlayer.isBachelor()){
+				GameOver();
+			}
 		} else {
 			// TODO: Quiz got answered falsely
 		}
@@ -482,28 +481,26 @@ public class UnipolyApp {
 	 * payOffDebt method refer to the debtor
 	 * 
 	 * @param FieldIndexes field index number
-	 * @throws FieldIndexException
 	 */
-	public void payOffDebt(int[] FieldIndexes) throws FieldIndexException {
+	public void payOffDebt(int[] FieldIndexes) {
 		Owner buyer = currentPlayer.getDebtor();
 		Owner debtor = buyer;
 		int totalCost = 0;
-		for (int i = 0; i < FieldIndexes.length; i++) {
-			totalCost += board.getProperties().get(FieldIndexes[i]).getPropertyCost();
+		for (int fieldIndex : FieldIndexes) {
+			totalCost += board.getProperties().get(fieldIndex).getPropertyCost();
 		}
 		if (buyer.getMoney() < totalCost) {
 			buyer = bank;
 		}
-		for (int i = 0; i < FieldIndexes.length; i++) {
-			sellProperty(FieldIndexes[i], buyer);
+		for (int fieldIndex : FieldIndexes) {
+			sellProperty(fieldIndex, buyer);
 		}
 		if (currentPlayer.setandcheckDebt(debtor, currentPlayer.getDebt())) {
 			GameOver();
 		} else {
 			currentPlayer.setDebtor(null);
 			currentPlayer.setDebt(0);
-			phase = UnipolyPhase.SHOWANDSWITCH;
-			// Todo phase = UnipolyPhase.DEBTFREE;
+			phase = UnipolyPhase.WAITING;
 		}
 		/*
 		 * if(currentPlayer.setandcheckDebt(currentPlayer.getDebtor(),
@@ -513,7 +510,9 @@ public class UnipolyApp {
 		// switchPlayer();
 	}
 
-	/*------ end and start new turn -------------------------------------------------*/
+	private void NPCinDebt() {
+		
+	}
 
 	/***
 	 * switchPlayer methode
@@ -528,6 +527,27 @@ public class UnipolyApp {
 			currentPlayer = players.get(currentPlayer.getIndex() + 1);
 
 		if (currentPlayer.inDetention()) {
+			if (currentPlayer.isNPC()) {
+				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
+				if (currentPlayer.getleftTimeInDetention() > 0) {
+					if (currentPlayer.getMoney() > 200) {
+						displayMessage += currentPlayer.getName() + " besticht die Schuldirektorin.";
+						payDetentionRansom();
+					} else {
+						displayMessage += currentPlayer.getName() + " versucht über den Schulverweis zu verhandeln.";
+						rollTwoDice();
+						if (rolledPash) {
+							displayMessage += currentPlayer.getName() + " hat ein Pash gewürfelt und wird somit vom Nachsitzen entlassen.";
+							leaveDetention();
+							rollDice(new Random().nextInt(6) + 1);
+						}
+					}
+				} else {
+					displayMessage += currentPlayer.getName() + " hat schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!";
+					displayMessage += currentPlayer.getName() + " muss versuchen die Schuldirektorin zu bestechen.";
+					payDetentionRansom();
+				}
+			}
 			phase = UnipolyPhase.DETENTION;
 		} else {
 			phase = UnipolyPhase.WAITING;
@@ -540,24 +560,32 @@ public class UnipolyApp {
 
 	// TODO: Calculate Winner and Display it
 
-	/***
-	 * GameOver() method
-	 */
 	private void GameOver() {
+		Player bachelor = null;
+		for (Player value : players) {
+			if (value.isBachelor())
+				bachelor = value;
+		}
+
 		gameoverString = "<h1>GAME OVER</h1>";
 		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
-		for (Owner player : ranking) {
-			gameoverString += "<p>" + (ranking.indexOf(player) + 1) + ".Place " + player.getName() + ", "
-					+ player.getWealth() + "</p>";
+
+		if (bachelor!=null) {
+			ranking.remove(bachelor);
+			ranking.add(0,bachelor);
+		}
+
+		for (int i = 0; i < ranking.size(); i++) {
+			Owner player = ranking.get(i);
+			gameoverString += "<p>"+ (i + 1) +".Place " + player.getName() + ", " + player.getWealth() + "</p>";
 		}
 		phase = UnipolyPhase.GAMEOVER;
 	}
 
-	/*------ Detention related funtions ---------------------------------------------------------------------*/
-
 	/***
-	 * rolling Two Dice method
+	 * Sets the {@link #firstDice} and {@link #secondDice} via the
+	 * {@link Random} class. If the player rolls a pash, detention gets decreased.
 	 */
 	public void rollTwoDice() {
 		phase = UnipolyPhase.ROLLING;
@@ -572,27 +600,27 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * payoff the the Detention
+	 * Pay off the the detention
 	 */
 	public void payDetentionRansom() {
 		final int RANSOM = 100;
 		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
-			displayMessage = "Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.";
-			phase = UnipolyPhase.INDEBT;
+			if (currentPlayer.isNPC()) { 
+				NPCinDebt();
+			} else {
+				displayMessage = "Du hast nicht genug Geld um Sie zu bestechen, also leihst du dir was von der Bank.";
+				phase = UnipolyPhase.INDEBT;
+			}
 		} else {
-			phase = UnipolyPhase.WAITING;
 			leaveDetention();
 		}
 	}
 
 	/***
-	 * leaving the Detention "on hold"
+	 * Leaving the Detention "on hold"
 	 */
 	public void leaveDetention() {
 		phase = UnipolyPhase.WAITING;
 		currentPlayer.outDetention();
 	}
-
-	/*------ ****** ---------------------------------------------------------------------*/
-
 }
