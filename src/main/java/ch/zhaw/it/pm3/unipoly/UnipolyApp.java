@@ -216,24 +216,31 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void checkFieldOptions() throws FieldIndexException {
-		switch (currentField.getLabel()) {
+		Config.FieldLabel currentLabel = currentField.getLabel();
+		switch (currentLabel) {
 			case PROPERTY:
 				playerIsOnPropertyField();
+				break;
 			case CHANCE:
 				playerIsOnChanceField();
+				break;
 			case JUMP:
 				playerIsOnJumpField();
+				break;
 			case GO:
 				playerIsOnGoField();
+				break;
 			case VISIT:
 				playerIsOnVisit();
+				break;
 			case DETENTION:
 				playerIsOnGoToDetention();
+				break;
 			case RECESS:
 				playerIsOnGoZnueniPause();
-			default:
-				checkIfOverStart();
 		}
+		if ((currentLabel != Config.FieldLabel.JUMP) && (currentLabel != Config.FieldLabel.DETENTION))
+			checkIfOverStart();
 	}
 
 	/***
@@ -243,7 +250,6 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnGoToDetention() {
-		if (currentField.getLabel() == Config.FieldLabel.DETENTION) {
 			if (currentPlayer.getFreeCard()) {
 				currentPlayer.setFreeCard(false);
 				if (currentPlayer.isNPC()) {
@@ -264,7 +270,6 @@ public class UnipolyApp {
 				}
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -272,14 +277,12 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnGoZnueniPause() {
-		if (currentField.getLabel() == Config.FieldLabel.RECESS) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist in die Znüni Pause.";
 			} else {
 				displayMessage = "Znüni Zeit. Ruh dich etwas aus:<br>Trink einen Kaffee und iss ein Sandwich!";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -320,14 +323,12 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnVisit() {
-		if (currentField.getLabel() == Config.FieldLabel.VISIT) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf dem 'Nur zu Besuch' Feld gelandet.";
 			} else {
 				displayMessage = "Zum Glück nur zu Besuch im Rektorat.";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	/***
@@ -336,7 +337,6 @@ public class UnipolyApp {
 	 *
 	 */
 	private void playerIsOnChanceField() {
-		if (currentField.getLabel() == Config.FieldLabel.CHANCE) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
 				readCard();
@@ -344,7 +344,6 @@ public class UnipolyApp {
 				displayMessage = "Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!";
 				phase = UnipolyPhase.SHOWCARD;
 			}
-		}
 	}
 
 	/***
@@ -379,7 +378,6 @@ public class UnipolyApp {
 
 	private void playerIsOnJumpField() {
 		final int COST_FOR_JUMP = 100;
-		if (currentField.getLabel() == Config.FieldLabel.JUMP) {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 				// TODO: NPC Logic
 				if (currentPlayer.isNPC()) {
@@ -398,11 +396,9 @@ public class UnipolyApp {
 				}
 				phase = UnipolyPhase.SHOWANDSWITCH;
 			}
-		}
 	}
 
 	private void playerIsOnGoField() throws FieldIndexException {
-		if (currentField.getLabel() == Config.FieldLabel.GO) {
 			bank.transferMoneyTo(currentPlayer, 400);
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName()
@@ -411,7 +407,6 @@ public class UnipolyApp {
 				displayMessage = "Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
-		}
 	}
 
 	private void checkIfOverStart() {
@@ -464,8 +459,6 @@ public class UnipolyApp {
 			if(currentPlayer.isBachelor()){
 				GameOver();
 			}
-		} else {
-			// TODO: Quiz got answered falsely
 		}
 	}
 
