@@ -345,7 +345,7 @@ public class UnipolyApp {
 	 * Sets {@link #displayMessage} and {@link UnipolyPhase} accordingly
 	 *
 	 */
-	private void playerIsOnChanceField() {
+	private void playerIsOnChanceField() throws FieldIndexException {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
 				readCard();
@@ -578,9 +578,7 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	private void NPCinDebt() {
-		
-	}
+
 
 	/***
 	 * switchPlayer methode
