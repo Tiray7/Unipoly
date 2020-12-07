@@ -86,7 +86,7 @@ function poll($scope) {
 }
 
 function resetHTML() {
-	console.log("resetHTML()");
+	// console.log("resetHTML()");
 	$('td.used').attr('class', 'leer');
 	$playerlist.find('td').attr('class', '');
 	$gameoverpopup.hide();
@@ -107,7 +107,7 @@ function resetHTML() {
 function moveToken($scope) {
 	const type = $scope.state.currentPlayer.token.type.toLowerCase();
 	if (!$(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon td`).hasClass(type)) {
-		console.log(`moveToken: ${$scope.state.currentPlayer.name} / ${type};`);
+		// console.log(`moveToken: ${$scope.state.currentPlayer.name} / ${type};`);
 		$(`.tablecon .${type}`).attr('class', 'leer');
 		const currind = $(`#pos${$scope.state.currentPlayer.token.currFieldIndex} .tablecon .leer`).first();
 		currind.attr('class', `used ${type}`);
@@ -146,7 +146,7 @@ function showyesOrno(text) {
 
 function showquiz($scope) {
 	var question = $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex];
-	console.log(question);
+	// console.log(question);
 	txt = `Beantworte folgende Frage:<br>${question.question}`;
 	$quizpopup.find('.popup-p').html(txt);
 	$quizpopup.find('#quizanswer_1').html(`<h4>${question.option1}</h4>`);
@@ -207,18 +207,18 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 
 	switch (newphase) {
 		case 'SHOWANDSWITCH':
-			console.log('Phase: SHOWANDSWITCH');
+			// console.log('Phase: SHOWANDSWITCH');
 			moveToken($scope);
 			showalert($scope.state.displayMessage, true);
 			break;
 
 		case 'SHOWCARD':
-			console.log('Phase: SHOWCARD');
+			// console.log('Phase: SHOWCARD');
 			showalert($scope.state.displayMessage, false);
 			break;
 
 		case 'WAITING':
-			console.log('Phase: WAITING');
+			// console.log('Phase: WAITING');
 			if ($lastphase == 'NONE') break;
 			txt = `<b>${$scope.state.currentPlayer.name}</b> ist am Zug.`;
 			showalert(txt, false);
@@ -252,7 +252,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			break;
 
 		case 'BUY_PROPERTY':
-			console.log('Phase: BUY_PROPERTY');
+			// console.log('Phase: BUY_PROPERTY');
 			if (areadyasked) {
 				if (bool) {
 					$scope.buyProperty();
@@ -267,7 +267,7 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			break;
 
 		case 'JUMP':
-			console.log('Phase: JUMP');
+			// console.log('Phase: JUMP');
 			if (areadyasked) {
 				if (bool) {
 					txt = 'Klick auf das Feld auf das du springen willst!';
@@ -284,12 +284,12 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			break;
 
 		case 'DETENTION':
-			console.log('Phase: DETENTION');
+			// console.log('Phase: DETENTION');
 			handleDetention($scope, bool, areadyasked);
 			break;
 
 		case 'INDEBT':
-			console.log('Phase: INDEBT');
+			// console.log('Phase: INDEBT');
 			$forselling = JSON.parse('{}');
 			txt = $scope.state.displayMessage;
 			txt += `<br>Du musst nun ${$scope.state.currentPlayer.debtor.name} zuerst deine Schulden zurück zahlen.<br>Der Schuldbetrag ist ${$scope.state.currentPlayer.debt}CHF.`;
@@ -297,12 +297,12 @@ async function phaseChange($scope, bool = false, areadyasked = false) {
 			break;
 
 		case 'QUIZTIME':
-			console.log('Phase: QUIZTIME');
+			// console.log('Phase: QUIZTIME');
 			showquiz($scope);
 			break;
 
 		case 'GAMEOVER':
-			console.log('Phase: GAMEOVER');
+			// console.log('Phase: GAMEOVER');
 			showalert($scope.state.displayMessage, false, 'gameoverMessage');
 			break;
 	}
@@ -393,10 +393,10 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if adding new Payer was successfull
 				if (success) {
-					console.log(`success: added Player: ${$scope.username}`);
+					// console.log(`success: added Player: ${$scope.username}`);
 				}
 				else {
-					console.error(`error: adding Player: ${$scope.username}`);
+					// console.error(`error: adding Player: ${$scope.username}`);
 					alert(`Error: adding Player: ${$scope.username}`);
 				}
 				// List all added Players
@@ -429,7 +429,7 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if Gamemode choice got accepted
 				if (success) {
-					console.log(`success: Start Game, ${$gamemode} & ${$numbernpc} NPCs`);
+					// console.log(`success: Start Game, ${$gamemode} & ${$numbernpc} NPCs`);
 					$menu.hide();
 					$gameboard.show();
 
@@ -444,7 +444,7 @@ app.controller('Controller', function ($scope) {
 						showalert(txt, false);
 					}
 				} else {
-					console.error('error: Start Game');
+					// console.error('error: Start Game');
 					alert('Error: Please try again!');
 				}
 			});
@@ -459,10 +459,10 @@ app.controller('Controller', function ($scope) {
 				function (success) {
 					// Check if Game Reset was a succsess
 					if (success) {
-						console.log('success: resetGame');
+						// console.log('success: resetGame');
 						resetHTML();
 					} else {
-						console.error('error: resetGame');
+						// console.error('error: resetGame');
 						alert('Error: Please try again!');
 					}
 				});
@@ -474,9 +474,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp('checkfieldoptions',
 			function (success) {
 				if (success) {
-					console.log('success: checkfieldoptions');
+					// console.log('success: checkfieldoptions');
 				} else {
-					console.error('error: checkfieldoptions');
+					// console.error('error: checkfieldoptions');
 				}
 			});
 	}
@@ -503,9 +503,9 @@ app.controller('Controller', function ($scope) {
 			function (success) {
 				// Check if starting turn worked
 				if (success) {
-					console.log(`success: rollDice -> ${path}`);
+					// console.log(`success: rollDice -> ${path}`);
 				} else {
-					console.error('error: rollDice');
+					// console.error('error: rollDice');
 					alert('Error: Please try again!');
 				}
 			});
@@ -516,11 +516,11 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp(`jumpplayer?FieldIndex=${FieldIndex}`,
 			function (success) {
 				if (success) {
-					console.log('success: jumpPlayer');
+					// console.log('success: jumpPlayer');
 					moveToken($scope);
 					$scope.checkField();
 				} else {
-					console.error('error: jumpPlayer');
+					// console.error('error: jumpPlayer');
 				}
 			});
 	}
@@ -530,9 +530,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp('endturn',
 			function (success) {
 				if (success) {
-					console.log(`success: endTurn -> now ${$scope.state.currentPlayer.name}`);
+					// console.log(`success: endTurn -> now ${$scope.state.currentPlayer.name}`);
 				} else {
-					console.error('error: endTurn');
+					// console.error('error: endTurn');
 				}
 			});
 	}
@@ -542,9 +542,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp('userwantstobuy',
 			function (success) {
 				if (success) {
-					console.log('success: userwantstobuy');
+					// console.log('success: userwantstobuy');
 				} else {
-					console.error('error: userwantstobuy');
+					// console.error('error: userwantstobuy');
 				}
 			});
 	}
@@ -558,13 +558,13 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp(`payoffdebt?indexes=${array}`,
 			function (success) {
 				if (success) {
-					console.log(`success: sellproperties -> [${array}]`);
+					// console.log(`success: sellproperties -> [${array}]`);
 					$(`.mine`).removeClass('mine');
 					$(`.selling`).removeClass('selling');
 					$selectpopup.hide();
 					$scope.endTurn();
 				} else {
-					console.error('error: sellproperty');
+					// console.error('error: sellproperty');
 				}
 			});
 	}
@@ -574,9 +574,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp('paydetentionransom',
 			function (success) {
 				if (success) {
-					console.log('success: paydetentionransom');
+					// console.log('success: paydetentionransom');
 				} else {
-					console.error('error: paydetentionransom');
+					// console.error('error: paydetentionransom');
 				}
 			});
 	}
@@ -585,9 +585,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp('leavedetention',
 			function (success) {
 				if (success) {
-					console.log('success: leaveDetention');
+					// console.log('success: leaveDetention');
 				} else {
-					console.error('error: leaveDetention');
+					// console.error('error: leaveDetention');
 				}
 			});
 	}
@@ -601,9 +601,9 @@ app.controller('Controller', function ($scope) {
 				function (success) {
 
 					if (success) {
-						console.log('success: readcard');
+						// console.log('success: readcard');
 					} else {
-						console.error('error: readcard');
+						// console.error('error: readcard');
 					}
 				});
 		} else {
@@ -706,9 +706,9 @@ app.controller('Controller', function ($scope) {
 		$scope.getOp(`quizanswer?x=${correctans}`,
 			function (success) {
 				if (success) {
-					console.log('success: quizanswer');
+					// console.log('success: quizanswer');
 				} else {
-					console.error('error: quizanswer');
+					// console.error('error: quizanswer');
 				}
 			});
 		if (correctans) {
