@@ -194,6 +194,9 @@ public class UnipolyApp {
 	private void movePlayerTo(int fieldIndex) throws FieldIndexException {
 		currentPlayer.getToken().moveTo(fieldIndex);
 		currentField = board.getFieldAtIndex(fieldIndex);
+		if (currentPlayer.isNPC()) {
+			checkFieldOptions();
+		}
 		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " moved to: " + fieldIndex);
 	}
 
@@ -205,6 +208,9 @@ public class UnipolyApp {
 	 */
 	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
 		currentPlayer.transferMoneyTo(bank, 100);
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Springer Feld gelandet und springt zum Feld mit Index " + fieldIndex + ".";
+		}
 		movePlayerTo(fieldIndex);
 		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " jumped to: " + fieldIndex);
 	}
@@ -406,7 +412,7 @@ public class UnipolyApp {
 		cards.remove(0);
 	}
 
-	private void playerIsOnJumpField() {
+	private void playerIsOnJumpField() throws FieldIndexException {
 			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 				if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
 					NPCJumps();
@@ -499,12 +505,16 @@ public class UnipolyApp {
 		}
 	}
 
-	// TODO: Player landed on his own Modul
 	private void landedOnMyProperty() {
 		displayMessage = "Modul Upgrade!!";
 		phase = UnipolyPhase.QUIZTIME;
 	}
 
+	/***
+	 * quizAnswer method, Player answered Question
+	 *
+	 * @throws questionResult boolean showing if player answered the question correctly 
+	 */
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
 			currentPlayer.increaseECTS(((FieldProperty) currentField).getCurrentECTSLevel());
@@ -724,9 +734,12 @@ public class UnipolyApp {
 	}
 
 	/**
-	 * The NPC checks if there is a field free of a modulegroup he partly owns. If not he will jump to the GO field.
+	 * The NPC checks if there is a field free of a modulegroup he partly owns. If
+	 * not he will jump to the GO field.
+	 * 
+	 * @throws FieldIndexException
 	 */
-	private int NPCJumps() {
+	private void NPCJumps() throws FieldIndexException {
 		Map<Integer, FieldProperty> mapProperties = board.getProperties();
 		Map<Integer, LinkedList<FieldProperty>> mapModuleGroups = board.getModuleGroups();
 		int jumpIndex = 0; // 0 is the index of the GO field
@@ -742,6 +755,6 @@ public class UnipolyApp {
 				}
 			}
 		}
-		return jumpIndex;
+		jumpPlayer(jumpIndex);
 	}
 }
