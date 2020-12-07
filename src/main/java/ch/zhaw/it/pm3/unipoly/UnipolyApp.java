@@ -14,7 +14,7 @@ import java.util.HashMap;
 /**
  * Represents the Unipoly application - handles the main part of the game logic
  * and connects all the pieces together.
- * Has the {@link Component} tag for simple initialization into the spring application context.
+ * Has the {@link Component} tag for simple initialization into the spring web application context.
  */
 @Component
 public class UnipolyApp {
