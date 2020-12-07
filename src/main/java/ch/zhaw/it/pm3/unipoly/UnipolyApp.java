@@ -507,8 +507,13 @@ public class UnipolyApp {
 	}
 
 	private void landedOnMyProperty() {
-		displayMessage = "Modul Upgrade!!";
 		phase = UnipolyPhase.QUIZTIME;
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName() + " muss " + ((FieldProperty) currentField).getCurrentRent()
+					+ " CHF Miete zahlen.";
+			int bool = new Random().nextInt(1);
+			quizAnswer(bool == 0);
+		}
 	}
 
 	/***
@@ -651,7 +656,7 @@ public class UnipolyApp {
 		Collections.sort(ranking);
 		int j = 0;
 		if (Bachelor != null) {
-			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "</p>";
+			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "CHF, " + Bachelor.getECTS() + "ECTS</p>";
 			ranking.remove(Bachelor);
 			j++;
 		}
