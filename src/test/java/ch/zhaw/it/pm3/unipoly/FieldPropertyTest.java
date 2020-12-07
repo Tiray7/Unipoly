@@ -30,7 +30,7 @@ public class FieldPropertyTest {
     }
 
     @Test
-    public void shouldRaiseRentAndETCS() throws FieldIndexException {
+    public void shouldRaiseRentAndETCS() {
         int expectedRentLevel1 = 10;
         int expectedRentLevel2 = 30;
         int expectedRentLevel3 = 90;
@@ -49,7 +49,7 @@ public class FieldPropertyTest {
     }
 
     @Test
-    public void shouldDecreaseRentAndECTS() throws FieldIndexException {
+    public void shouldDecreaseRentAndECTS() {
         int expectedRentLevel1 = 20;
         int expectedRentLevel2 = 60;
         int expectedRentLevel3 = 180;
