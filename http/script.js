@@ -88,6 +88,7 @@ function poll($scope) {
 function resetHTML() {
 	console.log("resetHTML()");
 	$('td.used').attr('class', 'leer');
+	$playerlist.find('td').attr('class', '');
 	$gameoverpopup.hide();
 	$gameboard.hide();
 	$numbernpc = 0;
