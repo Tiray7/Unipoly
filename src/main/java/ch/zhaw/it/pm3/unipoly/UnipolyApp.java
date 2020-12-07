@@ -641,12 +641,14 @@ public class UnipolyApp {
 		gameoverString = "<h1>GAME OVER</h1>";
 		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
-
+		int j = 0;
 		if (Bachelor != null) {
+			gameoverString += "<p>" + 1 + ".Place, Bachelor of Science: " + Bachelor.getName() + ", " + Bachelor.getWealth() + "</p>";
 			ranking.remove(Bachelor);
+			j++;
 		}
 
-		for (int i = 0; i < ranking.size(); i++) {
+		for (int i = 0; i < ranking.size()-j; i++) {
 			Owner player = ranking.get(i);
 			gameoverString += "<p>" + (i + 1) + ".Place " + player.getName() + ", " + player.getWealth() + "</p>";
 		}
