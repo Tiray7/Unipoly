@@ -17,32 +17,21 @@ public class FieldProperty extends Field {
 
     /**
      * Constructor for property field
-     *
-     * @param name         of the property
-     * @param label        of the field, in this case PROPERTY
-     * @param propertyCost is the cost of the property
-     * @param rentLV1      the rent that you start with after acquiring the property
-     * @param rentLV2      the rent after the property levels up once
-     * @param rentLV3      the rent after the property levels up twice
-     * @param rentLV4      the rent after the property levels up thrice
-     * @param rentLV5      the rent after the property is leveled up to the maximum
-     * @param moduleGroupIndex  is which the property belongs too
      */
-    public FieldProperty(String name, Config.FieldLabel label, int propertyCost, int rentLV1, int rentLV2, int rentLV3,
-            int rentLV4, int rentLV5, int moduleGroupIndex) {
-        super(label, "");
-        this.name = name;
-        this.propertyCost = propertyCost;
-        this.rentLV1 = rentLV1;
-        this.rentLV2 = rentLV2;
-        this.rentLV3 = rentLV3;
-        this.rentLV4 = rentLV4;
-        this.rentLV5 = rentLV5;
-        this.moduleGroupIndex = moduleGroupIndex;
+    public FieldProperty(PropertyDataField dataFields) {
+        super(dataFields.getLabel(), "");
+        this.name = dataFields.getName();
+        this.propertyCost = dataFields.getPropertyCost();
+        this.rentLV1 = dataFields.getRentLV1();
+        this.rentLV2 = dataFields.getRentLV2();
+        this.rentLV3 = dataFields.getRentLV3();
+        this.rentLV4 = dataFields.getRentLV4();
+        this.rentLV5 = dataFields.getRentLV5();
+        this.moduleGroupIndex = dataFields.getModuleGroupIndex();
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
         //This sets the start ECTS points for the modules, we defined them to be 10 + 2 * moduleGroupIndex
-        this.currentECTSLevel = 10 + 2*moduleGroupIndex;
+        this.currentECTSLevel = 10 + 2 * moduleGroupIndex;
     }
 
     /*------ GET functions ------------------------------------------*/

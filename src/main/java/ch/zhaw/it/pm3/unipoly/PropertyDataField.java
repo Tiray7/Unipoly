@@ -15,7 +15,7 @@ public class PropertyDataField {
     private int moduleGroupIndex;
 
     /**
-     * Constructor with the required parameters property field
+     * Constructor with the required parameters for FieldProperty
      *
      * @param name             of the property
      * @param label            of the field, in this case PROPERTY
@@ -27,7 +27,8 @@ public class PropertyDataField {
      * @param rentLV5          the rent after the property is leveled up to the maximum
      * @param moduleGroupIndex is which the property belongs too
      */
-    public PropertyDataField(Config.FieldLabel label, int propertyCost, int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroupIndex, String name) {
+    public PropertyDataField(String name, Config.FieldLabel label, int propertyCost, int rentLV1, int rentLV2, int rentLV3, int rentLV4, int rentLV5, int moduleGroupIndex) {
+        this.name = name;
         this.label = label;
         this.propertyCost = propertyCost;
         this.rentLV1 = rentLV1;
@@ -36,7 +37,6 @@ public class PropertyDataField {
         this.rentLV4 = rentLV4;
         this.rentLV5 = rentLV5;
         this.moduleGroupIndex = moduleGroupIndex;
-        this.name = name;
     }
 
     private String name;
