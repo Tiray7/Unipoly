@@ -233,7 +233,7 @@ public class Controller {
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
 	 *
-	 * @param fieldIndexes of the chosen field by the player
+	 * @param FieldIndex of the chosen field by the player
 	 * @return response containing the unipoly as json in the body
 	 * @throws FieldIndexException if something's wrong with the index
 	 * @throws IOException         if something goes horribly wrong with the server or client
