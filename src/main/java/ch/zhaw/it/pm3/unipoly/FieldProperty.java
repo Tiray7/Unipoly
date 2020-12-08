@@ -41,6 +41,7 @@ public class FieldProperty extends Field {
         this.moduleGroupIndex = moduleGroupIndex;
         this.currentRent = rentLV1;
         this.ownerIndex = UNOWNED;
+        //This sets the start ECTS points for the modules, we defined them to be 10 + 2 * moduleGroupIndex
         this.currentECTSLevel = 10 + 2*moduleGroupIndex;
     }
 
@@ -72,8 +73,9 @@ public class FieldProperty extends Field {
 
     /** This method levels up the rent of the property when called. **/
     public void raiseRentAndECTS() {
+        int ectsPointsChange = 4;
         if (currentRent != rentLV5) {
-            currentECTSLevel += 4;
+            currentECTSLevel += ectsPointsChange;
         }
         if (currentRent == rentLV1) {
             currentRent = rentLV2;
@@ -89,8 +91,9 @@ public class FieldProperty extends Field {
     }
 
     public void decreaseRentAndECTS() {
+        int ectsPointsChange = -4;
         if (currentRent != rentLV1) {
-            currentECTSLevel -= -4;
+            currentECTSLevel -= ectsPointsChange;
         }
         if (currentRent == rentLV2) {
             currentRent = rentLV1;
@@ -104,6 +107,7 @@ public class FieldProperty extends Field {
     }
 
     public void resetLevel() {
+        //this will return the point to the start ECTS level
         currentECTSLevel = 10 + 2*moduleGroupIndex;
         currentRent = rentLV1;
     }

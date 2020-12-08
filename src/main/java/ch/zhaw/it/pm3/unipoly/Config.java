@@ -1,21 +1,21 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Config {
 
-    /***
-     * minimum number of players
-     */
-    public static final int MIN_NUMBER_OF_PLAYERS = 2;
-
-    /***
-     * start and end field indexes of the board
-     */
+    //start and end field indexes of the board.
     public static final int FIELD_MIN = 0;
     public static final int FIELD_MAX = 35;
+    public static final int AMOUNT_OF_MODULES = 7;
     public static final int RANSOM = 100;
     public static final int COST_FOR_JUMP = 100;
+    public static final int GO_MONEY = 400;
+    public static final int BANK_START_MONEY = 2000000;
+
 
     /***
      * FieldLabel enum to define labels
@@ -36,12 +36,36 @@ public class Config {
         }
     }
 
+    /**
+     * Modes for the game, singleplayer or multiPlayer.
+     */
+    enum Gamemode {
+        SINGLE, MULTI
+    }
+
+    /**
+     * Labels for the token icon.
+     */
     public enum TokenType {
         ATOM, ONEPLUS, EINSTEIN, CRADLE, EQUATION, HELIUM, LAB, LIGHTBULB, BANK, NPCI, NPCII, NPCIII
     }
 
+    /**
+     * Types of cards for different actions.
+     */
+    public enum ChanceCardType {
+        TODETENTION, PAYMONEY, RECEIVEMONEY, DETENTIONFREECARD
+    }
+
     /***
-     *
+     * UnipolyPhase to define which phase in the game is
+     */
+    public enum UnipolyPhase {
+        SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION,
+        SHOWCARD, QUIZTIME, JUMP, INDEBT, GAMEOVER, ERROR
+    }
+
+    /***
      * Initialize the Board
      *
      * @return the board
@@ -100,26 +124,26 @@ public class Config {
     public static ArrayList<ChanceCards> getChanceCards() {
         ArrayList<ChanceCards> assignment = new ArrayList<>();
 
-        assignment.add(new ChanceCards("	Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.	", ChanceCards.ChanceCardType.PAYMONEY, 80));
-        assignment.add(new ChanceCards("	Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.	", ChanceCards.ChanceCardType.PAYMONEY, 100));
-        assignment.add(new ChanceCards("	Zahle deine Semestergebühr von CHF 700.	", ChanceCards.ChanceCardType.PAYMONEY, 700));
-        assignment.add(new ChanceCards("	Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.	", ChanceCards.ChanceCardType.PAYMONEY, 20));
-        assignment.add(new ChanceCards("	Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 100));
-        assignment.add(new ChanceCards("	Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Von deinem Nebenjob verdienst du CHF 400.	", ChanceCards.ChanceCardType.RECEIVEMONEY, 400));
-        assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCards.ChanceCardType.TODETENTION, 0));
-        assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCards.ChanceCardType.DETENTIONFREECARD, 0));
+        assignment.add(new ChanceCards("	Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.	", ChanceCardType.PAYMONEY, 80));
+        assignment.add(new ChanceCards("	Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.	", ChanceCardType.PAYMONEY, 100));
+        assignment.add(new ChanceCards("	Zahle deine Semestergebühr von CHF 700.	", ChanceCardType.PAYMONEY, 700));
+        assignment.add(new ChanceCards("	Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.	", ChanceCardType.PAYMONEY, 20));
+        assignment.add(new ChanceCards("	Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("	Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.	", ChanceCardType.RECEIVEMONEY, 100));
+        assignment.add(new ChanceCards("	Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("	Von deinem Nebenjob verdienst du CHF 400.	", ChanceCardType.RECEIVEMONEY, 400));
+        assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCardType.TODETENTION, 0));
+        assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCardType.DETENTIONFREECARD, 0));
 
         return assignment;
     }
 
-    public static Hashtable<Integer, Question> getQuestionCards() {
-        Hashtable<Integer, Question> assignment = new Hashtable<>();
+    public static HashMap<Integer, Question> getQuestionCards() {
+        HashMap<Integer, Question> assignment = new HashMap<>();
         assignment.put(1, new Question("Wann fing der Erste Weltkrieg an?", 1, "1914", "1897", "1935 "));
         assignment.put(3, new Question("Welcher ist der grösste Kontinent?", 2, "Amerika", "Asien", "Australien "));
         assignment.put(5, new Question("Was bedeutet katholisch?", 3, "Heilig", "Auserwählt", "Allumfassend "));
-        assignment.put(6, new Question("Was ist das Objekt der Geisteswissenschaften?", 1, "Der Mensch", "Der", " "));
+        assignment.put(6, new Question("Was ist das Objekt der Geisteswissenschaften?", 1, "Der Mensch", "Der Körper", "Die Seele"));
         assignment.put(8, new Question("Der russische Verhaltensforscher Iwan Pawlow entdeckte das Prinzip der Klassischen Konditionierung durch Experimenten an welchem Tier?", 2, "Maus", "Hund", "Katze "));
         assignment.put(10, new Question("Die Biologie ist dem altgriechischen Wortursprung βίος (bíos) nach die Lehre wovon? ", 3, "Welt", "Natur", "Leben "));
         assignment.put(12, new Question("Welcher englische Forscher hätte der Legende nach den Fall eines Apfels vom Apfelbaum beobachtet, was ihn zur Formulierung seines Gravitationsgesetzes inspiriert hätte?", 1, "Isaac Newton", "Ernest Rutherford", "Michael Faraday "));

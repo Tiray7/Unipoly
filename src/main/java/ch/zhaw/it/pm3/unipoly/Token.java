@@ -1,5 +1,6 @@
 package ch.zhaw.it.pm3.unipoly;
 import ch.zhaw.it.pm3.unipoly.Config.TokenType;
+
 public class Token {
 
     private TokenType type;

@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class FieldPropertyTest {

@@ -1,13 +1,10 @@
 package ch.zhaw.it.pm3.unipoly;
-
+import ch.zhaw.it.pm3.unipoly.Config.ChanceCardType;
 public class ChanceCards {
     private final String text;
     private final ChanceCardType cardType;
     private final int amount;
 
-    public enum ChanceCardType {
-        TODETENTION, PAYMONEY, RECEIVEMONEY, DETENTIONFREECARD
-    }
 
     /***
      * ChanceCard constructor

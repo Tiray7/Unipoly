@@ -8,58 +8,95 @@ public abstract class Owner implements Comparable<Owner> {
     private final int index;
     private final String name;
     private int money;
-    private int ModulsOwned;
-    private int Debt;
-    private Owner Debtor;
-    private Map<Integer, FieldProperty> ownedModuls;
+    private int modulesOwned;
+    private int debt;
+    private Owner debtor;
+    private Map<Integer, FieldProperty> ownedModules;
 
     /***
      * owner constructor
-     * 
+     *
      * @param index        present owner index
      * @param id           present owner ID
      * @param initialMoney present owner intial money which is 200000
      */
-    public Owner(int index, String id, int initialMoney) {
+    protected Owner(int index, String id, int initialMoney) {
         this.index = index;
         this.name = id;
         money = initialMoney;
-        ownedModuls = new HashMap<>();
+        ownedModules = new HashMap<>();
         setModulsOwned();
     }
 
     /*------ GET functions ------------------------------------------*/
-    public int getIndex() { return index; }
-    public boolean isBank() { return this.index == -1; }
-    public boolean isNPC() { return this.name.contains("NPC"); }
-    public String getName() { return name; }
-    public int getMoney() { return money; }
-    public int getDebt() { return Debt; }
-    public int getModulsOwned() { return ModulsOwned; }
-    public Owner getDebtor() { return Debtor; }
-    public Map<Integer, FieldProperty> getownedModuls() { return ownedModuls; }
+    public int getIndex() {
+        return index;
+    }
+
+    public boolean isBank() {
+        return this.index == -1;
+    }
+
+    public boolean isNPC() {
+        return this.name.contains("NPC");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public int getDebt() {
+        return debt;
+    }
+
+    public int getModulesOwned() {
+        return modulesOwned;
+    }
+
+    public Owner getDebtor() {
+        return debtor;
+    }
+
+    public Map<Integer, FieldProperty> getownedModuls() {
+        return ownedModules;
+    }
     /*---------------------------------------------------------------*/
-    
-    public void setDebt(int amount){ this.Debt = amount; }
-    public void setDebtor(Owner debtor) { this.Debtor = debtor; }
-    public void setownedModuls(Map<Integer, FieldProperty> allModuls) { this.ownedModuls = allModuls; }
-    public void setModulsOwned() { this.ModulsOwned = ownedModuls.size(); }
+
+    public void setDebt(int amount) {
+        this.debt = amount;
+    }
+
+    public void setDebtor(Owner debtor) {
+        this.debtor = debtor;
+    }
+
+    public void setownedModuls(Map<Integer, FieldProperty> allModuls) {
+        this.ownedModules = allModuls;
+    }
+
+    public void setModulsOwned() {
+        this.modulesOwned = ownedModules.size();
+    }
 
     public int getWealth() {
-        int ThisWealth = this.money;
-        for (FieldProperty modul : this.ownedModuls.values()) {
-            ThisWealth += modul.getCurrentRent();
+        int thisWealth = this.money;
+        for (FieldProperty modul : this.ownedModules.values()) {
+            thisWealth += modul.getCurrentRent();
         }
-        return ThisWealth;
+        return thisWealth;
     }
 
     public boolean setandgetBankrupt() {
-        if (getWealth() < this.Debt) {
-            this.Debtor.ownedModuls.putAll(this.ownedModuls);
-            this.ownedModuls.clear();
-            this.Debt -= getWealth();
+        if (getWealth() < this.debt) {
+            this.debtor.ownedModules.putAll(this.ownedModules);
+            this.ownedModules.clear();
+            this.debt -= getWealth();
             setModulsOwned();
-            this.Debtor.setModulsOwned();
+            this.debtor.setModulsOwned();
             return true;
         }
         return false;
@@ -88,9 +125,9 @@ public abstract class Owner implements Comparable<Owner> {
      * @param fieldIndex field index, of the property that needs to be transferred
      */
     public void transferPropertyTo(Owner newOwner, int fieldIndex) {
-        this.ownedModuls.get(fieldIndex).setOwnerIndex(newOwner.getIndex());
-        newOwner.ownedModuls.put(fieldIndex, this.ownedModuls.get(fieldIndex));
-        this.ownedModuls.remove(fieldIndex);
+        this.ownedModules.get(fieldIndex).setOwnerIndex(newOwner.getIndex());
+        newOwner.ownedModules.put(fieldIndex, this.ownedModules.get(fieldIndex));
+        this.ownedModules.remove(fieldIndex);
         setModulsOwned();
         newOwner.setModulsOwned();
     }
@@ -102,7 +139,7 @@ public abstract class Owner implements Comparable<Owner> {
      * @param fieldIndex field index of the property to be sold
      */
     public void buyPropertyFrom(Owner owner, int fieldIndex) {
-        transferMoneyTo(owner, owner.ownedModuls.get(fieldIndex).getPropertyCost());
+        transferMoneyTo(owner, owner.ownedModules.get(fieldIndex).getPropertyCost());
         owner.transferPropertyTo(this, fieldIndex);
     }
 
@@ -115,13 +152,13 @@ public abstract class Owner implements Comparable<Owner> {
     public boolean setAndCheckDebt(Owner debtor, int amount) {
         if (this.money < amount) {
             transferMoneyTo(debtor, this.money);
-            this.Debt = amount - this.money;
-            this.Debtor = debtor;
+            this.debt = amount - this.money;
+            this.debtor = debtor;
             return true;
         } else {
             transferMoneyTo(debtor, amount);
-            this.Debt = 0;
-            this.Debtor = null;
+            this.debt = 0;
+            this.debtor = null;
             return false;
         }
     }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import ch.zhaw.it.pm3.unipoly.Config.TokenType;
@@ -83,7 +83,7 @@ public class UnipolyAppTests {
         //setup
         int amountOfNPCs = 1;
         //work
-        HttpStatus status = controller.start(UnipolyApp.Gamemode.SINGLE, amountOfNPCs).getStatusCode();
+        HttpStatus status = controller.start(Config.Gamemode.SINGLE, amountOfNPCs).getStatusCode();
         Player player = controller.unipoly.getCurrentPlayer();
         //assert
         assertEquals("NPC1", player.getName());

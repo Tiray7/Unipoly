@@ -4,10 +4,23 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.LinkedList;
+import java.util.Map;
+
 import static ch.zhaw.it.pm3.unipoly.Config.COST_FOR_JUMP;
 import static ch.zhaw.it.pm3.unipoly.Config.RANSOM;
+import static ch.zhaw.it.pm3.unipoly.Config.GO_MONEY;
+
 import ch.zhaw.it.pm3.unipoly.Config.TokenType;
+import ch.zhaw.it.pm3.unipoly.Config.Gamemode;
+import ch.zhaw.it.pm3.unipoly.Config.UnipolyPhase;
+
 
 /**
  * Represents the Unipoly application - handles the main part of the game logic
@@ -22,7 +35,7 @@ public class UnipolyApp {
 	private final Bank bank;
 	private final Board board;
 	private final ArrayList<ChanceCards> cards;
-	private final Hashtable<Integer, Question> questions;
+	private final HashMap<Integer, Question> questions;
 	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
@@ -30,23 +43,7 @@ public class UnipolyApp {
 	private Field currentField;
 	private String displayMessage = "";
 	private String gameoverString = "";
-
 	private static final Logger unipolyMcLogger = LogManager.getLogger(UnipolyApp.class);
-
-	/**
-	 * gamemode enum to find which mode to play , singleplayer or multiPlayer
-	 */
-	enum Gamemode {
-		SINGLE, MULTI
-	}
-
-	/***
-	 * UnipolyPhase to define which phase in the game is
-	 */
-	enum UnipolyPhase {
-		SHOWANDSWITCH, WAITING, ROLLING, BUY_PROPERTY, DETENTION,
-		SHOWCARD, QUIZTIME, JUMP, INDEBT, GAMEOVER, ERROR
-	}
 
 	/***
 	 * UnipolyApp class constructor
@@ -65,18 +62,53 @@ public class UnipolyApp {
 	/**
 	 * "Unused" getters are needed for the javascript-frontend and or testing-purposes
 	 */
-	public Field getcurrentField() { return currentField; }
-	public Bank getBank() { return bank; }
-	public Board getBoard() { return board; }
-	public UnipolyPhase getPhase() { return phase; }
-	public ArrayList<Player> getPlayers() { return players; }
-	public Hashtable<Integer, Question> getQuestions() { return questions; }
-	public Player getCurrentPlayer() { return currentPlayer; }
-	public int getFirstDice() { return firstDice; }
-	public int getSecondDice() { return secondDice; }
-	public boolean isRolledPash() { return rolledPash; }
-	public String getdisplayMessage() { return displayMessage; }
-	public String getgameoverString() { return gameoverString; }
+	public Field getcurrentField() {
+		return currentField;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public UnipolyPhase getPhase() {
+		return phase;
+	}
+
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public HashMap<Integer, Question> getQuestions() {
+		return questions;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public int getFirstDice() {
+		return firstDice;
+	}
+
+	public int getSecondDice() {
+		return secondDice;
+	}
+
+	public boolean isRolledPash() {
+		return rolledPash;
+	}
+
+	public String getdisplayMessage() {
+		return displayMessage;
+	}
+
+	public String getgameoverString() {
+		return gameoverString;
+	}
 
 	public void setCurrentPlayer(Player player) {
 		this.currentPlayer = player;
@@ -91,9 +123,8 @@ public class UnipolyApp {
 	 *
 	 * @param name  name of the {@link Player}
 	 * @param token {@link TokenType}
-	 * @throws FieldIndexException gets thrown if the field the player gets drawn to is invalid
 	 */
-	public void join(String name, TokenType token) throws FieldIndexException {
+	public void join(String name, TokenType token) {
 		checkIfPlayerNameAlreadyExists(name, token);
 		initializePlayer(name, token);
 		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " joined!");
@@ -207,7 +238,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
 	 */
 	public void jumpPlayer(int fieldIndex) throws FieldIndexException {
-		currentPlayer.transferMoneyTo(bank, 100);
+		currentPlayer.transferMoneyTo(bank, COST_FOR_JUMP);
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Springer Feld gelandet und springt zum Feld mit Index " + fieldIndex + ".";
 		}
@@ -296,10 +327,8 @@ public class UnipolyApp {
 
 	/***
 	 * Logic to check if a {@link Field} is available for a player to buy.
-	 *
-	 * @throws FieldIndexException gets thrown if any value regarding the field isn't in the range of 0 - 35
-	 */
-	private void playerIsOnPropertyField() throws FieldIndexException {
+	 **/
+	private void playerIsOnPropertyField() {
 		FieldProperty currentField = (FieldProperty) this.currentField;
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
@@ -342,14 +371,14 @@ public class UnipolyApp {
 	 * Sets {@link #displayMessage} and {@link UnipolyPhase} accordingly
 	 *
 	 */
-	private void playerIsOnChanceField() throws FieldIndexException {
-			if (currentPlayer.isNPC()) {
-				displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
-				readCard();
-			} else {
-				displayMessage = "Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!";
-				phase = UnipolyPhase.SHOWCARD;
-			}
+	private void playerIsOnChanceField() {
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Chance Feld gelandet.";
+			readCard();
+		} else {
+			displayMessage = "Du bist auf einem Chance Feld gelandet! Du musst eine Chance Karte ziehen!";
+			phase = UnipolyPhase.SHOWCARD;
+		}
 	}
 
 	/***
@@ -357,7 +386,7 @@ public class UnipolyApp {
 	 * If player is human card gets drawn after clicking in the frontend.
 	 * After that sets {@link #displayMessage} and {@link UnipolyPhase} accordingly.
 	 */
-	public void readCard() throws FieldIndexException {
+	public void readCard() {
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName() + " zieht die Karte:<br><i>" + cards.get(0).getText()
 					+ "</i>";
@@ -388,11 +417,15 @@ public class UnipolyApp {
 		cards.remove(0);
 	}
 
-	private void inChanceCardDebt() throws FieldIndexException {
+	/**
+	 * The player doesn't have enough money to pay for the debt. He has to sell his properties and if he still
+	 * doesn't have enough money the game will end.
+	 */
+	private void inChanceCardDebt() {
 		if (currentPlayer.setandgetBankrupt()) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName()
-						+ " kann kann sich das nicht leisten und ist nun Bankrot.";
+						+ " kann sich das nicht leisten und ist nun Bankrot.";
 			} else {
 				displayMessage = "Du kannst dir das nicht leisten und bist nun Bankrot.";
 			}
@@ -408,6 +441,11 @@ public class UnipolyApp {
 		}
 	}
 
+	/**
+	 * The current player lands on a jump field. He can pay to jump or stay at his current place.
+	 *
+	 * @throws FieldIndexException
+	 */
 	private void playerIsOnJumpField() throws FieldIndexException {
 		if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
 			if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
@@ -431,7 +469,7 @@ public class UnipolyApp {
 	}
 
 	private void playerIsOnGoField() {
-		bank.transferMoneyTo(currentPlayer, 400);
+		bank.transferMoneyTo(currentPlayer, GO_MONEY);
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName()
 					+ " ist auf Start gelandet und bekommt deshalb das doppelte Honorar!";
@@ -457,18 +495,16 @@ public class UnipolyApp {
 		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
-	private void sellProperty(int FieldIndex, Owner player) {
-		player.buyPropertyFrom(currentPlayer, FieldIndex);
-		board.checkAndDecreaseRentAndECTS(board.getProperties().get(FieldIndex));
-		board.getProperties().get(FieldIndex).resetLevel();
+	private void sellProperty(int fieldIndex, Owner player) {
+		player.buyPropertyFrom(currentPlayer, fieldIndex);
+		board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndex));
+		board.getProperties().get(fieldIndex).resetLevel();
 	}
 
 	/***
 	 * landedOnOwnedProperty method player lands on owned Land
-	 *
-	 * @throws FieldIndexException if the fieldIndex is out of bounds
 	 */
-	private void landedOnOwnedProperty() throws FieldIndexException {
+	private void landedOnOwnedProperty() {
 		FieldProperty currentProperty = ((FieldProperty) currentField);
 		if (currentPlayer.setAndCheckDebt(players.get(currentProperty.getOwnerIndex()),
 				currentProperty.getCurrentRent())) {
@@ -501,6 +537,9 @@ public class UnipolyApp {
 		}
 	}
 
+	/**
+	 * The NPC lands on a property of a player. This method returns a random answer to the quiz question.
+	 */
 	private void landedOnMyProperty() {
 		phase = UnipolyPhase.QUIZTIME;
 		if (currentPlayer.isNPC()) {
@@ -568,13 +607,16 @@ public class UnipolyApp {
 		}
 	}
 
+	/**
+	 * If the NPC is in debt he has to sell his properties until he isn's anymore.
+	 */
 	private void NPCinDebt() {
 		int selling = 0;
 		List<Integer> currarr = new ArrayList<>();
-		for (Map.Entry<Integer, FieldProperty> modul : currentPlayer.getownedModuls().entrySet()) {
+		for (Map.Entry<Integer, FieldProperty> module : currentPlayer.getownedModuls().entrySet()) {
 			if (selling < currentPlayer.getDebt()) {
-				selling += modul.getValue().getPropertyCost();
-				currarr.add(modul.getKey());
+				selling += module.getValue().getPropertyCost();
+				currarr.add(module.getKey());
 			}
 		}
 		Integer[] FieldIndexes = currarr.toArray(new Integer[currarr.size()]);
@@ -769,6 +811,12 @@ public class UnipolyApp {
 		jumpPlayer(jumpIndex);
 	}
 
+	/**
+	 * This method is called when the NPC has enough money to buy a specific property. If he owns twice the
+	 * amount of money that it cost, he will buy it.
+	 *
+	 * @param currentField the property in question
+	 */
 	private void NPCBuysProperty(FieldProperty currentField) {
 		if (NPCChecksMoney(currentField.getPropertyCost())) {
 			displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()

@@ -4,7 +4,7 @@ import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 public class Player extends Owner {
 
     private Token token;
-    private boolean FreeCard = false;
+    private boolean freeCard = false;
     private int leftTimeInDetention = 0;
     private int ects = 0;
 
@@ -21,8 +21,13 @@ public class Player extends Owner {
     }
 
     /*------ GET functions ------------------------------------------*/
-    public boolean getFreeCard() { return FreeCard; }
-    public Token getToken() { return token; }
+    public boolean getFreeCard() {
+        return freeCard;
+    }
+
+    public Token getToken() {
+        return token;
+    }
     public int getECTS() { return ects; }
     public int getleftTimeInDetention() { return leftTimeInDetention; }
     /*---------------------------------------------------------------*/
@@ -32,7 +37,7 @@ public class Player extends Owner {
     }
 
     public void setFreeCard(boolean outDetention) {
-        FreeCard = outDetention;
+        freeCard = outDetention;
     }
 
     public void increaseECTS(int amount) {

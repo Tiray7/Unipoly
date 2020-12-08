@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static ch.zhaw.it.pm3.unipoly.Config.AMOUNT_OF_MODULES;
+
 /**
  * This class initialises the board with all the fields and allows the manipulation of rent and ECTS-points.
  */
@@ -148,7 +150,7 @@ public class Board {
      * This method fills the mouduleMap with the grouped properties.
      */
     private void fillModuleGroups() {
-        for (int i = 0; i <= 7; i++) {
+        for (int i = 0; i <= AMOUNT_OF_MODULES; i++) {
             moduleGroups.put(i, new LinkedList<>());
         }
         properties.forEach((integer, fieldProperty) -> moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty));
