@@ -1,9 +1,11 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class TokenTest {
     Token t_token;
@@ -13,7 +15,7 @@ public class TokenTest {
      */
     @Before
     public void setUp() {
-        t_token = new Token(Token.TokenType.LAB);
+        t_token = new Token(TokenType.LAB);
     }
 
     /***
@@ -29,7 +31,7 @@ public class TokenTest {
      */
     @Test
     public void testGetType() {
-        assertEquals(t_token.getType(), Token.TokenType.LAB);
+        assertEquals(TokenType.LAB, t_token.getType());
     }
 
     /***
@@ -37,7 +39,7 @@ public class TokenTest {
      */
     @Test
     public void testGetTileIndex() {
-        assertEquals(t_token.getCurrFieldIndex(), 0);
+        assertEquals(0, t_token.getCurrFieldIndex());
     }
 
     /***
@@ -45,9 +47,9 @@ public class TokenTest {
      */
     @Test
     public void testMoveTo() {
-        assertEquals(t_token.getCurrFieldIndex(), 0);
+        assertEquals(0, t_token.getCurrFieldIndex());
         t_token.moveTo(2);
-        assertEquals(t_token.getCurrFieldIndex(), 2);
+        assertEquals(2, t_token.getCurrFieldIndex());
     }
 
     /***
@@ -56,9 +58,8 @@ public class TokenTest {
      */
     @Test
     public void testMoveBy() {
-        assertEquals(t_token.getCurrFieldIndex(), 0);
+        assertEquals(0, t_token.getCurrFieldIndex());
         t_token.moveBy(1);
-        assertEquals(t_token.getCurrFieldIndex(), 1);
+        assertEquals(1, t_token.getCurrFieldIndex());
     }
-
 }

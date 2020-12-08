@@ -4,7 +4,7 @@ package ch.zhaw.it.pm3.unipoly;
  * This class is for questions, which players have to answer when they land on someones property.
  */
 public class Question {
-    String question;
+    String questionString;
     int solution;
     String option1;
     String option2;
@@ -13,14 +13,14 @@ public class Question {
     /**
      * The constructor sets the datafields of the class and puts the quiz options into a hashmap
      *
-     * @param question is the string of the question
-     * @param solution is the number of which option is correct
-     * @param option1  is the first option
-     * @param option2  is the second option
-     * @param option3  is the third option
+     * @param questionString is the string of the question
+     * @param solution       is the number of which option is correct
+     * @param option1        is the first option
+     * @param option2        is the second option
+     * @param option3        is the third option
      */
-    public Question(String question, int solution, String option1, String option2, String option3) {
-        this.question = question;
+    public Question(String questionString, int solution, String option1, String option2, String option3) {
+        this.questionString = questionString;
         this.solution = solution;
         this.option1 = option1;
         this.option2 = option2;
@@ -28,7 +28,10 @@ public class Question {
     }
 
     /*------ GET functions ------------------------------------------*/
-    public String getQuestion() { return question; }
+    public String getQuestionString() {
+        return questionString;
+    }
+
     public int getSolution() { return solution; }
     public String getOption1() { return option1; }
     public String getOption2() { return option2; }

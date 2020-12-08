@@ -3,6 +3,7 @@ package ch.zhaw.it.pm3.unipoly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,14 +36,14 @@ class ControllerTests {
 	@Autowired
 	private Controller controller;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		mvc = MockMvcBuilders.standaloneSetup(controller)
 				.build();
 	}
 
 	@Test
-	public void getState() {
+	void getState() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -58,7 +59,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getJoin() {
+	void getJoin() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -74,7 +75,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getStart() {
+	void getStart() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -90,7 +91,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getResetGame() throws Exception {
+	void getResetGame() throws Exception {
 		MockHttpServletResponse response = mvc.perform(
 				get("/resetgame")
 						.accept(MediaType.ALL))
@@ -101,7 +102,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getRollDice() {
+	void getRollDice() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -117,7 +118,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getRollTwoDice() {
+	void getRollTwoDice() {
 		try {
 			mvc.perform(
 					get("/rolltwodice")
@@ -130,7 +131,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getEndTurn() {
+	void getEndTurn() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -146,7 +147,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getCheckFieldOptions() {
+	void getCheckFieldOptions() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -162,7 +163,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getJumpPlayer() {
+	void getJumpPlayer() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -178,7 +179,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getUserWantToBuy() {
+	void getUserWantToBuy() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -194,7 +195,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getPayDetentionRandom() {
+	void getPayDetentionRandom() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -210,7 +211,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getLeaveDetention() {
+	void getLeaveDetention() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -226,7 +227,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getPayoffDebt() {
+	void getPayoffDebt() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -242,7 +243,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getReadCard() {
+	void getReadCard() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
@@ -258,7 +259,7 @@ class ControllerTests {
 	}
 
 	@Test
-	public void getQuizAnswer() {
+	void getQuizAnswer() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		try {
 			response = mvc.perform(
