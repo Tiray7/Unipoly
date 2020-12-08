@@ -24,7 +24,7 @@ public abstract class Owner implements Comparable<Owner> {
         this.index = index;
         this.name = id;
         money = initialMoney;
-        ownedModuls = new HashMap<Integer, FieldProperty>();
+        ownedModuls = new HashMap<>();
         setModulsOwned();
     }
 

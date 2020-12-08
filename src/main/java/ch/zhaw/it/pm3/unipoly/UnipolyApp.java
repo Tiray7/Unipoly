@@ -556,15 +556,15 @@ public class UnipolyApp {
 	public void payOffDebt(Integer[] fieldIndices) {
 		Owner Debtor = currentPlayer.getDebtor();
 		int propertyValue = 0;
-		for (int i = 0; i < fieldIndices.length; i++) {
+		for (Integer fieldIndex : fieldIndices) {
 			if (Debtor.isBank()) {
-				sellProperty(fieldIndices[i], Debtor);
+				sellProperty(fieldIndex, Debtor);
 			} else {
-				propertyValue = board.getProperties().get(fieldIndices[i]).getPropertyCost();
-				currentPlayer.transferPropertyTo(Debtor, fieldIndices[i]);
+				propertyValue = board.getProperties().get(fieldIndex).getPropertyCost();
+				currentPlayer.transferPropertyTo(Debtor, fieldIndex);
 				currentPlayer.setDebt(Math.max(0, currentPlayer.getDebt() - propertyValue));
-				board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndices[i]));
-				board.getProperties().get(fieldIndices[i]).resetLevel();
+				board.checkAndDecreaseRentAndECTS(board.getProperties().get(fieldIndex));
+				board.getProperties().get(fieldIndex).resetLevel();
 			}
 		}
 		if (currentPlayer.setandcheckDebt(Debtor, currentPlayer.getDebt())) {
@@ -574,7 +574,7 @@ public class UnipolyApp {
 
 	private void NPCinDebt() throws FieldIndexException {
 		int selling = 0;
-		List<Integer> currarr = new ArrayList<Integer>();
+		List<Integer> currarr = new ArrayList<>();
 		for (Map.Entry<Integer, FieldProperty> modul : currentPlayer.getownedModuls().entrySet()) {
 			if (selling < currentPlayer.getDebt()) {
 				selling += modul.getValue().getPropertyCost();
@@ -651,7 +651,7 @@ public class UnipolyApp {
 		}
 
 		gameoverString = "<h1>GAME OVER</h1>";
-		ArrayList<Owner> ranking = new ArrayList<Owner>(players);
+		ArrayList<Owner> ranking = new ArrayList<>(players);
 		Collections.sort(ranking);
 		int j = 0;
 		if (Bachelor != null) {

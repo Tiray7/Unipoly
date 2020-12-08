@@ -92,11 +92,11 @@ public class Board {
     }
 
     /***
-     * getFieldAtIndex method to get the field on this index
+     * getFieldAtIndex method to get the field at this index
      *
      * @param index of the field
      * @return the field at the given index
-     * @throws FieldIndexException
+     * @throws FieldIndexException if the index is invalid
      */
     public Field getFieldAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
@@ -151,9 +151,7 @@ public class Board {
         for (int i = 0; i <= 7; i++) {
             moduleGroups.put(i, new LinkedList<>());
         }
-        properties.forEach((integer, fieldProperty) -> {
-            moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
-        });
+        properties.forEach((integer, fieldProperty) -> moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty));
     }
 
     /**
@@ -171,10 +169,7 @@ public class Board {
                 countSameOwner++;
             }
         }
-        if (countSameOwner == currentModuleGroup.size()) {
-            return true;
-        }
-        return false;
+        return countSameOwner == currentModuleGroup.size();
     }
 
     /**

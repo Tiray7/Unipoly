@@ -37,7 +37,7 @@ public class Config {
     }
 
     public enum TokenType {
-        ATOM, ONEPLUS, EINSTEIN, CRADLE, EQUATION, HELIUM, LAB, LIGHTBULB, BANK, NPCI, NPCII, NPCIII;
+        ATOM, ONEPLUS, EINSTEIN, CRADLE, EQUATION, HELIUM, LAB, LIGHTBULB, BANK, NPCI, NPCII, NPCIII
     }
 
     /***
