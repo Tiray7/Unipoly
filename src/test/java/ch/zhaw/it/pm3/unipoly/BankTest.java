@@ -2,6 +2,7 @@ package ch.zhaw.it.pm3.unipoly;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class BankTest {
@@ -22,8 +23,8 @@ public class BankTest {
      */
     @Test
     public void testBank() {
-        assert(bank.getMoney() == 2000000);
-        assert(bank.getName().equals("Bank"));
+        assertEquals(2000000, bank.getMoney());
+        assertEquals("Bank", bank.getName());
     }
 
 }

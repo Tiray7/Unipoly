@@ -24,8 +24,8 @@ public class FieldPropertyTest {
         players = new LinkedList<>();
         players.add(new Player(0, "Jack", TokenType.ATOM));
         players.add(new Player(1, "John", TokenType.EINSTEIN));
-        propertyOne = new FieldProperty("Geschichte", Config.FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0);
-        propertyTwo = new FieldProperty("Geographie", Config.FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450, 0);
+        propertyOne = new FieldProperty(new PropertyDataField("Geschichte", Config.FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0));
+        propertyTwo = new FieldProperty(new PropertyDataField("Geographie", Config.FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450, 0));
     }
 
     @Test

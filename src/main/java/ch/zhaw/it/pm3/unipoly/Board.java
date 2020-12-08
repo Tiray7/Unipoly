@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static ch.zhaw.it.pm3.unipoly.Config.AMOUNT_OF_MODULES;
@@ -72,7 +73,7 @@ public class Board {
      * @return list of fields from the same modulegroup
      * @throws FieldIndexException if the index is out of range
      */
-    public LinkedList<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
+    public List<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return moduleGroups.get(index);
     }

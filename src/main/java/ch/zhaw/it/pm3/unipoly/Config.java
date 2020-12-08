@@ -1,9 +1,11 @@
 package ch.zhaw.it.pm3.unipoly;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+
 
 public class Config {
 
@@ -118,34 +120,34 @@ public class Config {
 
     /***
      * get the chance Cards
-     * 
+     *
      * @return the cards
      */
-    public static ArrayList<ChanceCards> getChanceCards() {
+    public static List<ChanceCards> getChanceCards() {
         ArrayList<ChanceCards> assignment = new ArrayList<>();
 
-        assignment.add(new ChanceCards("	Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.	", ChanceCardType.PAYMONEY, 80));
-        assignment.add(new ChanceCards("	Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.	", ChanceCardType.PAYMONEY, 100));
-        assignment.add(new ChanceCards("	Zahle deine Semestergebühr von CHF 700.	", ChanceCardType.PAYMONEY, 700));
-        assignment.add(new ChanceCards("	Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.	", ChanceCardType.PAYMONEY, 20));
-        assignment.add(new ChanceCards("	Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.	", ChanceCardType.RECEIVEMONEY, 100));
-        assignment.add(new ChanceCards("	Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.	", ChanceCardType.RECEIVEMONEY, 200));
-        assignment.add(new ChanceCards("	Von deinem Nebenjob verdienst du CHF 400.	", ChanceCardType.RECEIVEMONEY, 400));
-        assignment.add(new ChanceCards("	Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen. 	", ChanceCardType.TODETENTION, 0));
-        assignment.add(new ChanceCards("	Du kommst aus dem Nachsitzen frei.	", ChanceCardType.DETENTIONFREECARD, 0));
+        assignment.add(new ChanceCards("Du musst deinen Laptop reparieren lassen, weil du Kaffe darüber verschüttet hast. Zahle CHF 80.", ChanceCardType.PAYMONEY, 80));
+        assignment.add(new ChanceCards("Du hast ein Buch aus der Bibliothek verloren. Zahle CHF 100.", ChanceCardType.PAYMONEY, 100));
+        assignment.add(new ChanceCards("Zahle deine Semestergebühr von CHF 700.", ChanceCardType.PAYMONEY, 700));
+        assignment.add(new ChanceCards("Du gehst Mittagessen mit deiner Projektgruppe. Zahle CHF 20.", ChanceCardType.PAYMONEY, 20));
+        assignment.add(new ChanceCards("Du hilfst bei einem Event der Universität aus. Ziehe CHF 200 ein.", ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("Du gibts Nachhilfeunterricht. Ziehe CHF 100 ein.", ChanceCardType.RECEIVEMONEY, 100));
+        assignment.add(new ChanceCards("Du hast den ersten Preis in einem Wettbewerb gewonnen. Ziehe CHF 200 ein.", ChanceCardType.RECEIVEMONEY, 200));
+        assignment.add(new ChanceCards("Von deinem Nebenjob verdienst du CHF 400.", ChanceCardType.RECEIVEMONEY, 400));
+        assignment.add(new ChanceCards("Du wurdest beim Spicken erwischt. Gehe in das Nachsitzen.", ChanceCardType.TODETENTION, 0));
+        assignment.add(new ChanceCards("Du kommst aus dem Nachsitzen frei.", ChanceCardType.DETENTIONFREECARD, 0));
 
         return assignment;
     }
 
-    public static HashMap<Integer, Question> getQuestionCards() {
+    public static Map<Integer, Question> getQuestionCards() {
         HashMap<Integer, Question> assignment = new HashMap<>();
         assignment.put(1, new Question("Wann fing der Erste Weltkrieg an?", 1, "1914", "1897", "1935 "));
         assignment.put(3, new Question("Welcher ist der grösste Kontinent?", 2, "Amerika", "Asien", "Australien "));
         assignment.put(5, new Question("Was bedeutet katholisch?", 3, "Heilig", "Auserwählt", "Allumfassend "));
         assignment.put(6, new Question("Was ist das Objekt der Geisteswissenschaften?", 1, "Der Mensch", "Der Körper", "Die Seele"));
         assignment.put(8, new Question("Der russische Verhaltensforscher Iwan Pawlow entdeckte das Prinzip der Klassischen Konditionierung durch Experimenten an welchem Tier?", 2, "Maus", "Hund", "Katze "));
-        assignment.put(10, new Question("Die Biologie ist dem altgriechischen Wortursprung βίος (bíos) nach die Lehre wovon? ", 3, "Welt", "Natur", "Leben "));
+        assignment.put(10, new Question("Die Biologie ist dem altgriechischen Wortursprung βίος (bíos) nach die Lehre wovon?", 3, "Welt", "Natur", "Leben "));
         assignment.put(12, new Question("Welcher englische Forscher hätte der Legende nach den Fall eines Apfels vom Apfelbaum beobachtet, was ihn zur Formulierung seines Gravitationsgesetzes inspiriert hätte?", 1, "Isaac Newton", "Ernest Rutherford", "Michael Faraday "));
         assignment.put(13, new Question("Welches Element ist mit ungefähr 78 Prozent Volumsanteil der Hauptbestandteil unserer Atmosphäre?", 2, "Sauerstoff", "Stickstoff", "Wasserstoff "));
         assignment.put(14, new Question("Wie nennt man schmutzige Luft, die besonders in Großstädten durch Autoabgase auftritt?", 3, "Rauch", "Nebel", "Smog "));
@@ -159,9 +161,9 @@ public class Config {
         assignment.put(26, new Question("Was ist Java?", 2, "Content Management System", "Objektorientierte Programmiersprache", "Shopsystem "));
         assignment.put(28, new Question("Balaenoptera musculus gilt als das größte und schwerste Tier aller Zeiten – unter welchem Namen kennen wir diesen Riesen?", 3, "Megalodon", "Diplodocus", "Blauwal "));
         assignment.put(30, new Question("Wie viele Knochen besitzt der Mensch?", 1, "210", "175", "305 "));
-        assignment.put(31, new Question("Welche Krankheit wurde früher auch als Schwindsucht bezeichnet ? ", 2, "Malaria", "Tuberkulose", "Lepra "));
+        assignment.put(31, new Question("Welche Krankheit wurde früher auch als Schwindsucht bezeichnet ?", 2, "Malaria", "Tuberkulose", "Lepra "));
         assignment.put(33, new Question("Welchen Wolkentyp mögen Segelflieger tendenziell am meisten?", 3, "Cumulonimbuswolken mit großer Höhe.", "Cirruswolken", "Dicke Cumuluswolken mit sichtbarem Abstand. "));
-        assignment.put(35, new Question("Das öffentliches Recht umfasst …", 1, "Bundesverfassung, gerichtlicher Nachlassvertrag, Zivilprozessrecht, Völkerrecht", " Steuerrecht, aussergerichtlicher Nachalssvertrag, Strafgesetz, Krankenversicherungsgesetz KVG", " Kantonsverfassung, Planung und Baurecht, Sachenrecht Europäische Menschenrechtskonvention "));
+        assignment.put(35, new Question("Das öffentliches Recht umfasst …", 1, "Bundesverfassung, gerichtlicher Nachlassvertrag, Zivilprozessrecht, Völkerrecht", "Steuerrecht, aussergerichtlicher Nachalssvertrag, Strafgesetz, Krankenversicherungsgesetz KVG", "Kantonsverfassung, Planung und Baurecht, Sachenrecht Europäische Menschenrechtskonvention "));
         return assignment;
     }
 }

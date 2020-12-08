@@ -27,9 +27,9 @@ public class PlayerTest {
      */
     @Test
     public void testPlayer() {
-        assert (player.getMoney() == 1500);
-        assert (player.getName().equals("Jack"));
-        assert (player.getToken().getType() == TokenType.ATOM);
+        assertEquals(1500, player.getMoney());
+        assertEquals("Jack", player.getName());
+        assertEquals(TokenType.ATOM, player.getToken().getType());
     }
 
     /***

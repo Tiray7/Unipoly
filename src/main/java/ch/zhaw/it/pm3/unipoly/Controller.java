@@ -96,14 +96,13 @@ public class Controller {
 	 * @param name of the player
 	 * @param token chosen by the player
 	 * @return response containing the unipoly as json in the body
-	 * @throws FieldIndexException if something's wrong with the index
 	 * @throws IOException if something goes horribly wrong with the server or client
 	 */
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> join(@RequestParam(value = "name", required = false) String name,
 										   @RequestParam(value = "token", required = false) TokenType token)
-			throws FieldIndexException, IOException {
+			throws IOException {
 		unipoly.join(name, token);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -119,14 +118,13 @@ public class Controller {
 	 * @param gamemode chosen by the player
 	 * @param npcnum amount of npcs chosen by the player
 	 * @return response containing the unipoly as json in the body
-	 * @throws FieldIndexException if something's wrong with the index
 	 * @throws IOException if something goes horribly wrong with the server or client
 	 */
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> start(
 			@RequestParam(value = "gamemode", required = false) Config.Gamemode gamemode,
-			@RequestParam(value = "npcnum", required = false) Integer npcnum) throws FieldIndexException, IOException {
+			@RequestParam(value = "npcnum", required = false) Integer npcnum) throws IOException {
 		unipoly.start(gamemode, npcnum);
 
 		ObjectMapper objectMapper = new ObjectMapper();

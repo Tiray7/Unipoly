@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +67,7 @@ public class UnipolyAppTests {
         //setup
         int playerJoined = 1;
         String name = "zahnfleischblutermurphy";
-        ArrayList<Player> players;
+        List<Player> players;
         //work
         HttpStatus status = controller.join(name, TokenType.ONEPLUS).getStatusCode();
         players = controller.unipoly.getPlayers();

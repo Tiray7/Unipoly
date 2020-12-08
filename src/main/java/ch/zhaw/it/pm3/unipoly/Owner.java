@@ -112,10 +112,9 @@ public abstract class Owner implements Comparable<Owner> {
      * @param amount what is the amount to transfer
      * @return the new amount of money
      */
-    public double transferMoneyTo(Owner player, int amount) {
+    public void transferMoneyTo(Owner player, int amount) {
         player.money += amount;
         this.money -= amount;
-        return this.money;
     }
 
     /***

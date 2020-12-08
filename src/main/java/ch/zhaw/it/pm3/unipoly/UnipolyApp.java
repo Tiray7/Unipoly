@@ -34,8 +34,8 @@ public class UnipolyApp {
 	private final ArrayList<Player> players;
 	private final Bank bank;
 	private final Board board;
-	private final ArrayList<ChanceCards> cards;
-	private final HashMap<Integer, Question> questions;
+	private final List<ChanceCards> cards;
+	private final Map<Integer, Question> questions;
 	private Player currentPlayer;
 	private int firstDice;
 	private int secondDice;
@@ -78,11 +78,11 @@ public class UnipolyApp {
 		return phase;
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
 
-	public HashMap<Integer, Question> getQuestions() {
+	public Map<Integer, Question> getQuestions() {
 		return questions;
 	}
 
@@ -127,7 +127,7 @@ public class UnipolyApp {
 	public void join(String name, TokenType token) {
 		checkIfPlayerNameAlreadyExists(name, token);
 		initializePlayer(name, token);
-		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " joined!");
+		unipolyMcLogger.log(Level.DEBUG, "Player: {0} joined!", name);
 	}
 
 	/***
@@ -139,11 +139,11 @@ public class UnipolyApp {
 	private void checkIfPlayerNameAlreadyExists(String name, TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
-				unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " already exists --> IllegalArgumentException thrown");
+				unipolyMcLogger.log(Level.DEBUG, "Player: {0} already exists --> IllegalArgumentException thrown", name);
 				throw new IllegalArgumentException("Player name already exists.");
 			}
 			if (player.getToken().getType() == token) {
-				unipolyMcLogger.log(Level.DEBUG, "Token: " + token.name() + " already exists --> IllegalArgumentException thrown");
+				unipolyMcLogger.log(Level.DEBUG, "Token: {0} already exists --> IllegalArgumentException thrown", token.name());
 				throw new IllegalArgumentException("Player token already exists.");
 			}
 		}
@@ -159,7 +159,7 @@ public class UnipolyApp {
 		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
 		players.add(player);
-		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " initialized!");
+		unipolyMcLogger.log(Level.DEBUG, "Player: {0} initialized!", name);
 	}
 
 	/***
@@ -180,7 +180,7 @@ public class UnipolyApp {
 		// First Player which gets to play
 		currentPlayer = players.get(0);
 		phase = UnipolyPhase.WAITING;
-		unipolyMcLogger.log(Level.DEBUG, "Game started with current player: " + currentPlayer.getName());
+		unipolyMcLogger.log(Level.DEBUG, "Game started with current player: {0}", currentPlayer.getName());
 	}
 
 	/***
@@ -195,7 +195,7 @@ public class UnipolyApp {
 		secondDice = new Random().nextInt(6) + 1;
 		// After Rolling the second dice, move the Player accordingly
 		movePlayerBy(this.firstDice + secondDice);
-		unipolyMcLogger.log(Level.DEBUG, "Dice rolled by: " + currentPlayer.getName());
+		unipolyMcLogger.log(Level.DEBUG, "Dice rolled by: {}", currentPlayer.getName());
 	}
 
 	/***
@@ -213,7 +213,7 @@ public class UnipolyApp {
 					+ " gewürfelt.";
 			checkFieldOptions();
 		}
-		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " moved by: " + rolledValue);
+		unipolyMcLogger.log(Level.DEBUG, "Player: {0} moved by: {1}", currentPlayer.getName(), rolledValue);
 	}
 
 	/***
@@ -228,7 +228,7 @@ public class UnipolyApp {
 		if (currentPlayer.isNPC()) {
 			checkFieldOptions();
 		}
-		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " moved to: " + fieldIndex);
+		unipolyMcLogger.log(Level.DEBUG, "Player: {0} moved to: {1}", currentPlayer.getName(), fieldIndex);
 	}
 
 	/***
@@ -243,7 +243,7 @@ public class UnipolyApp {
 			displayMessage += "<br>" + currentPlayer.getName() + " ist auf einem Springer Feld gelandet und springt zum Feld mit Index " + fieldIndex + ".";
 		}
 		movePlayerTo(fieldIndex);
-		unipolyMcLogger.log(Level.DEBUG, "Player: " + currentPlayer.getName() + " jumped to: " + fieldIndex);
+		unipolyMcLogger.log(Level.DEBUG, "Player: {0} jumped to: {1}", currentPlayer.getName(), fieldIndex);
 	}
 
 	/***
@@ -444,7 +444,7 @@ public class UnipolyApp {
 	/**
 	 * The current player lands on a jump field. He can pay to jump or stay at his current place.
 	 *
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException if the fieldIndex is out of bounds
 	 */
 	private void playerIsOnJumpField() throws FieldIndexException {
 		if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
@@ -692,9 +692,9 @@ public class UnipolyApp {
 	 */
 	private void GameOver() {
 		Player Bachelor = null;
-		for (int i = 0; i < players.size(); i++) {
-			if (players.get(i).isBachelor())
-				Bachelor = players.get(i);
+		for (Player value : players) {
+			if (value.isBachelor())
+				Bachelor = value;
 		}
 
 		gameoverString = "<h1>GAME OVER</h1>";
