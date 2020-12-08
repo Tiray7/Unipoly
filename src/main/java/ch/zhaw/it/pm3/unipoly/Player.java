@@ -1,4 +1,5 @@
 package ch.zhaw.it.pm3.unipoly;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class Player extends Owner {
 
@@ -14,7 +15,7 @@ public class Player extends Owner {
      * @param tokenType is the token type
      */
 
-    public Player(int index, String name, Token.TokenType tokenType) {
+    public Player(int index, String name, TokenType tokenType) {
         super(index, name, 1500);
         token = new Token(tokenType);
     }

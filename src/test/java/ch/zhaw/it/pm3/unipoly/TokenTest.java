@@ -1,9 +1,9 @@
 package ch.zhaw.it.pm3.unipoly;
 
 import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class TokenTest {
     Token t_token;
@@ -13,7 +13,7 @@ public class TokenTest {
      */
     @Before
     public void setUp() {
-        t_token = new Token(Token.TokenType.LAB);
+        t_token = new Token(TokenType.LAB);
     }
 
     /***
@@ -29,7 +29,7 @@ public class TokenTest {
      */
     @Test
     public void testGetType() {
-        assertEquals(t_token.getType(), Token.TokenType.LAB);
+        assertEquals(t_token.getType(), TokenType.LAB);
     }
 
     /***

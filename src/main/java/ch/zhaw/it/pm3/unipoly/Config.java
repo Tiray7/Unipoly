@@ -36,9 +36,14 @@ public class Config {
         }
     }
 
+    public enum TokenType {
+        ATOM, ONEPLUS, EINSTEIN, CRADLE, EQUATION, HELIUM, LAB, LIGHTBULB, BANK, NPCI, NPCII, NPCIII;
+    }
+
     /***
+     *
      * Initialize the Board
-     * 
+     *
      * @return the board
      */
     public static Map<Integer, Field> getInitialBoard() {

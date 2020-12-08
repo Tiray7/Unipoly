@@ -3,6 +3,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class BankTest {
     Bank bank;
@@ -15,7 +16,7 @@ public class BankTest {
     @Before
     public void setUp() throws Exception {
         bank = new Bank();
-        player = new Player(-1, "Dilan", Token.TokenType.EINSTEIN);
+        player = new Player(-1, "Dilan", TokenType.EINSTEIN);
     }
 
     /***

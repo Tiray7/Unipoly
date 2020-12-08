@@ -4,11 +4,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
-
 import static ch.zhaw.it.pm3.unipoly.Config.COST_FOR_JUMP;
 import static ch.zhaw.it.pm3.unipoly.Config.RANSOM;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 /**
  * Represents the Unipoly application - handles the main part of the game logic
@@ -91,10 +90,10 @@ public class UnipolyApp {
 	 * Joins a new Player to the Unipoly application-context
 	 *
 	 * @param name  name of the {@link Player}
-	 * @param token {@link Token.TokenType}
+	 * @param token {@link TokenType}
 	 * @throws FieldIndexException gets thrown if the field the player gets drawn to is invalid
 	 */
-	public void join(String name, Token.TokenType token) throws FieldIndexException {
+	public void join(String name, TokenType token) throws FieldIndexException {
 		checkIfPlayerNameAlreadyExists(name, token);
 		initializePlayer(name, token);
 		unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " joined!");
@@ -104,9 +103,9 @@ public class UnipolyApp {
 	 * Checks if a player name already exists and
 	 * @throws IllegalArgumentException if either the name or the token aren't available anymore
 	 *  @param name  {@link Player} name
-	 * @param token {@link Token.TokenType}
+	 * @param token {@link TokenType}
 	 */
-	private void checkIfPlayerNameAlreadyExists(String name, Token.TokenType token) {
+	private void checkIfPlayerNameAlreadyExists(String name, TokenType token) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
 				unipolyMcLogger.log(Level.DEBUG, "Player: " + name + " already exists --> IllegalArgumentException thrown");
@@ -123,9 +122,9 @@ public class UnipolyApp {
 	 * Initializing a new {@link Player}
 	 *
 	 * @param name  {@link Player} name
-	 * @param token {@link Token.TokenType}
+	 * @param token {@link TokenType}
 	 */
-	private void initializePlayer(String name, Token.TokenType token) {
+	private void initializePlayer(String name, TokenType token) {
 		Player player = new Player(players.size(), name, token);
 		player.getToken().moveTo(0);
 		players.add(player);
@@ -141,11 +140,11 @@ public class UnipolyApp {
 	public void start(Gamemode mode, int npcnum) {
 		if (Gamemode.SINGLE == mode) {
 			if (npcnum >= 1)
-				initializePlayer("NPC1", Token.TokenType.NPCI);
+				initializePlayer("NPC1", TokenType.NPCI);
 			if (npcnum >= 2)
-				initializePlayer("NPC2", Token.TokenType.NPCII);
+				initializePlayer("NPC2", TokenType.NPCII);
 			if (npcnum >= 3)
-				initializePlayer("NPC3", Token.TokenType.NPCIII);
+				initializePlayer("NPC3", TokenType.NPCIII);
 		}
 		// First Player which gets to play
 		currentPlayer = players.get(0);

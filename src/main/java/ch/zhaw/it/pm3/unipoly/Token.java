@@ -1,14 +1,11 @@
 package ch.zhaw.it.pm3.unipoly;
-
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 public class Token {
 
     private TokenType type;
     private int prevFieldIndex = 0;
     private int currFieldIndex = 0;
 
-    enum TokenType {
-        ATOM, ONEPLUS, EINSTEIN, CRADLE, EQUATION, HELIUM, LAB, LIGHTBULB, BANK, NPCI, NPCII, NPCIII
-    }
 
     /***
      * token constructor

@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
+
 /**
  * This class resembles at first the main entry point into the Unipoly application
  * and second contains the controller for the spring web application context.
@@ -100,7 +102,7 @@ public class Controller {
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> join(@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "token", required = false) Token.TokenType token)
+										   @RequestParam(value = "token", required = false) TokenType token)
 			throws FieldIndexException, IOException {
 		unipoly.join(name, token);
 
@@ -308,10 +310,12 @@ public class Controller {
 	 * Processes the requested method in the {@link UnipolyApp} application, then logs
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
-	 * @param fieldIndices is the index of the field to pay debt for
+	 *
+	 * @param indexes is the index of the field to pay debt for
 	 * @return response containing the unipoly as json in the body
 	 * @throws JsonProcessingException if something goes wrong while processing the unipoly to json
 	 */
+
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "indexes", required = false) String indexes)

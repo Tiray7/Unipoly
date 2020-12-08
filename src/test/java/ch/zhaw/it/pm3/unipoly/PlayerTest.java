@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.zhaw.it.pm3.unipoly.Player;
-import ch.zhaw.it.pm3.unipoly.Token.TokenType;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +19,7 @@ public class PlayerTest {
      */
     @Before
     public void setUp() throws Exception {
-        player = new Player(0,"Jack", Token.TokenType.ATOM);
+        player = new Player(0, "Jack", TokenType.ATOM);
     }
 
     /***
@@ -29,9 +29,9 @@ public class PlayerTest {
      */
     @Test
     public void testPlayer() {
-        assert(player.getMoney() == 1500);
-        assert(player.getName().equals("Jack"));
-        assert(player.getToken().getType() == Token.TokenType.ATOM);
+        assert (player.getMoney() == 1500);
+        assert (player.getName().equals("Jack"));
+        assert (player.getToken().getType() == TokenType.ATOM);
     }
 
     /***
