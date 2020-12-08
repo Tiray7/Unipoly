@@ -377,7 +377,7 @@ public class UnipolyApp {
 				phase = UnipolyPhase.SHOWANDSWITCH;
 				break;
 			case PAYMONEY:
-				if (currentPlayer.setandcheckDebt(bank, cards.get(0).getAmount())) {
+				if (currentPlayer.setAndCheckDebt(bank, cards.get(0).getAmount())) {
 					if (currentPlayer.setandgetBankrupt()) {
 						if (currentPlayer.isNPC()) {
 							displayMessage += "<br>" + currentPlayer.getName()
@@ -468,13 +468,13 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * landedOnOwnedProperty method player landed on owned Land
+	 * landedOnOwnedProperty method player lands on owned Land
 	 *
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException if the fieldIndex is out of bounds
 	 */
 	private void landedOnOwnedProperty() throws FieldIndexException {
 		FieldProperty currentProperty = ((FieldProperty) currentField);
-		if (currentPlayer.setandcheckDebt(players.get(currentProperty.getOwnerIndex()),
+		if (currentPlayer.setAndCheckDebt(players.get(currentProperty.getOwnerIndex()),
 				currentProperty.getCurrentRent())) {
 			if (currentPlayer.setandgetBankrupt()) {
 				if (currentPlayer.isNPC()) {
@@ -515,10 +515,10 @@ public class UnipolyApp {
 		}
 	}
 
-	/***
-	 * quizAnswer method, Player answered Question
+	/**
+	 * If the player answers the quiz correctly this method will give the player ECTS-points.
 	 *
-	 * @index questionResult boolean showing if player answered the question correctly
+	 * @param questionResult whether the player answered the question correctly
 	 */
 	public void quizAnswer(boolean questionResult) {
 		if (questionResult) {
@@ -567,7 +567,7 @@ public class UnipolyApp {
 				board.getProperties().get(fieldIndex).resetLevel();
 			}
 		}
-		if (currentPlayer.setandcheckDebt(Debtor, currentPlayer.getDebt())) {
+		if (currentPlayer.setAndCheckDebt(Debtor, currentPlayer.getDebt())) {
 			GameOver();
 		}
 	}
@@ -589,7 +589,7 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * switchPlayer methode
+	 * This method switches the active player.
 	 *
 	 * @throws FieldIndexException
 	 */
@@ -689,7 +689,7 @@ public class UnipolyApp {
 	 * @throws FieldIndexException
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
-		if (currentPlayer.setandcheckDebt(bank, RANSOM)) {
+		if (currentPlayer.setAndCheckDebt(bank, RANSOM)) {
 			if (currentPlayer.setandgetBankrupt()) {
 				if (currentPlayer.isNPC()) {
 					displayMessage += "<br>" + currentPlayer.getName()

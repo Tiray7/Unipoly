@@ -14,10 +14,9 @@ public class PlayerTest {
 
     /***
      * setting player const. for test
-     * @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         player = new Player(0, "Jack", TokenType.ATOM);
     }
 

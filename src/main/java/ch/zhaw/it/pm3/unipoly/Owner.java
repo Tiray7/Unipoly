@@ -73,7 +73,7 @@ public abstract class Owner implements Comparable<Owner> {
      * transfer money between players only with certain amount
      *  @param player which player is included with this transfer
      * @param amount what is the amount to transfer
-     * @return
+     * @return the new amount of money
      */
     public double transferMoneyTo(Owner player, int amount) {
         player.money += amount;
@@ -107,12 +107,12 @@ public abstract class Owner implements Comparable<Owner> {
     }
 
     /***
-     *  setandcheckDebt methode Calculate what the Player owes
+     *  This method calculates what the Player owes
      * @param debtor is the dept
      * @param amount is the amount of dept
-     * @return
+     * @return whether there is a debt or not
      */
-    public boolean setandcheckDebt(Owner debtor, int amount) {
+    public boolean setAndCheckDebt(Owner debtor, int amount) {
         if (this.money < amount) {
             transferMoneyTo(debtor, this.money);
             this.Debt = amount - this.money;

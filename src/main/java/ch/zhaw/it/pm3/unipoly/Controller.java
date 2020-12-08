@@ -46,6 +46,7 @@ public class Controller {
 	 * @param unipoly instance of the UnipolyApp to have a game initialized
 	 * @Autowired  so spring can do all the work :)
 	 */
+
 	@Autowired
 	public Controller(UnipolyApp unipoly) {
 		this.unipoly = unipoly;
