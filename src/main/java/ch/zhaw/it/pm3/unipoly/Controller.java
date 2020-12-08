@@ -241,9 +241,9 @@ public class Controller {
 	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> jumpPlayer(
-			@RequestParam(value = "fieldIndexes", required = false) Integer fieldIndexes)
+			@RequestParam(value = "FieldIndexes", required = false) Integer FieldIndexes)
 			throws FieldIndexException, IOException {
-		unipoly.jumpPlayer(fieldIndexes);
+		unipoly.jumpPlayer(FieldIndexes);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
