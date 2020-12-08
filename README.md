@@ -16,7 +16,8 @@ Team4
 Look at our [Wiki-Page](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/wiki) for more information.
 
 ## Branching and Git-Workflow
-Generally, we work on the feature branches which we later merge into the `master` branch.  
+Generally, we work on feature branches which we later merge into the `dev` branch. After testing and making sure everything runs correctly we merge the `dev` branch
+into the `master` branch.
 The naming-convention for feature branches is the following: `feature/<optional-issue-nr>-foo-bar`
 
 https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
@@ -28,7 +29,19 @@ You can clone the application by running this command on your console/shell: <br
 ```
 git clone https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4.git
 ```
-The project structure is made with Gradle, so you can run ```./gradlew run``` or ```./gradlew test``` / ```gradle run``` or ```gradle test```
+
+The project structure is made with Gradle, so you can run one of the following commands to start the application: <br>
+```
+./gradlew run
+./gradlew test
+gradle run
+gradle test
+```
+
+If the Application started correctly, you should be able to see it in your Browser:
+```
+http://localhost:8080/
+```
 
 ## Test coverage
 ![Coverage of whole project](https://github.zhaw.ch/kuendkun/PM3-HS20-IT19a_ZH-Team4/blob/master/docs/TestCoverageProject_07.12.2020.PNG)
