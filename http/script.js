@@ -76,12 +76,6 @@ function Sleep(milliseconds) {
 function poll($scope) {
 	$.getJSON('state', function (json) {
 		update($scope, json);
-
-		/*
-		setTimeout(function () {
-			poll($scope)
-		}, 1000);
-		*/
 	});
 }
 
@@ -147,7 +141,7 @@ function showyesOrno(text) {
 function showquiz($scope) {
 	var question = $scope.state.questions[$scope.state.currentPlayer.token.currFieldIndex];
 	// console.log(question);
-	txt = `Beantworte folgende Frage:<br>${question.question}`;
+	txt = `Beantworte folgende Frage:<br>${question.questionString}`;
 	$quizpopup.find('.popup-p').html(txt);
 	$quizpopup.find('#quizanswer_1').html(`<h4>${question.option1}</h4>`);
 	$quizpopup.find('#quizanswer_2').html(`<h4>${question.option2}</h4>`);
@@ -161,7 +155,7 @@ function showSelection($scope) {
 	$selectpopup.find('.popup-p').text(txt);
 	txt = `Du schuldest dd noch ${$sellingprice}CHF.`;
 	$selectpopup.find('.popup-div').text(txt);
-	Object.entries($scope.state.currentPlayer.ownedModuls).forEach(function (modul) {
+	Object.entries($scope.state.currentPlayer.ownedModules).forEach(function (modul) {
 		field = $(`#pos${modul[0]} .container`);
 		field.toggleClass('mine');
 	});
@@ -672,7 +666,7 @@ app.controller('Controller', function ($scope) {
 		txt += `Credits: ${player.ects} ECTS<br>`;
 		txt += `Frei Karte: ${player.freeCard}<br>`;
 		txt += `Muss Nachsitzen: ${player.leftTimeInDetention}<br>`;
-		txt += `Module: ${player.ModulsOwned}`;
+		txt += `Module: ${player.modulesOwned}`;
 		showalert(txt, false);
 	}
 
