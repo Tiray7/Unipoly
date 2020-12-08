@@ -303,14 +303,8 @@ public class UnipolyApp {
 		FieldProperty currentField = (FieldProperty) this.currentField;
 		if (currentField.isOwnerBank()) {
 			if (currentPlayer.getMoney() >= currentField.getPropertyCost()) {
-				if (currentPlayer.isNPC() && NPCChecksMoney(currentField.getPropertyCost())) {
-					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
-							+ " gelandet und kauft das Modul.<br>";
-					buyProperty();
-				} else if (currentPlayer.isNPC()) {
-					displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
-							+ " gelandet, aber will das Modul nicht kaufen.<br>";
-					phase = UnipolyPhase.SHOWANDSWITCH;
+				if (currentPlayer.isNPC()) {
+					NPCBuysProperty(currentField);
 				} else {
 					phase = UnipolyPhase.BUY_PROPERTY;
 				}
@@ -364,7 +358,6 @@ public class UnipolyApp {
 	 * After that sets {@link #displayMessage} and {@link UnipolyPhase} accordingly.
 	 */
 	public void readCard() throws FieldIndexException {
-		cards.get(0);
 		if (currentPlayer.isNPC()) {
 			displayMessage += "<br>" + currentPlayer.getName() + " zieht die Karte:<br><i>" + cards.get(0).getText()
 					+ "</i>";
@@ -378,24 +371,7 @@ public class UnipolyApp {
 				break;
 			case PAYMONEY:
 				if (currentPlayer.setAndCheckDebt(bank, cards.get(0).getAmount())) {
-					if (currentPlayer.setandgetBankrupt()) {
-						if (currentPlayer.isNPC()) {
-							displayMessage += "<br>" + currentPlayer.getName()
-									+ " kann kann sich das nicht leisten und ist nun Bankrot.";
-						} else {
-							displayMessage = "Du kannst dir das nicht leisten und bist nun Bankrot.";
-						}
-						GameOver();
-						return;
-					} else {
-						if (currentPlayer.isNPC()) {
-							displayMessage += "<br>" + currentPlayer.getName() + " kann sich dies nicht leisten.";
-							NPCinDebt();
-						} else {
-							displayMessage += "Du kannst dir dies nicht leisten. Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
-							phase = UnipolyPhase.INDEBT;
-						}
-					}
+					inChanceCardDebt();
 				} else {
 					phase = UnipolyPhase.SHOWANDSWITCH;
 				}
@@ -412,37 +388,57 @@ public class UnipolyApp {
 		cards.remove(0);
 	}
 
-	private void playerIsOnJumpField() throws FieldIndexException {
-			if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
-				if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
-					NPCJumps();
-				} else if (currentPlayer.isNPC()) {
-					displayMessage += "<br>" + currentPlayer.getName()
-							+ " ist auf einem Springer Feld gelandet, will aber nicht springen.";
-					phase = UnipolyPhase.SHOWANDSWITCH;
-				} else {
-					phase = UnipolyPhase.JUMP;
-				}
-			} else {
-				if (currentPlayer.isNPC()) {
-					displayMessage += "<br>" + currentPlayer.getName()
-							+ " hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht an den nächsten Spieler..";
-				} else {
-					displayMessage = "Du hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht automatisch an den nächsten Spieler.";
-				}
-				phase = UnipolyPhase.SHOWANDSWITCH;
-			}
-	}
-
-	private void playerIsOnGoField() throws FieldIndexException {
-			bank.transferMoneyTo(currentPlayer, 400);
+	private void inChanceCardDebt() throws FieldIndexException {
+		if (currentPlayer.setandgetBankrupt()) {
 			if (currentPlayer.isNPC()) {
 				displayMessage += "<br>" + currentPlayer.getName()
-						+ " ist auf Start gelandet und bekommt deshalb das doppelte Honorar!";
+						+ " kann kann sich das nicht leisten und ist nun Bankrot.";
 			} else {
-				displayMessage = "Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!";
+				displayMessage = "Du kannst dir das nicht leisten und bist nun Bankrot.";
+			}
+			GameOver();
+		} else {
+			if (currentPlayer.isNPC()) {
+				displayMessage += "<br>" + currentPlayer.getName() + " kann sich dies nicht leisten.";
+				NPCinDebt();
+			} else {
+				displayMessage += "Du kannst dir dies nicht leisten. Verkaufe deine Module um deine Schulden zurückzahlen zu können.";
+				phase = UnipolyPhase.INDEBT;
+			}
+		}
+	}
+
+	private void playerIsOnJumpField() throws FieldIndexException {
+		if (currentPlayer.getMoney() >= COST_FOR_JUMP) {
+			if (currentPlayer.isNPC() && NPCChecksMoney(COST_FOR_JUMP)) {
+				NPCJumps();
+			} else if (currentPlayer.isNPC()) {
+				displayMessage += "<br>" + currentPlayer.getName()
+						+ " ist auf einem Springer Feld gelandet, will aber nicht springen.";
+				phase = UnipolyPhase.SHOWANDSWITCH;
+			} else {
+				phase = UnipolyPhase.JUMP;
+			}
+		} else {
+			if (currentPlayer.isNPC()) {
+				displayMessage += "<br>" + currentPlayer.getName()
+						+ " hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht an den nächsten Spieler..";
+			} else {
+				displayMessage = "Du hast leider nicht genug Geld für eine Aktion!<br>Die Runde geht automatisch an den nächsten Spieler.";
 			}
 			phase = UnipolyPhase.SHOWANDSWITCH;
+		}
+	}
+
+	private void playerIsOnGoField() {
+		bank.transferMoneyTo(currentPlayer, 400);
+		if (currentPlayer.isNPC()) {
+			displayMessage += "<br>" + currentPlayer.getName()
+					+ " ist auf Start gelandet und bekommt deshalb das doppelte Honorar!";
+		} else {
+			displayMessage = "Weil du auf Start gelandet bist, bekommst du das doppelte Honorar!";
+		}
+		phase = UnipolyPhase.SHOWANDSWITCH;
 	}
 
 	private void checkIfOverStart() {
@@ -572,7 +568,7 @@ public class UnipolyApp {
 		}
 	}
 
-	private void NPCinDebt() throws FieldIndexException {
+	private void NPCinDebt() {
 		int selling = 0;
 		List<Integer> currarr = new ArrayList<>();
 		for (Map.Entry<Integer, FieldProperty> modul : currentPlayer.getownedModuls().entrySet()) {
@@ -591,7 +587,7 @@ public class UnipolyApp {
 	/***
 	 * This method switches the active player.
 	 *
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException if fieldIndex is out of bounds
 	 */
 	public void switchPlayer() throws FieldIndexException {
 		displayMessage = "";
@@ -599,44 +595,53 @@ public class UnipolyApp {
 			currentPlayer = players.get(0);
 		else
 			currentPlayer = players.get(currentPlayer.getIndex() + 1);
-
 		if (currentPlayer.inDetention()) {
-			if (currentPlayer.isNPC()) {
-				displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
-				if (currentPlayer.getleftTimeInDetention() > 0) {
-					if (NPCChecksMoney(RANSOM)) {
-						displayMessage += "<br>" + currentPlayer.getName() + " besticht die Schuldirektorin.";
-						payDetentionRansom();
-					} else {
-						displayMessage += "<br>" + currentPlayer.getName()
-								+ " versucht über den Schulverweis zu verhandeln.";
-						rollTwoDice();
-						if (rolledPash) {
-							displayMessage += "<br>" + currentPlayer.getName() + " hat ein Pash gewürfelt.";
-							leaveDetention();
-							rollDice(new Random().nextInt(6) + 1);
-						} else {
-							displayMessage += "<br>" + currentPlayer.getName()
-									+ " hat es nicht geschafft die Schuldirektorin zu überzeugen.";
-							phase = UnipolyPhase.SHOWANDSWITCH;
-						}
-					}
-				} else {
-					displayMessage += "<br>" + currentPlayer.getName()
-							+ " hat schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!";
-					displayMessage += "<br>" + currentPlayer.getName()
-							+ " muss versuchen die Schuldirektorin zu bestechen.";
-					payDetentionRansom();
-				}
-			} else {
-				phase = UnipolyPhase.DETENTION;
-			}
+			playerInDetention();
 		} else {
 			phase = UnipolyPhase.WAITING;
 			if (currentPlayer.isNPC()) {
 				displayMessage = currentPlayer.getName() + " war an der Reihe.";
 				rollDice(new Random().nextInt(6) + 1);
 			}
+		}
+	}
+
+	/**
+	 * This method checks if the currentPlayer is in detention. If yes the player can either pay their way out
+	 * or try to roll two same numbers.
+	 *
+	 * @throws FieldIndexException if the fieldIndex is out of bounds
+	 */
+	private void playerInDetention() throws FieldIndexException {
+		if (currentPlayer.isNPC()) {
+			displayMessage = currentPlayer.getName() + " ist noch bei der Schuldirektorin.";
+			if (currentPlayer.getleftTimeInDetention() > 0) {
+				if (NPCChecksMoney(RANSOM)) {
+					displayMessage += "<br>" + currentPlayer.getName() + " besticht die Schuldirektorin.";
+					payDetentionRansom();
+				} else {
+					displayMessage += "<br>" + currentPlayer.getName()
+							+ " versucht über den Schulverweis zu verhandeln.";
+					rollTwoDice();
+					if (rolledPash) {
+						displayMessage += "<br>" + currentPlayer.getName() + " hat ein Pash gewürfelt.";
+						leaveDetention();
+						rollDice(new Random().nextInt(6) + 1);
+					} else {
+						displayMessage += "<br>" + currentPlayer.getName()
+								+ " hat es nicht geschafft die Schuldirektorin zu überzeugen.";
+						phase = UnipolyPhase.SHOWANDSWITCH;
+					}
+				}
+			} else {
+				displayMessage += "<br>" + currentPlayer.getName()
+						+ " hat schon 3mal versucht Sie zu überzeugen; Ohne Erfolg!";
+				displayMessage += "<br>" + currentPlayer.getName()
+						+ " muss versuchen die Schuldirektorin zu bestechen.";
+				payDetentionRansom();
+			}
+		} else {
+			phase = UnipolyPhase.DETENTION;
 		}
 	}
 
@@ -684,9 +689,9 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * payoff the the Detention
+	 * Payoff the detention fee if the player has enough money.
 	 *
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException if the fieldIndex is out of bounds
 	 */
 	public void payDetentionRansom() throws FieldIndexException {
 		if (currentPlayer.setAndCheckDebt(bank, RANSOM)) {
@@ -712,9 +717,9 @@ public class UnipolyApp {
 	}
 
 	/***
-	 * leaving the Detention "on hold"
+	 * The player is allowed to leave detention.
 	 *
-	 * @throws FieldIndexException
+	 * @throws FieldIndexException if the fieldIndex is out of bounds
 	 */
 	public void leaveDetention() throws FieldIndexException {
 		phase = UnipolyPhase.WAITING;
@@ -742,8 +747,8 @@ public class UnipolyApp {
 	/**
 	 * The NPC checks if there is a field free of a modulegroup he partly owns. If
 	 * not he will jump to the GO field.
-	 * 
-	 * @throws FieldIndexException
+	 *
+	 * @throws FieldIndexException  if the fieldIndex is out of bounds
 	 */
 	private void NPCJumps() throws FieldIndexException {
 		Map<Integer, FieldProperty> mapProperties = board.getProperties();
@@ -762,5 +767,17 @@ public class UnipolyApp {
 			}
 		}
 		jumpPlayer(jumpIndex);
+	}
+
+	private void NPCBuysProperty(FieldProperty currentField) {
+		if (NPCChecksMoney(currentField.getPropertyCost())) {
+			displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
+					+ " gelandet und kauft das Modul.<br>";
+			buyProperty();
+		} else {
+			displayMessage += "<br>" + currentPlayer.getName() + " ist auf " + currentField.getName()
+					+ " gelandet, aber will das Modul nicht kaufen.<br>";
+			phase = UnipolyPhase.SHOWANDSWITCH;
+		}
 	}
 }
