@@ -9,11 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
+
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * This class resembles at first the main entry point into the Unipoly application
@@ -44,6 +45,7 @@ public class Controller {
 	 * @param unipoly instance of the UnipolyApp to have a game initialized
 	 * @Autowired  so spring can do all the work :)
 	 */
+
 	@Autowired
 	public Controller(UnipolyApp unipoly) {
 		this.unipoly = unipoly;
@@ -94,14 +96,13 @@ public class Controller {
 	 * @param name of the player
 	 * @param token chosen by the player
 	 * @return response containing the unipoly as json in the body
-	 * @throws FieldIndexException if something's wrong with the index
 	 * @throws IOException if something goes horribly wrong with the server or client
 	 */
 	@RequestMapping(value = "/join", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> join(@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "token", required = false) Token.TokenType token)
-			throws FieldIndexException, IOException {
+										   @RequestParam(value = "token", required = false) TokenType token)
+			throws IOException {
 		unipoly.join(name, token);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -117,14 +118,13 @@ public class Controller {
 	 * @param gamemode chosen by the player
 	 * @param npcnum amount of npcs chosen by the player
 	 * @return response containing the unipoly as json in the body
-	 * @throws FieldIndexException if something's wrong with the index
 	 * @throws IOException if something goes horribly wrong with the server or client
 	 */
 	@RequestMapping(value = "/start", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> start(
-			@RequestParam(value = "gamemode", required = false) UnipolyApp.Gamemode gamemode,
-			@RequestParam(value = "npcnum", required = false) Integer npcnum) throws FieldIndexException, IOException {
+			@RequestParam(value = "gamemode", required = false) Config.Gamemode gamemode,
+			@RequestParam(value = "npcnum", required = false) Integer npcnum) throws IOException {
 		unipoly.start(gamemode, npcnum);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -232,17 +232,18 @@ public class Controller {
 	 * Processes the requested method in the {@link UnipolyApp} application, then logs
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
-	 * @param FieldIndex of the chosen field by the player
+	 *
+	 * @param fieldIndexes of the chosen field by the player
 	 * @return response containing the unipoly as json in the body
 	 * @throws FieldIndexException if something's wrong with the index
-	 * @throws IOException if something goes horribly wrong with the server or client
+	 * @throws IOException         if something goes horribly wrong with the server or client
 	 */
 	@RequestMapping(value = "/jumpplayer", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> jumpPlayer(
-			@RequestParam(value = "FieldIndex", required = false) Integer FieldIndex)
+			@RequestParam(value = "fieldIndexes", required = false) Integer fieldIndexes)
 			throws FieldIndexException, IOException {
-		unipoly.jumpPlayer(FieldIndex);
+		unipoly.jumpPlayer(fieldIndexes);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
@@ -308,21 +309,23 @@ public class Controller {
 	 * Processes the requested method in the {@link UnipolyApp} application, then logs
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
-	 * @param fieldIndices is the index of the field to pay debt for
+	 *
+	 * @param indexes is the index of the field to pay debt for
 	 * @return response containing the unipoly as json in the body
 	 * @throws JsonProcessingException if something goes wrong while processing the unipoly to json
 	 */
+
 	@RequestMapping(value = "/payoffdebt", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResponseEntity<UnipolyApp> payOffDebt(@RequestParam(value = "indexes", required = false) String indexes)
-			throws FieldIndexException, JsonProcessingException {
+			throws JsonProcessingException {
 		String[] stringindexes = indexes.split(",");
 		int size = stringindexes.length;
-		Integer[] FieldIndexes = new Integer[size];
+		Integer[] fieldIndexes = new Integer[size];
 		for (int i = 0; i < size; i++) {
-			FieldIndexes[i] = Integer.parseInt(stringindexes[i]);
+			fieldIndexes[i] = Integer.parseInt(stringindexes[i]);
 		}
-		unipoly.payOffDebt(FieldIndexes);
+		unipoly.payOffDebt(fieldIndexes);
 		ObjectMapper objectMapper = new ObjectMapper();
 		unipolyLogger.log(Level.DEBUG, objectMapper.writeValueAsString(unipoly) + "\n");
 		return new ResponseEntity<>(unipoly, HttpStatus.ACCEPTED);
@@ -332,12 +335,13 @@ public class Controller {
 	 * Processes the requested method in the {@link UnipolyApp} application, then logs
 	 * the current state after the processing via the {@link ObjectMapper} and returns
 	 * a {@link ResponseEntity} containing the json in the body.
+	 *
 	 * @return response containing the unipoly as json in the body
 	 * @throws JsonProcessingException if something goes wrong while processing the unipoly to json
 	 */
 	@RequestMapping(value = "/readcard", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException, FieldIndexException {
+	public ResponseEntity<UnipolyApp> readCard() throws JsonProcessingException {
 		unipoly.readCard();
 
 		ObjectMapper objectMapper = new ObjectMapper();

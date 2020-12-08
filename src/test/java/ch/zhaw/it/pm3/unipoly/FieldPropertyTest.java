@@ -2,12 +2,11 @@ package ch.zhaw.it.pm3.unipoly;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 public class FieldPropertyTest {
     private Board board;
@@ -23,10 +22,10 @@ public class FieldPropertyTest {
         bank = new Bank();
         bank.setownedModuls(new HashMap<>(board.getProperties()));
         players = new LinkedList<>();
-        players.add(new Player(0,"Jack", Token.TokenType.ATOM));
-        players.add(new Player(1,"John", Token.TokenType.EINSTEIN));
-        propertyOne = new FieldProperty("Geschichte", Config.FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0);
-        propertyTwo =  new FieldProperty("Geographie", Config.FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450, 0);
+        players.add(new Player(0, "Jack", TokenType.ATOM));
+        players.add(new Player(1, "John", TokenType.EINSTEIN));
+        propertyOne = new FieldProperty(new PropertyDataField("Geschichte", Config.FieldLabel.PROPERTY, 60, 10, 30, 90, 160, 250, 0));
+        propertyTwo = new FieldProperty(new PropertyDataField("Geographie", Config.FieldLabel.PROPERTY, 60, 20, 60, 180, 320, 450, 0));
     }
 
     @Test

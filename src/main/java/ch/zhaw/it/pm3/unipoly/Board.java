@@ -4,7 +4,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import static ch.zhaw.it.pm3.unipoly.Config.AMOUNT_OF_MODULES;
 
 /**
  * This class initialises the board with all the fields and allows the manipulation of rent and ECTS-points.
@@ -70,7 +73,7 @@ public class Board {
      * @return list of fields from the same modulegroup
      * @throws FieldIndexException if the index is out of range
      */
-    public LinkedList<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
+    public List<FieldProperty> getModuleGroupAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
         return moduleGroups.get(index);
     }
@@ -92,11 +95,11 @@ public class Board {
     }
 
     /***
-     * getFieldAtIndex method to get the field on this index
+     * getFieldAtIndex method to get the field at this index
      *
      * @param index of the field
      * @return the field at the given index
-     * @throws FieldIndexException
+     * @throws FieldIndexException if the index is invalid
      */
     public Field getFieldAtIndex(int index) throws FieldIndexException {
         checkFieldIndex(index);
@@ -148,12 +151,10 @@ public class Board {
      * This method fills the mouduleMap with the grouped properties.
      */
     private void fillModuleGroups() {
-        for (int i = 0; i <= 7; i++) {
+        for (int i = 0; i <= AMOUNT_OF_MODULES; i++) {
             moduleGroups.put(i, new LinkedList<>());
         }
-        properties.forEach((integer, fieldProperty) -> {
-            moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty);
-        });
+        properties.forEach((integer, fieldProperty) -> moduleGroups.get(fieldProperty.getModuleGroupIndex()).add(fieldProperty));
     }
 
     /**
@@ -171,10 +172,7 @@ public class Board {
                 countSameOwner++;
             }
         }
-        if (countSameOwner == currentModuleGroup.size()) {
-            return true;
-        }
-        return false;
+        return countSameOwner == currentModuleGroup.size();
     }
 
     /**

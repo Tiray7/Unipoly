@@ -11,11 +11,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import ch.zhaw.it.pm3.unipoly.Config.TokenType;
 
 
 @RunWith(SpringRunner.class)
@@ -34,9 +36,9 @@ public class UnipolyAppTests {
 
     @Before
     public void setUp() {
-        player = new Player(0, "timRhomberg", Token.TokenType.ATOM);
-        npc = new Player(1, "franzFerdinand", Token.TokenType.NPCI);
-        joinedPlayer = new Player(2, "zahnfleischblutermurphy", Token.TokenType.ONEPLUS);
+        player = new Player(0, "timRhomberg", TokenType.ATOM);
+        npc = new Player(1, "franzFerdinand", TokenType.NPCI);
+        joinedPlayer = new Player(2, "zahnfleischblutermurphy", TokenType.ONEPLUS);
     }
 
     @Order(1)
@@ -65,14 +67,14 @@ public class UnipolyAppTests {
         //setup
         int playerJoined = 1;
         String name = "zahnfleischblutermurphy";
-        ArrayList<Player> players;
+        List<Player> players;
         //work
-        HttpStatus status = controller.join(name, Token.TokenType.ONEPLUS).getStatusCode();
+        HttpStatus status = controller.join(name, TokenType.ONEPLUS).getStatusCode();
         players = controller.unipoly.getPlayers();
         joinedPlayer = players.get(playerJoined);
         //assert
         assertEquals("zahnfleischblutermurphy", joinedPlayer.getName());
-        assertEquals(Token.TokenType.ONEPLUS, joinedPlayer.getToken().getType());
+        assertEquals(TokenType.ONEPLUS, joinedPlayer.getToken().getType());
         assertEquals(HttpStatus.ACCEPTED, status);
     }
 
@@ -82,7 +84,7 @@ public class UnipolyAppTests {
         //setup
         int amountOfNPCs = 1;
         //work
-        HttpStatus status = controller.start(UnipolyApp.Gamemode.SINGLE, amountOfNPCs).getStatusCode();
+        HttpStatus status = controller.start(Config.Gamemode.SINGLE, amountOfNPCs).getStatusCode();
         Player player = controller.unipoly.getCurrentPlayer();
         //assert
         assertEquals("NPC1", player.getName());
